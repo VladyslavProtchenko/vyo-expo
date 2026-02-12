@@ -31,6 +31,7 @@ yarn-error.*
 *.pem
 
 # local env files
+.env
 .env*.local
 
 # typescript
@@ -41,3 +42,7 @@ app-example
 # generated native folders
 /ios
 /android
+
+# API keys and secrets
+VYO_OLD/api/generate-products.ts
+VYO_OLD/app/_api/openai.ts
