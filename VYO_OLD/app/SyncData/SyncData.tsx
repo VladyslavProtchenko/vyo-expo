@@ -5,7 +5,7 @@ import { RootStackParamList } from '../_types/types';
 import ButtonRounded from '../_components/ui/ButtonRounded';
 import { typography } from '../../styles/globalStyles';
 import ButtonGradient from '../_components/ui/ButtonGradient';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { MaterialIcons } from '@expo/vector-icons';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'SyncData'>;
 

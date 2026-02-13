@@ -1,10 +1,11 @@
+import { Dayjs } from 'dayjs';
 import { create } from 'zustand';
 
 interface StatesStore {
   isDayCardOpen: boolean;
   setIsDayCardOpen: (value: boolean) => void;
-  selectedDate: Date | null;
-  setSelectedDate: (date: Date | null) => void;
+  selectedDate: Dayjs | null;
+  setSelectedDate: (date: Dayjs | null) => void;
 }
 
 const useStates = create<StatesStore>((set) => ({

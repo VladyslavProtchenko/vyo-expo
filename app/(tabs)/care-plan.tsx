@@ -1,25 +1,31 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { StyleSheet } from 'react-native';
+import HomeHeader from '@/components/HomeHeader';
+import CarePlanCard from '@/components/care-plan/Card';
+import CarePlanList from '@/components/care-plan/List';
+import CarePlanMenu from '@/components/care-plan/Menu';
+import React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function CarePlan() {
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
-        Care Plan
-      </ThemedText>
-    </ThemedView>
+    <ScrollView style={styles.scrollView}>
+      <HomeHeader />
+      <CarePlanCard />
+      <View style={styles.listContainer}>
+        <CarePlanList />
+        <CarePlanMenu />
+      </View>
+      <View style={{ paddingBottom: 200 }}></View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  scrollView: {
+    paddingTop: 50,
+    paddingVertical: 24,
+    paddingHorizontal: 16,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  listContainer: {
+    marginVertical: 16,
   },
 });

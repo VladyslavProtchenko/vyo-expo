@@ -2,7 +2,6 @@ import AuthButton from '@/components/AuthButton';
 import ButtonRounded from '@/components/ui/ButtonRounded';
 import { globalStyles, typography } from '@/constants/typography';
 import { useGoogleSignIn } from '@/hooks/useGoogleSignIn';
-import useProfileStore from '@/store/useProfileStore';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
@@ -11,12 +10,11 @@ import { ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native
 export default function Login() {
     const router = useRouter();
     const { signInWithGoogle, loading: isGoogleLoading } = useGoogleSignIn();
-    const resetStore = useProfileStore((state) => state.resetStore);
+    // const resetStore = useProfileStore((state) => state.resetStore);
     
     useEffect(() => {
-        resetStore();
-        // Redirect to complete-profile (step 1) on app load
-        router.replace('/complete-profile' as any);
+        // resetStore(); // Commented out to preserve onboarding data
+        router.replace('/care-plan-preview' as any);
     }, []);
 
     const googleLogin = async () => {

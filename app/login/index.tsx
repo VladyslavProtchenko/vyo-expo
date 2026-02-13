@@ -2,7 +2,6 @@ import AuthButton from '@/components/AuthButton';
 import ButtonRounded from '@/components/ui/ButtonRounded';
 import { globalStyles, typography } from '@/constants/typography';
 import { useGoogleSignIn } from '@/hooks/useGoogleSignIn';
-import useProfileStore from '@/store/useProfileStore';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect } from 'react';
@@ -11,10 +10,10 @@ import { ImageBackground, Pressable, ScrollView, StyleSheet, Text, View } from '
 export default function Login() {
     const router = useRouter();
     const { signInWithGoogle, loading: isGoogleLoading } = useGoogleSignIn();
-    const resetStore = useProfileStore((state) => state.resetStore);
+    // const resetStore = useProfileStore((state) => state.resetStore);
     
     useEffect(() => {
-        resetStore();
+        // resetStore(); // Commented out to preserve onboarding data
     }, []);
 
     const googleLogin = async () => {

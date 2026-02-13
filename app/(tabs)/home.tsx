@@ -1,25 +1,46 @@
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { StyleSheet } from 'react-native';
+import HomeHeader from '@/components/HomeHeader';
+import CalendarWidgetNew from '@/components/home/CalendarWidgetNew';
+import ExploreCard from '@/components/home/ExploreCard';
+import FeelingCard from '@/components/home/FeelingCard';
+import InfoCard from '@/components/home/InfoCard';
+import Missions from '@/components/home/Missions';
+import useStates from '@/store/useStates';
+import { useState } from 'react';
+import { ScrollView, StyleSheet } from 'react-native';
 
 export default function HomePage() {
+  const { isDayCardOpen } = useStates();
+  const [isInfo, setIsInfo] = useState(true);
+
+  const infoCardData = {
+    title: "We noticed you had less than 6 hours of sleep last night.",
+    description: "During menstruation, your body needs more recovery. Lack of sleep can increase fatigue, pain, and sensitivity. If you can, try going to bed a bit earlier.",
+  };
+
   return (
-    <ThemedView style={styles.container}>
-      <ThemedText type="title" style={styles.title}>
-        Home
-      </ThemedText>
-    </ThemedView>
+    <ScrollView 
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false}
+    >
+      <HomeHeader />
+      <CalendarWidgetNew />
+      {isDayCardOpen && <ExploreCard />}
+      {isInfo && <InfoCard title={infoCardData.title} description={infoCardData.description} onClose={() => setIsInfo(false)} />}
+      <Missions />
+      <FeelingCard />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: 'white',
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+  contentContainer: {
+    paddingTop: 50,
+    paddingHorizontal: 16,
+    paddingBottom: 200, 
   },
 });

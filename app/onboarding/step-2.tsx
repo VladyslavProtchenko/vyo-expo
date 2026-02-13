@@ -17,13 +17,16 @@ export default function Step2() {
   const [heightState, setHeightState] = useState('');
   const [waistState, setWaistState] = useState('');
   const [hipsState, setHipsState] = useState('');
+  const [unitSystemState, setUnitSystemState] = useState<'metric' | 'imperial'>(unitSystem);
+
 
   useEffect(() => {
-    if (weight && weight > 0) setWeightState(String(weight));
-    if (height && height > 0) setHeightState(String(height));
-    if (waist && waist > 0) setWaistState(String(waist));
-    if (hips && hips > 0) setHipsState(String(hips));
-  }, [weight, height, waist, hips]);
+    if (weight) setWeightState(String(weight));
+    if (height) setHeightState(String(height));
+    if (waist) setWaistState(String(waist));
+    if (hips) setHipsState(String(hips));
+    if (unitSystem) setUnitSystemState(unitSystem);
+  }, [weight, height, waist, hips, unitSystem]);
 
   const handleNumericChange = (value: string, setter: (value: string) => void) => {
     const numericValue = value.replace(/[^0-9.]/g, '');
@@ -39,15 +42,11 @@ export default function Step2() {
   };
 
   const next = () => {
-    const weightNum = weightState ? parseFloat(weightState) : 0;
-    const heightNum = heightState ? parseFloat(heightState) : 0;
-    const waistNum = waistState ? parseFloat(waistState) : 0;
-    const hipsNum = hipsState ? parseFloat(hipsState) : 0;
     
-    setValue(isNaN(weightNum) ? 0 : weightNum, 'weight');
-    setValue(isNaN(heightNum) ? 0 : heightNum, 'height');
-    setValue(isNaN(waistNum) ? 0 : waistNum, 'waist');
-    setValue(isNaN(hipsNum) ? 0 : hipsNum, 'hips');
+    setValue(weightState, 'weight');
+    setValue(heightState, 'height');
+    setValue(waistState, 'waist');
+    setValue(hipsState, 'hips');
     router.push('/onboarding/step-3' as any);
   };
 
@@ -71,7 +70,7 @@ export default function Step2() {
           <View style={styles.segmentedControl}>
             <Pressable
               style={[styles.segment, unitSystem === 'metric' && styles.segmentActive]}
-              onPress={() => setValue('metric', 'unitSystem')}
+              onPress={() => setUnitSystemState('metric')}
             >
               <Text style={[styles.segmentText, unitSystem === 'metric' && styles.segmentTextActive]}>
                 kg/cm
@@ -79,7 +78,7 @@ export default function Step2() {
             </Pressable>
             <Pressable
               style={[styles.segment, unitSystem === 'imperial' && styles.segmentActive]}
-              onPress={() => setValue('imperial', 'unitSystem')}
+              onPress={() => setUnitSystemState('imperial')}
             >
               <Text style={[styles.segmentText, unitSystem === 'imperial' && styles.segmentTextActive]}>
                 lb/ft
