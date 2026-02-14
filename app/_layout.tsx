@@ -1,4 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -7,15 +8,13 @@ import { useEffect } from 'react';
 import 'react-native-reanimated';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
+import { useSessionKeepAlive } from '@/hooks/useSessionKeepAlive';
 
 SplashScreen.preventAutoHideAsync();
+const queryClient = new QueryClient();
 
-// export const unstable_settings = {
-//   anchor: '(tabs)',
-// };
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+export default function RootLayout() {  const colorScheme = useColorScheme();
+  useSessionKeepAlive();
   
   const [fontsLoaded, fontError] = useFonts({
     'ArchivoBlack-Regular': require('@/assets/fonts/ArchivoBlack-Regular.ttf'),
@@ -65,18 +64,20 @@ export default function RootLayout() {
   ];
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
-      >
-        <Stack.Screen name="index" />
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-        {screens.map((name) => <Stack.Screen key={name} name={name as any} />)}
-      </Stack>
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <QueryClientProvider client={queryClient}>
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          {screens.map((name) => <Stack.Screen key={name} name={name as any} />)}
+        </Stack>
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </QueryClientProvider>
   );
 }

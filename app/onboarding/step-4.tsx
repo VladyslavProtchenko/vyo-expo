@@ -2,7 +2,7 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useProfileStore from '@/store/useProfileStore';
+import useRegistrationStore from '@/store/useRegistrationStore';
 import { SYMPTOM_LABELS, SymptomType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,7 +11,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step4() {
   const router = useRouter();
-  const { setValue, symptoms } = useProfileStore();
+  const { setValue, symptoms } = useRegistrationStore();
   const [tags, setTags] = useState<SymptomType[]>([]);
 
   useEffect(() => {

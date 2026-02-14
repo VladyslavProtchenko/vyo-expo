@@ -1,11 +1,11 @@
-import useProfileStore from "@/store/useProfileStore";
+import useRegistrationStore from "@/store/useRegistrationStore";
 
 const range = (age: number, min: number, max: number): boolean => {
   return age >= min && age <= max;
 };
 
 export const useDiagnosis = () => {
-  const { age, diagnoses, symptoms, flow, isRegularPeriod, intensity, painType, painPeriod, painLocation, painDuration, painCase, isMedicine, isPainChange } = useProfileStore();
+  const { age, diagnoses, symptoms, flow, isRegularPeriod, intensity, painType, painPeriod, painLocation, painDuration, painCase, isMedicine, isPainChange } = useRegistrationStore();
 
   let primary = 0
   let secondary = 0
@@ -272,6 +272,13 @@ export const useDiagnosis = () => {
   }
 
   const winner = Math.max(primary, secondary, menstrualPain);
+  
+  let diagnosisName = 'menstrualPain';
+  if (winner === primary) {
+    diagnosisName = 'primary';
+  } else if (winner === secondary) {
+    diagnosisName = 'secondary';
+  }
 
   const titles: Record<string, string> = {
     "primary": 'Primary dysmenorrhea',
@@ -280,5 +287,5 @@ export const useDiagnosis = () => {
   }
 
 
-  return { primary, secondary, menstrualPain, diagnosis: titles[winner] }; 
+  return { primary, secondary, menstrualPain, diagnosis: titles[diagnosisName] }; 
 };

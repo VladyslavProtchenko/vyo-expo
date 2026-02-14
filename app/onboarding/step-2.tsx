@@ -3,7 +3,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Input from '@/components/ui/Input';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useProfileStore from '@/store/useProfileStore';
+import useRegistrationStore from '@/store/useRegistrationStore';
 import { MaterialIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
@@ -12,7 +12,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step2() {
   const router = useRouter();
-  const { setValue, weight, height, waist, hips, unitSystem } = useProfileStore();
+  const { setValue, weight, height, waist, hips, unitSystem } = useRegistrationStore();
   const [weightState, setWeightState] = useState('');
   const [heightState, setHeightState] = useState('');
   const [waistState, setWaistState] = useState('');

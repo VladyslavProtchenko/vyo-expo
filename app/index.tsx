@@ -1,35 +1,88 @@
 import AuthButton from '@/components/AuthButton';
 import ButtonRounded from '@/components/ui/ButtonRounded';
+import { supabase } from '@/config/supabase';
 import { globalStyles, typography } from '@/constants/typography';
 import { useGoogleSignIn } from '@/hooks/useGoogleSignIn';
+import { useLoadUserData } from '@/hooks/useLoadUserData';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect } from 'react';
-import { ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function Login() {
     const router = useRouter();
     const { signInWithGoogle, loading: isGoogleLoading } = useGoogleSignIn();
-    // const resetStore = useProfileStore((state) => state.resetStore);
+    const [checking, setChecking] = useState(true);
+    const { refetch: loadUserData } = useLoadUserData();
     
     useEffect(() => {
-        // resetStore(); // Commented out to preserve onboarding data
-        router.replace('/care-plan-preview' as any);
+        checkAuthStatus();
     }, []);
+
+    const checkAuthStatus = async () => {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                console.log('👤 No active session - showing login screen');
+                setChecking(false);
+                return;
+            }
+
+            console.log('✅ User is authenticated:', session.user.email);
+            
+            console.log('📥 Loading user data...');
+            await loadUserData();
+            
+            const { data: profile, error } = await supabase
+                .from('profiles')
+                .select('onboarding_completed')
+                .eq('id', session.user.id)
+                .single();
+
+            if (error) {
+                console.error('❌ Error checking profile:', error);
+                setChecking(false);
+                return;
+            }
+
+            if (profile?.onboarding_completed) {
+                console.log('🏠 Onboarding completed - redirecting to home');
+                router.replace('/(tabs)/home' as any);
+            } else {
+                console.log('📝 Onboarding not completed - redirecting to onboarding');
+                router.replace('/onboarding/step-1' as any);
+            }
+        } catch (error) {
+            console.error('❌ Error checking auth status:', error);
+            setChecking(false);
+        }
+    };
 
     const googleLogin = async () => {
         console.log('🔵 Google login button pressed');
         try {
             const result = await signInWithGoogle();
             if (result.success) {
-                console.log('✅ Google sign in successful, navigating...');
-                router.push('/privacy' as any);
+                console.log('✅ Google sign in successful, checking onboarding...');
+                // Re-check auth status to redirect properly
+                await checkAuthStatus();
             } else {
                 console.error('❌ Google sign in error:', result.error);
             }
         } catch (error) {
             console.error('❌ Google login exception:', error);
         }
+    }
+
+    // Show loading while checking auth status
+    if (checking) {
+        return (
+            <View style={[styles.container, styles.centerContent]}>
+                <ActivityIndicator size="large" color="#000000" />
+                <Text style={[typography.p, { marginTop: 16 }]}>Loading...</Text>
+            </View>
+        );
     }
 
     return (
@@ -94,6 +147,10 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'white',
         width: '100%',
+    },
+    centerContent: {
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     backgroundImage: {
         flex: 0.33,

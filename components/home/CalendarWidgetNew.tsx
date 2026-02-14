@@ -1,7 +1,7 @@
 import { typography } from "@/constants/typography";
 import { CurrentPhaseInfo } from "@/store/phase";
-import useProfileStore from "@/store/useProfileStore";
 import useStates from "@/store/useStates";
+import useUserStore from "@/store/useUserStore";
 import { weekDays } from "@/store/variables";
 import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/en-gb';
@@ -16,7 +16,7 @@ dayjs.locale('en-gb');
 
 export default function CalendarWidgetNew() {
   const { isDayCardOpen, setIsDayCardOpen, selectedDate, setSelectedDate } = useStates();
-  const { startMenstruation, cycleDuration } = useProfileStore();
+  const { startMenstruation, cycleDuration } = useUserStore();
 
   const today = dayjs();
   const startOfWeek = dayjs().weekday(0);

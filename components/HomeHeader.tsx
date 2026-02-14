@@ -1,11 +1,11 @@
 import { typography } from '@/constants/typography';
-import useProfileStore from '@/store/useProfileStore';
+import useUserStore from '@/store/useUserStore';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function HomeHeader() {
-  const { name } = useProfileStore();
+  const { name } = useUserStore();
   const router = useRouter();
 
   return (

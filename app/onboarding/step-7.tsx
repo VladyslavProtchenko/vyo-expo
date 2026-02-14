@@ -2,7 +2,7 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useProfileStore from '@/store/useProfileStore';
+import useRegistrationStore from '@/store/useRegistrationStore';
 import { PAIN_DURATIONS, PAIN_LOCATIONS, PAIN_PERIODS, PainDurationType, PainLocationType, PainPeriodType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,7 +11,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step7() {
   const router = useRouter();
-  const { setValue, painPeriod, painLocation, painDuration } = useProfileStore();
+  const { setValue, painPeriod, painLocation, painDuration } = useRegistrationStore();
   const [painPeriodState, setPainPeriodState] = useState<PainPeriodType | ''>('');
   const [painLocationState, setPainLocationState] = useState<PainLocationType[]>([]);
   const [painDurationState, setPainDurationState] = useState<PainDurationType | ''>('');

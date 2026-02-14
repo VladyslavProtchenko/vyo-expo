@@ -51,7 +51,7 @@ interface IInfoStore {
     loadMockData: () => void
     resetStore: () => void
 }
-const useProfileStore = create<IInfoStore>()(
+const useRegistrationStore = create<IInfoStore>()(
     persist(
         (set, get) => ({
             name: 'Lily',
@@ -178,4 +178,4 @@ const useProfileStore = create<IInfoStore>()(
     )
 );
 
-export default useProfileStore;
+export default useRegistrationStore;

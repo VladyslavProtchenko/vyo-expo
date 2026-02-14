@@ -5,7 +5,7 @@ import Input from '@/components/ui/Input';
 import Number from '@/components/ui/Number';
 import Select from '@/components/ui/Select';
 import { typography } from '@/constants/typography';
-import useProfileStore from '@/store/useProfileStore';
+import useRegistrationStore from '@/store/useRegistrationStore';
 import { MaterialIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
@@ -14,7 +14,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step1() {
   const router = useRouter();
-  const { setValue, age, startMenstruation, menstruationDuration, cycleDuration } = useProfileStore();
+  const { setValue, age, startMenstruation, menstruationDuration, cycleDuration } = useRegistrationStore();
   const [ageState, setAgeState] = useState<number>(0);
   const [menstruationDate, setMenstruationDate] = useState<string | null>(null);
   const [menstrDuration, setMenstrDuration] = useState<number>(5);

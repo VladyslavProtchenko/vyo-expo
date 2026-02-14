@@ -1,6 +1,5 @@
 import { typography } from '@/constants/typography';
 import { MaterialIcons } from '@expo/vector-icons';
-import { LinearGradient } from 'expo-linear-gradient';
 import React from 'react';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -10,12 +9,7 @@ export default function InfoCard({
   onClose
 }: { title: string; description: string; onClose: () => void }) {
   return (
-    <LinearGradient
-      colors={['#FDFFA2', '#B4ECD0']}
-      start={{ x: 0, y: 0 }}
-      end={{ x: 1, y: 0 }}
-      style={{ borderRadius: 18, marginBottom: 12, marginTop: 18 }}
-    >
+    <View style={styles.container}>
       <View style={styles.card}>
         <View style={styles.noteHeader}>
           <View style={styles.titleBox}>
@@ -28,11 +22,17 @@ export default function InfoCard({
         </View>
         <Text style={[typography.p, styles.description]}>{description}</Text>
       </View>
-    </LinearGradient>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    backgroundColor: '#FFFAEF',
+    borderRadius: 18,
+    marginBottom: 12,
+    marginTop: 18,
+  },
   card: {
     padding: 16,
     paddingTop: 16, 

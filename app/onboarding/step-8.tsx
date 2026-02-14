@@ -2,7 +2,7 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useProfileStore from '@/store/useProfileStore';
+import useRegistrationStore from '@/store/useRegistrationStore';
 import { MEDICINE_EFFECTS, MedicineEffectType, PAIN_CASES, PainCaseType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,7 +11,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step8() {
   const router = useRouter();
-  const { setValue, painCase, isMedicine } = useProfileStore();
+  const { setValue, painCase, isMedicine } = useRegistrationStore();
   const [painCaseState, setPainCaseState] = useState<PainCaseType | ''>('');
   const [isMedicineState, setIsMedicineState] = useState<MedicineEffectType | ''>('');
 

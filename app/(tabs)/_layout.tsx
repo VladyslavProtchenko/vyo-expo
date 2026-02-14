@@ -1,8 +1,9 @@
+import { useRequireAuth } from '@/hooks/useAuth';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Tabs, useRouter } from 'expo-router';
 import React from 'react';
-import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ActivityIndicator, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Svg, { Path } from 'react-native-svg';
 
 function CustomTabBar({ state, descriptors, navigation }: any) {
@@ -87,6 +88,20 @@ function CustomTabBar({ state, descriptors, navigation }: any) {
 }
 
 export default function TabLayout() {
+  const { isAuthenticated, isLoading } = useRequireAuth();
+
+  if (isLoading) {
+    return (
+      <View style={[styles.tabBarContainer, { justifyContent: 'center', alignItems: 'center' }]}>
+        <ActivityIndicator size="large" color="#000000" />
+      </View>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return null; // useRequireAuth will handle redirect
+  }
+
   return (
     <Tabs
       tabBar={(props) => <CustomTabBar {...props} />}

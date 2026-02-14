@@ -3,7 +3,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import Slider from '@/components/ui/Slider';
 import { typography } from '@/constants/typography';
-import useProfileStore from '@/store/useProfileStore';
+import useRegistrationStore from '@/store/useRegistrationStore';
 import { PAIN_TYPES, PainType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -12,7 +12,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step6() {
   const router = useRouter();
-  const { setValue, isPain, painType, intensity } = useProfileStore();
+  const { setValue, isPain, painType, intensity } = useRegistrationStore();
   const [isPainState, setIsPainState] = useState<boolean | null>(isPain);
   const [painIntensity, setPainIntensity] = useState<number>(intensity || 0);
   const [painTypeState, setPainTypeState] = useState<PainType | ''>(painType as PainType || '');

@@ -1,5 +1,5 @@
 import dayjs, { Dayjs } from 'dayjs';
-import useProfileStore from './useProfileStore';
+import useUserStore from './useUserStore';
 
 type PhaseName = 'menstrual' | 'follicular' | 'ovulation' | 'luteal';
 
@@ -19,7 +19,7 @@ interface PhaseResult {
 }
 
 export function CurrentPhaseInfo(): PhaseResult {
-  const state = useProfileStore.getState();
+  const state = useUserStore.getState();
   const { startMenstruation, menstruationDuration, cycleDuration } = state;
 
   // Fallback значения если данных нет

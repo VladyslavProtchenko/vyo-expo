@@ -3,12 +3,13 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Calendar from '@/components/ui/Calendar';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useProfileStore from '@/store/useProfileStore';
-// import { useSaveProfile } from '@/hooks/useProfileData';
+import { useDiagnosis } from '@/hooks/useDiagnosis';
+import { useSaveDiagnosis, useSaveProfile } from '@/hooks/useProfileData';
+import useRegistrationStore from '@/store/useRegistrationStore';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const surgeries = [
   'Pelvis',
@@ -29,8 +30,12 @@ const otherSymptomsLabels = [
 
 export default function Step10() {
   const router = useRouter();
-  const { setValue, surgery, surgeryDate, otherSymptoms, isDiagnosed } = useProfileStore();
-  // const { saveProfileData, loading } = useSaveProfile();
+  const { setValue, surgery, surgeryDate, otherSymptoms, isDiagnosed } = useRegistrationStore();
+  const { saveProfileData, loading: profileLoading } = useSaveProfile();
+  const { saveDiagnosisResults, loading: diagnosisLoading } = useSaveDiagnosis();
+  const diagnosisResult = useDiagnosis();
+  
+  const loading = profileLoading || diagnosisLoading;
   
   const [surgeryState, setSurgeryState] = useState<string>(surgery || '');
   const [surgeryDateState, setSurgeryDateState] = useState<string | null>(surgeryDate || null);
@@ -56,24 +61,52 @@ export default function Step10() {
       : setOtherSymptomsState([...otherSymptomsState, tag]);
   };
 
-  const next = () => {
-    if (isDiagnosed) {
-      setValue(surgeryState, 'surgery');
-      setValue(surgeryDateState, 'surgeryDate');
-      setValue(otherSymptomsState, 'otherSymptoms');
-    } else {
-      setValue(otherSymptomsState, 'otherSymptoms');
+  const next = async () => {
+    try {
+      // 1. Update local state with final answers
+      if (isDiagnosed) {
+        setValue(surgeryState, 'surgery');
+        setValue(surgeryDateState, 'surgeryDate');
+        setValue(otherSymptomsState, 'otherSymptoms');
+      } else {
+        setValue(otherSymptomsState, 'otherSymptoms');
+      }
+
+      // 2. Calculate diagnosis
+      console.log('📊 Calculating diagnosis...');
+      const { primary, secondary, menstrualPain, diagnosis } = diagnosisResult;
+      console.log('📊 Diagnosis results:', { primary, secondary, menstrualPain, diagnosis });
+
+      // 3. Save profile and medical data
+      console.log('💾 Saving profile data...');
+      const profileResult = await saveProfileData();
+      if (!profileResult.success) {
+        console.error('❌ Failed to save profile data:', profileResult.error);
+        alert('Failed to save profile data. Please try again.');
+        return;
+      }
+
+      // 4. Save diagnosis results
+      console.log('💾 Saving diagnosis results...');
+      const diagnosisResultSave = await saveDiagnosisResults(
+        primary,
+        secondary,
+        menstrualPain,
+        diagnosis
+      );
+      
+      if (!diagnosisResultSave.success) {
+        console.error('❌ Failed to save diagnosis results:', diagnosisResultSave.error);
+        alert('Failed to save diagnosis results. Please try again.');
+        return;
+      }
+
+      console.log('✅ Onboarding completed! All data saved successfully');
+      router.push('/sync-data' as any);
+    } catch (error: any) {
+      console.error('❌ Error during onboarding completion:', error);
+      alert('An error occurred. Please try again.');
     }
-
-    // const result = await saveProfileData();
-    // if (result.success) {
-    //   console.log('✅ Onboarding completed and data saved');
-    //   router.push('/sync-data' as any);
-    // } else {
-    //   console.error('❌ Failed to save profile data:', result.error);
-    // }
-
-    router.push('/sync-data' as any);
   };
 
   const progressPercentage = 100; // Step 10 = 100%
@@ -147,26 +180,31 @@ export default function Step10() {
       <View style={styles.buttonContainer}>
         <ButtonGradient
           disabled={
-            isDiagnosed
+            loading ||
+            (isDiagnosed
               ? surgeryState === '' || surgeryDateState === null || surgeryDateState === ''
-              : otherSymptomsState.length === 0
+              : otherSymptomsState.length === 0)
           }
-          title="Get my care plan"
-          icon={(
-            <MaterialIcons
-              color={
-                isDiagnosed
-                  ? surgeryState === '' || surgeryDateState === null || surgeryDateState === ''
-                    ? '#999999'
-                    : '#000000'
-                  : otherSymptomsState.length === 0
-                    ? '#999999'
-                    : '#000000'
-              }
-              name="trending-flat"
-              size={28}
-            />
-          )}
+          title={loading ? "Saving..." : "Get my care plan"}
+          icon={
+            loading ? (
+              <ActivityIndicator color="#000000" />
+            ) : (
+              <MaterialIcons
+                color={
+                  isDiagnosed
+                    ? surgeryState === '' || surgeryDateState === null || surgeryDateState === ''
+                      ? '#999999'
+                      : '#000000'
+                    : otherSymptomsState.length === 0
+                      ? '#999999'
+                      : '#000000'
+                }
+                name="trending-flat"
+                size={28}
+              />
+            )
+          }
           onPress={next}
         />
       </View>

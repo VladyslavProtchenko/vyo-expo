@@ -2,7 +2,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import Progress from '@/components/Progress';
 import { typography } from '@/constants/typography';
-import useProfileStore from '@/store/useProfileStore';
+import useRegistrationStore from '@/store/useRegistrationStore';
 import { FLOW_LABELS, FlowType, REGULAR_PERIOD_LABELS, RegularPeriodType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,7 +11,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step5() {
   const router = useRouter();
-  const { setValue, flow, isRegularPeriod } = useProfileStore();
+  const { setValue, flow, isRegularPeriod } = useRegistrationStore();
   const [isRegular, setIsRegular] = useState<RegularPeriodType[]>([]);
   const [flowState, setFlowState] = useState<FlowType | ''>('');
 
