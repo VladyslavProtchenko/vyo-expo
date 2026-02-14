@@ -37,8 +37,8 @@ export default function ButtonRounded({ title, icon, type = 'white', iconLeft = 
         style={[
           styles.button, 
           getButtonStyle(),
+          !enabled && styles.enabledButton,
           className as StyleProp<ViewStyle>,
-          !enabled && styles.enabledButton
         ]}
         disabled={!enabled}
     >
@@ -54,14 +54,13 @@ export default function ButtonRounded({ title, icon, type = 'white', iconLeft = 
 const styles = StyleSheet.create({
   button: {
     flexDirection: 'row',
-    width: '100%',
-    minHeight: 56,
     alignItems: 'center',
     gap: 20,
     justifyContent: 'center',
     borderRadius: 25,
     paddingHorizontal: 16,
     paddingVertical: 12,
+    minHeight: 56,
   },
   blackButton: {
     backgroundColor: '#000000',

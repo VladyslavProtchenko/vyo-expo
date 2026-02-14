@@ -1,7 +1,7 @@
 import dayjs, { Dayjs } from 'dayjs';
 import useUserStore from './useUserStore';
 
-type PhaseName = 'menstrual' | 'follicular' | 'ovulation' | 'luteal';
+export type PhaseName = 'menstrual' | 'follicular' | 'ovulation' | 'luteal';
 
 interface PhaseResult {
   phaseName: PhaseName;
