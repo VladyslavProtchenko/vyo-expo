@@ -1,4 +1,5 @@
 import { supabase } from '@/config/supabase';
+import { markManualSignOut } from '@/utils/authSessionEvents';
 import { Session, User } from '@supabase/supabase-js';
 import { useEffect, useState } from 'react';
 
@@ -150,6 +151,7 @@ export const useUpdatePassword = () => {
       }
 
       // Sign out after password change to force re-login
+      markManualSignOut();
       await supabase.auth.signOut();
 
       return { success: true };
@@ -191,6 +193,7 @@ export const useVerifyOTPAndUpdatePassword = () => {
       }
 
       // Sign out after password change to force re-login
+      markManualSignOut();
       await supabase.auth.signOut();
 
       return { success: true };
@@ -210,6 +213,7 @@ export const useSignOut = () => {
   const signOut = async () => {
     try {
       setLoading(true);
+      markManualSignOut();
       const { error } = await supabase.auth.signOut();
      
       if (error) {
