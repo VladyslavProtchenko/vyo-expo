@@ -44,6 +44,8 @@ const styles = StyleSheet.create({
   cardHeader: {
     padding: 0,
     flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
     overflow: 'hidden',
   },
   tab: {
@@ -51,7 +53,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 6,
     alignItems: 'center',
-    alignSelf: 'flex-start',
+    marginLeft: 'auto',
   },
   cardTitle: {
     padding: 16,

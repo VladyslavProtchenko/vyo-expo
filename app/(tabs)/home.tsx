@@ -4,13 +4,19 @@ import ExploreCard from '@/components/home/ExploreCard';
 import FeelingCard from '@/components/home/FeelingCard';
 import InfoCard from '@/components/home/InfoCard';
 import Missions from '@/components/home/Missions';
+import { useLoadUserData } from '@/hooks/useLoadUserData';
 import useStates from '@/store/useStates';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 export default function HomePage() {
   const { isDayCardOpen } = useStates();
   const [isInfo, setIsInfo] = useState(true);
+  const { refetch: loadUserData } = useLoadUserData();
+
+  useEffect(() => {
+    loadUserData();
+  }, [loadUserData]);
 
   const infoCardData = {
     title: "We noticed you had less than 6 hours of sleep last night.",

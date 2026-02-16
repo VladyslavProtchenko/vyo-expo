@@ -7,6 +7,7 @@ export const useLoadUserData = () => {
 
   return useQuery({
     queryKey: ['userData'],
+    enabled: false, // Отключаем автоматическую загрузку, загружаем только по запросу
     queryFn: async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) throw new Error('Not authenticated');

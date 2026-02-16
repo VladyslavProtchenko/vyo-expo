@@ -7,7 +7,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import 'dayjs/locale/en-gb';
 import localeData from 'dayjs/plugin/localeData';
 import weekday from 'dayjs/plugin/weekday';
-import React from "react";
+import { useEffect } from "react";
 import { StyleSheet, Text, TouchableOpacity, View, ViewStyle } from "react-native";
 
 dayjs.extend(weekday);
@@ -20,7 +20,13 @@ export default function CalendarWidgetNew() {
 
   const today = dayjs();
   const startOfWeek = dayjs().weekday(0);
-  
+
+  useEffect(() => {
+    if (!selectedDate) {
+      setSelectedDate(dayjs());
+    }
+  }, [selectedDate, setSelectedDate]);
+
   // Fallback если данных нет
   if (!startMenstruation || !cycleDuration) {
     return (
@@ -34,12 +40,6 @@ export default function CalendarWidgetNew() {
 
   const { phases } = CurrentPhaseInfo();
   const start = dayjs(startMenstruation);
-
-  React.useEffect(() => {
-    if (!selectedDate) {
-      setSelectedDate(today);
-    }
-  }, []);
 
   const getDayInCycle = (date: Dayjs): number => {
     const diffFromStart = date.diff(start, 'day');
