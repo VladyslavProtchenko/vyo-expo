@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import FocusOnCard from '@/components/products/FocusOnCard';
+import FocusOnCard from '@/app/products/components/FocusOnCard';
 import ButtonRounded from '@/components/ui/ButtonRounded';
 import CustomSwitch from '@/components/ui/CustomSwitch';
 import { Product, Products } from '@/store/products';

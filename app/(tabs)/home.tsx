@@ -1,9 +1,9 @@
 import HomeHeader from '@/components/HomeHeader';
-import CalendarWidgetNew from '@/components/home/CalendarWidgetNew';
-import ExploreCard from '@/components/home/ExploreCard';
-import FeelingCard from '@/components/home/FeelingCard';
-import InfoCard from '@/components/home/InfoCard';
-import Missions from '@/components/home/Missions';
+import CalendarWidgetNew from '@/app/(tabs)/components/CalendarWidgetNew';
+import ExploreCard from '@/app/(tabs)/components/ExploreCard';
+import FeelingCard from '@/app/(tabs)/components/FeelingCard';
+import InfoCard from '@/app/(tabs)/components/InfoCard';
+import Missions from '@/app/(tabs)/components/Missions';
 import { useLoadUserData } from '@/hooks/useLoadUserData';
 import useStates from '@/store/useStates';
 import { useEffect, useState } from 'react';

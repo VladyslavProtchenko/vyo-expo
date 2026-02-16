@@ -1,5 +1,5 @@
-import PainCard from '@/components/symptoms/PainCard';
-import SurgeryCaseCard from '@/components/symptoms/SurgeryCaseCard';
+import PainCard from '@/app/symptoms/components/PainCard';
+import SurgeryCaseCard from '@/app/symptoms/components/SurgeryCaseCard';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import CustomSwitch from '@/components/ui/CustomSwitch';
 import { typography } from '@/constants/typography';

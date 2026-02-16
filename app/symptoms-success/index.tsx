@@ -9,8 +9,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function SymptomsSuccess() {
   const router = useRouter();
   const fire1Ref = useRef<LottieView | null>(null);
-  const fire2Ref = useRef<LottieView | null>(null);
-  const fire3Ref = useRef<LottieView | null>(null);
+  const fire2Ref = useRef<LottieView>(null);
+  const fire3Ref = useRef<LottieView>(null);
 
   useEffect(() => {
     const timer1 = setTimeout(() => {

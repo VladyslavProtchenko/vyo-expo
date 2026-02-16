@@ -1,7 +1,7 @@
 import HomeHeader from '@/components/HomeHeader';
-import CarePlanCard from '@/components/care-plan/Card';
-import CarePlanList from '@/components/care-plan/List';
-import CarePlanMenu from '@/components/care-plan/Menu';
+import CarePlanCard from '@/app/(tabs)/components/Card';
+import CarePlanList from '@/app/(tabs)/components/List';
+import CarePlanMenu from '@/app/(tabs)/components/Menu';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 

@@ -1,10 +1,10 @@
-import { MoveLeft } from 'lucide-react-native';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import VideoCard from '@/components/ui/VideoCard';
 import { typography } from '@/constants/typography';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { MoveLeft } from 'lucide-react-native';
 import { useState } from 'react';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function CategoryPage() {
   const router = useRouter();

@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import CarePlanList from '@/app/(tabs)/components/List';
+import FocusOnCard from '@/app/products/components/FocusOnCard';
 import B from '@/components/B';
-import CarePlanList from '@/components/care-plan/List';
-import FocusOnCard from '@/components/products/FocusOnCard';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import ButtonRounded from '@/components/ui/ButtonRounded';
 import { CurrentPhaseInfo } from '@/store/phase';
