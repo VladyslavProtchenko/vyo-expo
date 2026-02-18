@@ -1,9 +1,10 @@
-import HomeHeader from '@/components/HomeHeader';
 import CalendarWidgetNew from '@/app/(tabs)/components/CalendarWidgetNew';
 import ExploreCard from '@/app/(tabs)/components/ExploreCard';
 import FeelingCard from '@/app/(tabs)/components/FeelingCard';
 import InfoCard from '@/app/(tabs)/components/InfoCard';
 import Missions from '@/app/(tabs)/components/Missions';
+import HomeHeader from '@/components/HomeHeader';
+import YoutubeCard from '@/components/YoutubeCard';
 import { useLoadUserData } from '@/hooks/useLoadUserData';
 import useStates from '@/store/useStates';
 import { useEffect, useState } from 'react';
@@ -31,6 +32,7 @@ export default function HomePage() {
     >
       <HomeHeader />
       <CalendarWidgetNew />
+      {/* <YoutubeCard playButtonPosition="center" playButtonSize={50} /> */}
       {isDayCardOpen && <ExploreCard />}
       {isInfo && <InfoCard title={infoCardData.title} description={infoCardData.description} onClose={() => setIsInfo(false)} />}
       <Missions />

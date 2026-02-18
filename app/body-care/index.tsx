@@ -1,4 +1,4 @@
-import VideoCard from '@/components/ui/VideoCard';
+import YoutubeCard from '@/components/YoutubeCard';
 import { useRouter } from 'expo-router';
 import { ChevronRight, MoveLeft } from 'lucide-react-native';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -33,10 +33,10 @@ export default function BodyCare() {
         <View style={{ height: 130, marginBottom: 24 }}>
           <ScrollView horizontal showsHorizontalScrollIndicator={false}>
             {Array.from({ length: 13 }).map((_, index) => (
-              <VideoCard
+              <YoutubeCard
                 key={index}
-                videoUrl="https://www.w3schools.com/html/mov_bbb.mp4"
-                title="Pelvic floor exercises"
+                playButtonPosition="center"
+                playButtonSize={28}
                 style={{
                   width: 130,
                   height: 130,

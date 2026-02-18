@@ -1,4 +1,4 @@
-import VideoCard from '@/components/ui/VideoCard';
+import YoutubeCard from '@/components/YoutubeCard';
 import { typography } from '@/constants/typography';
 import { useRouter } from 'expo-router';
 import { MoveLeft } from 'lucide-react-native';
@@ -52,10 +52,10 @@ export default function StressManagement() {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: 16 }}>
           {items.map((item, index) => (
-            <VideoCard
+            <YoutubeCard
               key={index}
-              videoUrl="https://www.w3schools.com/html/mov_bbb.mp4"
-              title={item.title}
+              playButtonPosition="center"
+              playButtonSize={28}
               style={{
                 width: '45%',
                 height: 150,

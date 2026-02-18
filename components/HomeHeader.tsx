@@ -10,10 +10,14 @@ export default function HomeHeader() {
 
   return (
     <View style={styles.headerContainer}>
-      <View style={styles.headerInfo}>
+      <TouchableOpacity 
+        style={styles.headerInfo}
+        onPress={() => router.push('/profile' as any)}
+        activeOpacity={0.7}
+      >
         <Image source={require('@/assets/images/avatar.png')} style={styles.headerIcon} />
         <Text style={[typography.p]}>Today's Your day, {name || 'Sonya'}</Text>
-      </View>
+      </TouchableOpacity>
       <TouchableOpacity 
         style={styles.calendarIcon} 
         onPress={() => router.push('/calendar' as any)}

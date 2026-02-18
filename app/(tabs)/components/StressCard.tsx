@@ -1,8 +1,8 @@
 import CustomCheckbox from '@/components/ui/CustomCheckbox';
+import YoutubeCard from '@/components/YoutubeCard';
 import { useRouter } from 'expo-router';
-import { Play } from 'lucide-react-native';
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Text, TouchableOpacity, View } from 'react-native';
 
 export default function StressCard({
   checked,
@@ -34,29 +34,17 @@ export default function StressCard({
             ))}
           </View>
         </View>
-        <View style={{ width: 80, height: 80, borderRadius: 12, overflow: 'hidden' }}>
-          <Image 
-            source={require('@/assets/images/flower.png')} 
-            style={{ height: 80, width: 80 }} 
-          />
-          <View style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, justifyContent: 'center', alignItems: 'center', backgroundColor: 'rgba(0, 0, 0, 0.3)' }}>
-            <View style={styles.playButton}>
-              <Play size={16} color="#292929" fill="#292929" strokeWidth={2} />
-            </View>
-          </View>
-        </View>
+        <YoutubeCard
+          playButtonPosition="center"
+          playButtonSize={28}
+          style={{
+            width: 80,
+            height: 80,
+            borderRadius: 12,
+          }}
+        />
       </TouchableOpacity>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  playButton: {
-    width: 28,
-    height: 28,
-    borderRadius: 28,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
