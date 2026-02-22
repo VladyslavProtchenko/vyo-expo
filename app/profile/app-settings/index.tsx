@@ -1,22 +1,16 @@
+import { useUpdateUnitSystem } from '@/hooks/useUpdateUnitSystem';
 import useUserStore from '@/store/useUserStore';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function AppSettings() {
   const router = useRouter();
-  const { unitSystem, setUser } = useUserStore();
-  const [selectedUnit, setSelectedUnit] = useState<'metric' | 'imperial'>(unitSystem);
+  const { unitSystem } = useUserStore();
+  const { updateUnitSystem } = useUpdateUnitSystem();
 
   const handleUnitChange = (unit: 'metric' | 'imperial') => {
-    setSelectedUnit(unit);
-    setUser({ unitSystem: unit });
-  };
-
-  const handleAppleHealthConnect = () => {
-    // Handle Apple Health connection
-    console.log('Connect to Apple Health');
+    updateUnitSystem(unit);
   };
 
   return (
@@ -34,18 +28,18 @@ export default function AppSettings() {
             <Text style={styles.menuItemText}>Measurement units</Text>
             <View style={styles.segmentedControl}>
               <Pressable
-                style={[styles.segment, selectedUnit === 'metric' && styles.segmentActive]}
+                style={[styles.segment, unitSystem === 'metric' && styles.segmentActive]}
                 onPress={() => handleUnitChange('metric')}
               >
-                <Text style={[styles.segmentText, selectedUnit === 'metric' && styles.segmentTextActive]}>
+                <Text style={[styles.segmentText, unitSystem === 'metric' && styles.segmentTextActive]}>
                   kg/cm
                 </Text>
               </Pressable>
               <Pressable
-                style={[styles.segment, selectedUnit === 'imperial' && styles.segmentActive]}
+                style={[styles.segment, unitSystem === 'imperial' && styles.segmentActive]}
                 onPress={() => handleUnitChange('imperial')}
               >
-                <Text style={[styles.segmentText, selectedUnit === 'imperial' && styles.segmentTextActive]}>
+                <Text style={[styles.segmentText, unitSystem === 'imperial' && styles.segmentTextActive]}>
                   lb/ft
                 </Text>
               </Pressable>
@@ -57,13 +51,14 @@ export default function AppSettings() {
         <View style={styles.menuCard}>
           <View style={styles.menuItem}>
             <Text style={styles.menuItemText}>Apple Health</Text>
-            <TouchableOpacity
+            <Text style={styles.comingSoonText}>Coming soon</Text>
+            {/* <TouchableOpacity
               style={styles.connectButton}
               onPress={handleAppleHealthConnect}
               activeOpacity={0.7}
             >
               <Text style={styles.connectButtonText}>Connect</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </View>
         </View>
       </View>
@@ -149,5 +144,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Poppins',
     fontWeight: '500',
     color: '#007AFF',
+  },
+  comingSoonText: {
+    fontSize: 16,
+    fontFamily: 'Poppins',
+    fontWeight: '500',
+    color: '#6B7280',
   },
 });

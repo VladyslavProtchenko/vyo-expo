@@ -43,7 +43,7 @@ export default function Step1() {
     router.push('/onboarding/step-2' as any);
   };
 
-  const progressPercentage = 0; // Step 1 = 0%
+  const progressPercentage = 9.09; // Step 1 = 9.09% (1/11 * 100)
 
   return (
     <View style={styles.container}>

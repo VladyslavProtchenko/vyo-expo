@@ -3,7 +3,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
 import useRegistrationStore from '@/store/useRegistrationStore';
-import { MEDICINE_EFFECTS, MedicineEffectType, PAIN_CASES, PainCaseType } from '@/types/diagnosis';
+import { PAIN_DURATIONS, PAIN_LOCATIONS, PAIN_PERIODS, PainDurationType, PainLocationType, PainPeriodType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -11,14 +11,18 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step8() {
   const router = useRouter();
-  const { setValue, painCase, isMedicine } = useRegistrationStore();
-  const [painCaseState, setPainCaseState] = useState<PainCaseType | ''>('');
-  const [isMedicineState, setIsMedicineState] = useState<MedicineEffectType | ''>('');
+  const { setValue, painPeriod, painLocation, painDuration } = useRegistrationStore();
+  const [painPeriodState, setPainPeriodState] = useState<PainPeriodType | ''>('');
+  const [painLocationState, setPainLocationState] = useState<PainLocationType[]>([]);
+  const [painDurationState, setPainDurationState] = useState<PainDurationType | ''>('');
 
   useEffect(() => {
-    if (painCase) setPainCaseState(painCase as PainCaseType);
-    if (isMedicine) setIsMedicineState(isMedicine as MedicineEffectType);
-  }, [painCase, isMedicine]);
+    if (painPeriod) setPainPeriodState(painPeriod as PainPeriodType);
+    if (Array.isArray(painLocation) && painLocation.length > 0) {
+      setPainLocationState(painLocation as PainLocationType[]);
+    }
+    if (painDuration) setPainDurationState(painDuration as PainDurationType);
+  }, [painPeriod, painLocation, painDuration]);
 
   const goBack = () => {
     router.back();
@@ -28,13 +32,20 @@ export default function Step8() {
     router.push('/sync-data' as any);
   };
 
+  const selectPainLocation = (location: PainLocationType, isActive: boolean) => {
+    isActive
+      ? setPainLocationState(painLocationState.filter(item => item !== location))
+      : setPainLocationState([...painLocationState, location]);
+  };
+
   const next = () => {
-    setValue(painCaseState, 'painCase');
-    setValue(isMedicineState, 'isMedicine');
+    setValue(painPeriodState, 'painPeriod');
+    setValue(painLocationState, 'painLocation');
+    setValue(painDurationState, 'painDuration');
     router.push('/onboarding/step-9' as any);
   };
 
-  const progressPercentage = 77.78; // Step 8 = 77.78%
+  const progressPercentage = 72.73; // Step 8 = 72.73% (8/11 * 100)
 
   return (
     <View style={styles.container}>
@@ -47,13 +58,13 @@ export default function Step8() {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="8" />
         <Text style={[typography.h1, styles.title]}>Your pain details</Text>
-        <Text style={typography.subtitle}>Is the pain appearing during?</Text>
+        <Text style={typography.subtitle}>When do you feel the pain?</Text>
 
         <View style={styles.tagsContainer}>
-          {PAIN_CASES.map(item => {
-            const isActive = painCaseState === item;
+          {PAIN_PERIODS.map(item => {
+            const isActive = painPeriodState === item;
             return (
-              <Pressable key={item} onPress={() => setPainCaseState(item)}>
+              <Pressable key={item} onPress={() => setPainPeriodState(item)}>
                 <Text
                   style={[
                     typography.p,
@@ -66,12 +77,30 @@ export default function Step8() {
           })}
         </View>
 
-        <Text style={[typography.subtitle]}>Do painkillers (ibuprofen, nurofen etc) help you?</Text>
+        <Text style={[typography.subtitle]}>Where do you feel the pain?</Text>
         <View style={styles.tagsContainer}>
-          {MEDICINE_EFFECTS.map(item => {
-            const isActive = isMedicineState === item;
+          {PAIN_LOCATIONS.map(item => {
+            const isActive = painLocationState.find(i => i === item) ? true : false;
             return (
-              <Pressable key={item} onPress={() => setIsMedicineState(item)}>
+              <Pressable key={item} onPress={() => selectPainLocation(item, isActive)}>
+                <Text
+                  style={[
+                    typography.p,
+                    styles.tag,
+                    isActive ? styles.tagActive : styles.tagInactive
+                  ]}
+                >{item}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        <Text style={[typography.subtitle]}>How long does the pain last?</Text>
+        <View style={styles.tagsContainer}>
+          {PAIN_DURATIONS.map(item => {
+            const isActive = painDurationState === item;
+            return (
+              <Pressable key={item} onPress={() => setPainDurationState(item)}>
                 <Text
                   style={[
                     typography.p,
@@ -87,11 +116,11 @@ export default function Step8() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={painCaseState === '' || isMedicineState === ''}
+          disabled={painPeriodState === '' || painLocationState.length === 0 || painDurationState === ''}
           title="Next"
           icon={(
             <MaterialIcons
-              color={painCaseState === '' || isMedicineState === '' ? '#999999' : '#000000'}
+              color={painPeriodState === '' || painLocationState.length === 0 || painDurationState === '' ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

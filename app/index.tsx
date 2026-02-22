@@ -8,9 +8,13 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View } from 'react-native';
+import Step4 from './onboarding/step-4';
 
 export default function Login() {
     const router = useRouter();
+    
+    // TEMPORARY: Return step-4 directly for design work
+    // return <Step4 />;
     const { signInWithGoogle, loading: isGoogleLoading } = useGoogleSignIn();
     const [checking, setChecking] = useState(true);
     const { refetch: loadUserData } = useLoadUserData();

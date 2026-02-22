@@ -26,13 +26,10 @@ export const useSaveProfile = () => {
         return { success: false, error: 'User not authenticated' };
       }
 
-      // 1. Upsert (create or update) profile - handles both new and existing users
+      // 1. Update profile - only update physical parameters, don't touch name and email
       const { error: profileError } = await supabase
         .from('profiles')
-        .upsert({ 
-          id: session.user.id,
-          email: session.user.email || profileData.email,
-          name: profileData.name,
+        .update({ 
           age: profileData.age,
           weight: profileData.weight,
           height: profileData.height,
@@ -40,9 +37,8 @@ export const useSaveProfile = () => {
           hips: profileData.hips,
           unit_system: profileData.unitSystem,
           onboarding_completed: true,
-        }, {
-          onConflict: 'id'
-        });
+        })
+        .eq('id', session.user.id);
 
       if (profileError) {
         console.error('Error upserting profile:', profileError);
@@ -68,6 +64,7 @@ export const useSaveProfile = () => {
           is_diagnosed: profileData.isDiagnosed,
           diagnosed_conditions: profileData.diagnoses,
           symptoms: profileData.symptoms,
+          additional_symptoms: profileData.additionalSymptoms || [],
           other_symptoms: profileData.otherSymptoms,
           is_pain: profileData.isPain,
           pain_type: profileData.painType || '',

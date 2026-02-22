@@ -1,9 +1,10 @@
 import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
+import Slider from '@/components/ui/Slider';
 import { typography } from '@/constants/typography';
 import useRegistrationStore from '@/store/useRegistrationStore';
-import { PAIN_DURATIONS, PAIN_LOCATIONS, PAIN_PERIODS, PainDurationType, PainLocationType, PainPeriodType } from '@/types/diagnosis';
+import { PAIN_TYPES, PainType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -11,18 +12,16 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step7() {
   const router = useRouter();
-  const { setValue, painPeriod, painLocation, painDuration } = useRegistrationStore();
-  const [painPeriodState, setPainPeriodState] = useState<PainPeriodType | ''>('');
-  const [painLocationState, setPainLocationState] = useState<PainLocationType[]>([]);
-  const [painDurationState, setPainDurationState] = useState<PainDurationType | ''>('');
+  const { setValue, isPain, painType, intensity } = useRegistrationStore();
+  const [isPainState, setIsPainState] = useState<boolean | null>(isPain);
+  const [painIntensity, setPainIntensity] = useState<number>(intensity || 0);
+  const [painTypeState, setPainTypeState] = useState<PainType | ''>(painType as PainType || '');
 
   useEffect(() => {
-    if (painPeriod) setPainPeriodState(painPeriod as PainPeriodType);
-    if (Array.isArray(painLocation) && painLocation.length > 0) {
-      setPainLocationState(painLocation as PainLocationType[]);
-    }
-    if (painDuration) setPainDurationState(painDuration as PainDurationType);
-  }, [painPeriod, painLocation, painDuration]);
+    if (isPain !== null && isPain !== undefined) setIsPainState(isPain);
+    if (intensity !== null && intensity !== undefined) setPainIntensity(intensity);
+    if (painType) setPainTypeState(painType as PainType);
+  }, [isPain, painType, intensity]);
 
   const goBack = () => {
     router.back();
@@ -32,20 +31,22 @@ export default function Step7() {
     router.push('/sync-data' as any);
   };
 
-  const selectPainLocation = (location: PainLocationType, isActive: boolean) => {
-    isActive
-      ? setPainLocationState(painLocationState.filter(item => item !== location))
-      : setPainLocationState([...painLocationState, location]);
-  };
-
   const next = () => {
-    setValue(painPeriodState, 'painPeriod');
-    setValue(painLocationState, 'painLocation');
-    setValue(painDurationState, 'painDuration');
-    router.push('/onboarding/step-8' as any);
+    if (isPainState === null) return;
+    if (isPainState === true) {
+      setValue(isPainState, 'isPain');
+      setValue(painTypeState, 'painType');
+      setValue(painIntensity, 'intensity');
+      router.push('/onboarding/step-8' as any);
+    } else {
+      setValue(isPainState, 'isPain');
+      router.push('/sync-data' as any);
+    }
   };
 
-  const progressPercentage = 66.67; // Step 7 = 66.67%
+  const title = isPainState ? 'Next' : 'Get my care plan?';
+  const isDisabled = isPainState === null || (isPainState && (painTypeState === '' || painIntensity === 0));
+  const progressPercentage = 63.64; // Step 7 = 63.64% (7/11 * 100)
 
   return (
     <View style={styles.container}>
@@ -57,14 +58,14 @@ export default function Step7() {
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="7" />
-        <Text style={[typography.h1, styles.title]}>Your pain details</Text>
-        <Text style={typography.subtitle}>When do you feel the pain?</Text>
+        <Text style={[typography.h1, styles.title]}>Your period</Text>
+        <Text style={typography.subtitle}>Are your periods painful?</Text>
 
         <View style={styles.tagsContainer}>
-          {PAIN_PERIODS.map(item => {
-            const isActive = painPeriodState === item;
+          {['No', 'Yes'].map(item => {
+            const isActive = isPainState === (item === 'Yes' ? true : false);
             return (
-              <Pressable key={item} onPress={() => setPainPeriodState(item)}>
+              <Pressable key={item} onPress={() => setIsPainState(item === 'Yes' ? true : false)}>
                 <Text
                   style={[
                     typography.p,
@@ -77,50 +78,44 @@ export default function Step7() {
           })}
         </View>
 
-        <Text style={[typography.subtitle]}>Where do you feel the pain?</Text>
-        <View style={styles.tagsContainer}>
-          {PAIN_LOCATIONS.map(item => {
-            const isActive = painLocationState.find(i => i === item) ? true : false;
-            return (
-              <Pressable key={item} onPress={() => selectPainLocation(item, isActive)}>
-                <Text
-                  style={[
-                    typography.p,
-                    styles.tag,
-                    isActive ? styles.tagActive : styles.tagInactive
-                  ]}
-                >{item}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        <Text style={[typography.subtitle]}>How long does the pain last?</Text>
-        <View style={styles.tagsContainer}>
-          {PAIN_DURATIONS.map(item => {
-            const isActive = painDurationState === item;
-            return (
-              <Pressable key={item} onPress={() => setPainDurationState(item)}>
-                <Text
-                  style={[
-                    typography.p,
-                    styles.tag,
-                    isActive ? styles.tagActive : styles.tagInactive
-                  ]}
-                >{item}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
+        {isPainState && (
+          <>
+            <Text style={typography.subtitle}>What's its intensity from 1 to 10?</Text>
+            <Slider
+              value={painIntensity}
+              onValueChange={setPainIntensity}
+              minimumValue={0}
+              maximumValue={10}
+              step={1}
+            />
+            <Text style={[typography.subtitle, styles.painTypeTitle]}>What type of pain do you feel?</Text>
+            <View style={styles.tagsContainer}>
+              {PAIN_TYPES.map(item => {
+                const isActive = painTypeState === item;
+                return (
+                  <Pressable key={item} onPress={() => setPainTypeState(item)}>
+                    <Text
+                      style={[
+                        typography.p,
+                        styles.tag,
+                        isActive ? styles.tagActive : styles.tagInactive
+                      ]}
+                    >{item}</Text>
+                  </Pressable>
+                );
+              })}
+            </View>
+          </>
+        )}
       </ScrollView>
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={painPeriodState === '' || painLocationState.length === 0 || painDurationState === ''}
-          title="Next"
+          disabled={isDisabled}
+          title={title}
           icon={(
             <MaterialIcons
-              color={painPeriodState === '' || painLocationState.length === 0 || painDurationState === '' ? '#999999' : '#000000'}
+              color={isDisabled ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />
@@ -170,6 +165,9 @@ const styles = StyleSheet.create({
   },
   tagInactive: {
     backgroundColor: 'transparent',
+  },
+  painTypeTitle: {
+    marginTop: 32,
   },
   buttonContainer: {
     position: 'absolute',

@@ -1,9 +1,9 @@
+import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
-import Progress from '@/components/Progress';
 import { typography } from '@/constants/typography';
 import useRegistrationStore from '@/store/useRegistrationStore';
-import { FLOW_LABELS, FlowType, REGULAR_PERIOD_LABELS, RegularPeriodType } from '@/types/diagnosis';
+import { SYMPTOM_LABELS, SymptomType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -11,16 +11,12 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step5() {
   const router = useRouter();
-  const { setValue, flow, isRegularPeriod } = useRegistrationStore();
-  const [isRegular, setIsRegular] = useState<RegularPeriodType[]>([]);
-  const [flowState, setFlowState] = useState<FlowType | ''>('');
+  const { setValue, symptoms } = useRegistrationStore();
+  const [tags, setTags] = useState<SymptomType[]>([]);
 
   useEffect(() => {
-    if (Array.isArray(isRegularPeriod) && isRegularPeriod.length > 0) {
-      setIsRegular(isRegularPeriod as RegularPeriodType[]);
-    }
-    if (flow) setFlowState(flow as FlowType);
-  }, [flow, isRegularPeriod]);
+    if (symptoms && symptoms.length > 0) setTags(symptoms);
+  }, [symptoms]);
 
   const goBack = () => {
     router.back();
@@ -30,19 +26,18 @@ export default function Step5() {
     router.push('/sync-data' as any);
   };
 
-  const selectRegularPeriod = (period: RegularPeriodType, isActive: boolean) => {
-    isActive
-      ? setIsRegular(isRegular.filter(item => item !== period))
-      : setIsRegular([...isRegular, period]);
-  };
-
   const next = () => {
-    setValue(flowState, 'flow');
-    setValue(isRegular, 'isRegularPeriod');
+    setValue(tags, 'symptoms');
     router.push('/onboarding/step-6' as any);
   };
 
-  const progressPercentage = 44.44; // Step 5 = 44.44%
+  const selectTag = (tag: SymptomType, isActive: boolean) => {
+    isActive
+      ? setTags(tags.filter(item => item !== tag))
+      : setTags([...tags, tag]);
+  };
+
+  const progressPercentage = 45.45; // Step 5 = 45.45% (5/11 * 100)
 
   return (
     <View style={styles.container}>
@@ -54,33 +49,14 @@ export default function Step5() {
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="5" />
-        <Text style={[typography.h1, styles.title]}>Is your period regular?</Text>
-        <Text style={[typography.subtitle, styles.subtitle]}>What is your flow?</Text>
-        
-        <View style={[styles.tagsContainer, styles.flowContainer]}>
-          {FLOW_LABELS.map(item => {
-            const isActive = flowState === item;
-            return (
-              <Pressable key={item} onPress={() => setFlowState(item)}>
-                <Text
-                  style={[
-                    typography.p,
-                    styles.tag,
-                    isActive ? styles.tagActive : styles.tagInactive
-                  ]}
-                >{item}</Text>
-              </Pressable>
-            );
-          })}
-        </View>
-
-        <Text style={[typography.subtitle, styles.subtitle]}>Is your period regular?</Text>
+        <Text style={[typography.h1, styles.title]}>Physical & Emotional wellbeing</Text>
+        <Text style={[typography.subtitle, styles.subtitle]}>Select all relevant for your period</Text>
         
         <View style={styles.tagsContainer}>
-          {REGULAR_PERIOD_LABELS.map(item => {
-            const isActive = isRegular.find(i => i === item) ? true : false;
+          {SYMPTOM_LABELS.map(item => {
+            const isActive = tags.find(i => i === item) ? true : false;
             return (
-              <Pressable key={item} onPress={() => selectRegularPeriod(item, isActive)}>
+              <Pressable key={item} onPress={() => selectTag(item, isActive)}>
                 <Text
                   style={[
                     typography.p,
@@ -96,11 +72,11 @@ export default function Step5() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={flowState === '' || isRegular.length === 0}
+          disabled={tags.length === 0}
           title="Next"
           icon={(
             <MaterialIcons
-              color={flowState === '' || isRegular.length === 0 ? '#999999' : '#000000'}
+              color={tags.length === 0 ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />
@@ -132,16 +108,13 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     width: '100%',
-    marginBottom: 16,
+    marginBottom: 8,
   },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
     paddingVertical: 12,
-  },
-  flowContainer: {
-    marginBottom: 32,
     marginTop: 16,
   },
   tag: {

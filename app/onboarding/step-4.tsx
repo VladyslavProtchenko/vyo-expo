@@ -3,7 +3,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
 import useRegistrationStore from '@/store/useRegistrationStore';
-import { SYMPTOM_LABELS, SymptomType } from '@/types/diagnosis';
+import { ADDITIONAL_SYMPTOM_LABELS, AdditionalSymptomType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -11,12 +11,12 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step4() {
   const router = useRouter();
-  const { setValue, symptoms } = useRegistrationStore();
-  const [tags, setTags] = useState<SymptomType[]>([]);
+  const { setValue, additionalSymptoms } = useRegistrationStore();
+  const [tags, setTags] = useState<AdditionalSymptomType[]>([]);
 
   useEffect(() => {
-    if (symptoms && symptoms.length > 0) setTags(symptoms);
-  }, [symptoms]);
+    if (additionalSymptoms && additionalSymptoms.length > 0) setTags(additionalSymptoms);
+  }, [additionalSymptoms]);
 
   const goBack = () => {
     router.back();
@@ -27,17 +27,16 @@ export default function Step4() {
   };
 
   const next = () => {
-    setValue(tags, 'symptoms');
+    setValue(tags, 'additionalSymptoms');
     router.push('/onboarding/step-5' as any);
   };
-
-  const selectTag = (tag: SymptomType, isActive: boolean) => {
+  const selectTag = (tag: AdditionalSymptomType, isActive: boolean) => {
     isActive
       ? setTags(tags.filter(item => item !== tag))
       : setTags([...tags, tag]);
   };
 
-  const progressPercentage = 33.33; // Step 4 = 33.33%
+  const progressPercentage = 36.36; // Step 4 = 36.36% (4/11 * 100)
 
   return (
     <View style={styles.container}>
@@ -49,11 +48,10 @@ export default function Step4() {
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="4" />
-        <Text style={[typography.h1, styles.title]}>Physical & Emotional wellbeing</Text>
-        <Text style={[typography.subtitle, styles.subtitle]}>Select all relevant for your period</Text>
-        
+        <Text style={[typography.h1, styles.title]}>Additional symptoms</Text>
+        <Text style={[typography.subtitle, styles.subtitle]}>Select all relevant</Text>
         <View style={styles.tagsContainer}>
-          {SYMPTOM_LABELS.map(item => {
+          {ADDITIONAL_SYMPTOM_LABELS.map(item => {
             const isActive = tags.find(i => i === item) ? true : false;
             return (
               <Pressable key={item} onPress={() => selectTag(item, isActive)}>
@@ -68,15 +66,15 @@ export default function Step4() {
             );
           })}
         </View>
+        <Text style={[typography.p, styles.note]}>*Hirsutism - excessive growth of dark, coarse hair on the face, chest, or back;Androgenic alopecia - female pattern hair loss, thinning of hair on the top and crown of the head;Acanthosis nigricans - darkened, velvety patches of skin in folds like neck or armpits.</Text>
       </ScrollView>
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={tags.length === 0}
           title="Next"
           icon={(
             <MaterialIcons
-              color={tags.length === 0 ? '#999999' : '#000000'}
+              color="#000000"
               name="arrow-forward"
               size={26}
             />
@@ -99,6 +97,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   contentContainer: {
+    flexGrow: 1,
     paddingBottom: 120,
   },
   title: {
@@ -137,5 +136,14 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 16,
     paddingBottom: 36,
+  },
+  note: {
+    marginTop: 'auto',
+    marginBottom: 32,
+    fontFamily: 'Poppins',
+    fontWeight: '400',
+    fontSize: 14,
+    lineHeight: 19.6,
+    letterSpacing: 0,
   },
 });

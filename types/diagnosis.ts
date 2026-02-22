@@ -22,6 +22,17 @@ export const DIAGNOSIS_LABELS: DiagnosisType[] = [
 ];
 
 
+export type AdditionalSymptomType =
+  | 'Hirsutism*'
+  | 'Androgenic alopecia*'
+  | 'Acne'
+
+export const ADDITIONAL_SYMPTOM_LABELS: AdditionalSymptomType[] = [
+  'Hirsutism*',
+  'Androgenic alopecia*',
+  'Acne',
+];
+
 export type SymptomType =
   | 'Nausea'
   | 'Diarrhea'

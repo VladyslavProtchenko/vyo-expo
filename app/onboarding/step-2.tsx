@@ -50,7 +50,7 @@ export default function Step2() {
     router.push('/onboarding/step-3' as any);
   };
 
-  const progressPercentage = 11.11; // Step 2 = 11.11%
+  const progressPercentage = 18.18; // Step 2 = 18.18% (2/11 * 100)
   
   return (
     <View style={styles.container}>

@@ -1,4 +1,4 @@
-import { DiagnosisType, SymptomType } from '@/types/diagnosis';
+import { AdditionalSymptomType, DiagnosisType, SymptomType } from '@/types/diagnosis';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
@@ -22,6 +22,8 @@ interface IInfoStore {
     diagnoses: DiagnosisType[];
 
     symptoms: SymptomType[];
+
+    additionalSymptoms: AdditionalSymptomType[];
 
     flow: string;
     isRegularPeriod: string[];
@@ -54,7 +56,7 @@ interface IInfoStore {
 const useRegistrationStore = create<IInfoStore>()(
     persist(
         (set, get) => ({
-            name: 'Lily',
+            name: '',
             email: '',
             age: 5,
 
@@ -71,6 +73,8 @@ const useRegistrationStore = create<IInfoStore>()(
             diagnoses: [],
 
             symptoms: [],
+
+            additionalSymptoms: [],
 
             flow: '',
             isRegularPeriod: [],
@@ -112,6 +116,7 @@ const useRegistrationStore = create<IInfoStore>()(
                         unitSystem: 'metric',
                         diagnoses: [],
                         symptoms: [],
+                        additionalSymptoms: [],
                         flow: '',
                         isRegularPeriod: [],
                         isPain: null,
@@ -147,6 +152,7 @@ const useRegistrationStore = create<IInfoStore>()(
                 cycleDuration: state.cycleDuration,
                 diagnoses: state.diagnoses,
                 symptoms: state.symptoms,
+                additionalSymptoms: state.additionalSymptoms,
                 
                 flow: state.flow,
                 isRegularPeriod: state.isRegularPeriod,

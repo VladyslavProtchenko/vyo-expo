@@ -40,7 +40,7 @@ export default function Step3() {
       : setTags([...tags, tag]);
   };
 
-  const progressPercentage = 22.22; // Step 3 = 22.22%
+  const progressPercentage = 27.27; // Step 3 = 27.27% (3/11 * 100)
 
   return (
     <View style={styles.container}>

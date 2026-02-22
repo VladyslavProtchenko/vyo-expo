@@ -3,7 +3,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
 import useRegistrationStore from '@/store/useRegistrationStore';
-import { PAIN_CHANGES, PainChangeType } from '@/types/diagnosis';
+import { MEDICINE_EFFECTS, MedicineEffectType, PAIN_CASES, PainCaseType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -11,12 +11,14 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step9() {
   const router = useRouter();
-  const { setValue, isPainChange } = useRegistrationStore();
-  const [isPainChangeState, setIsPainChangeState] = useState<PainChangeType | ''>('');
+  const { setValue, painCase, isMedicine } = useRegistrationStore();
+  const [painCaseState, setPainCaseState] = useState<PainCaseType | ''>('');
+  const [isMedicineState, setIsMedicineState] = useState<MedicineEffectType | ''>('');
 
   useEffect(() => {
-    if (isPainChange) setIsPainChangeState(isPainChange as PainChangeType);
-  }, [isPainChange]);
+    if (painCase) setPainCaseState(painCase as PainCaseType);
+    if (isMedicine) setIsMedicineState(isMedicine as MedicineEffectType);
+  }, [painCase, isMedicine]);
 
   const goBack = () => {
     router.back();
@@ -27,11 +29,12 @@ export default function Step9() {
   };
 
   const next = () => {
-    setValue(isPainChangeState, 'isPainChange');
+    setValue(painCaseState, 'painCase');
+    setValue(isMedicineState, 'isMedicine');
     router.push('/onboarding/step-10' as any);
   };
 
-  const progressPercentage = 88.89; // Step 9 = 88.89%
+  const progressPercentage = 81.82; // Step 9 = 81.82% (9/11 * 100)
 
   return (
     <View style={styles.container}>
@@ -44,13 +47,31 @@ export default function Step9() {
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="9" />
         <Text style={[typography.h1, styles.title]}>Your pain details</Text>
-        <Text style={typography.subtitle}>Have you noticed the pain change for last 3 months?</Text>
+        <Text style={typography.subtitle}>Is the pain appearing during?</Text>
 
         <View style={styles.tagsContainer}>
-          {PAIN_CHANGES.map(item => {
-            const isActive = isPainChangeState === item;
+          {PAIN_CASES.map(item => {
+            const isActive = painCaseState === item;
             return (
-              <Pressable key={item} onPress={() => setIsPainChangeState(item)}>
+              <Pressable key={item} onPress={() => setPainCaseState(item)}>
+                <Text
+                  style={[
+                    typography.p,
+                    styles.tag,
+                    isActive ? styles.tagActive : styles.tagInactive
+                  ]}
+                >{item}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        <Text style={[typography.subtitle]}>Do painkillers (ibuprofen, nurofen etc) help you?</Text>
+        <View style={styles.tagsContainer}>
+          {MEDICINE_EFFECTS.map(item => {
+            const isActive = isMedicineState === item;
+            return (
+              <Pressable key={item} onPress={() => setIsMedicineState(item)}>
                 <Text
                   style={[
                     typography.p,
@@ -66,11 +87,11 @@ export default function Step9() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={isPainChangeState === ''}
+          disabled={painCaseState === '' || isMedicineState === ''}
           title="Next"
           icon={(
             <MaterialIcons
-              color={isPainChangeState === '' ? '#999999' : '#000000'}
+              color={painCaseState === '' || isMedicineState === '' ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

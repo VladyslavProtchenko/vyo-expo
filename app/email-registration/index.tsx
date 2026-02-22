@@ -65,7 +65,7 @@ export default function EmailRegistration() {
     }, [imageHeight, overlayOpacity, screenHeight]);
 
     const onSubmit = async (data: RegistrationFormData) => {
-        const result = await signUp(data.email, data.password);
+        const result = await signUp(data.email, data.password, data.name);
         
         if (result.success) {
             console.log('✅ Registration successful');
@@ -74,6 +74,7 @@ export default function EmailRegistration() {
             // Check session (Supabase v2)
             const { data: { session } } = await supabase.auth.getSession();
             console.log('📱 Session after signup:', session ? 'EXISTS' : 'NULL');
+            console.log('👤 User name:', data.name);
             
             router.push('/privacy' as any);
         } else {

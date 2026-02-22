@@ -54,7 +54,6 @@ const protectedScreens = [
   'symptoms-success',
   'calendar',
   'care-plan-preview',
-  'complete-profile',
   'onboarding',
   'sync-data',
   'privacy',

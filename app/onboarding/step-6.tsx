@@ -1,10 +1,9 @@
 import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
-import Slider from '@/components/ui/Slider';
 import { typography } from '@/constants/typography';
 import useRegistrationStore from '@/store/useRegistrationStore';
-import { PAIN_TYPES, PainType } from '@/types/diagnosis';
+import { FLOW_LABELS, FlowType, REGULAR_PERIOD_LABELS, RegularPeriodType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -12,16 +11,16 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step6() {
   const router = useRouter();
-  const { setValue, isPain, painType, intensity } = useRegistrationStore();
-  const [isPainState, setIsPainState] = useState<boolean | null>(isPain);
-  const [painIntensity, setPainIntensity] = useState<number>(intensity || 0);
-  const [painTypeState, setPainTypeState] = useState<PainType | ''>(painType as PainType || '');
+  const { setValue, flow, isRegularPeriod } = useRegistrationStore();
+  const [isRegular, setIsRegular] = useState<RegularPeriodType[]>([]);
+  const [flowState, setFlowState] = useState<FlowType | ''>('');
 
   useEffect(() => {
-    if (isPain !== null && isPain !== undefined) setIsPainState(isPain);
-    if (intensity !== null && intensity !== undefined) setPainIntensity(intensity);
-    if (painType) setPainTypeState(painType as PainType);
-  }, [isPain, painType, intensity]);
+    if (Array.isArray(isRegularPeriod) && isRegularPeriod.length > 0) {
+      setIsRegular(isRegularPeriod as RegularPeriodType[]);
+    }
+    if (flow) setFlowState(flow as FlowType);
+  }, [flow, isRegularPeriod]);
 
   const goBack = () => {
     router.back();
@@ -31,22 +30,19 @@ export default function Step6() {
     router.push('/sync-data' as any);
   };
 
-  const next = () => {
-    if (isPainState === null) return;
-    if (isPainState === true) {
-      setValue(isPainState, 'isPain');
-      setValue(painTypeState, 'painType');
-      setValue(painIntensity, 'intensity');
-      router.push('/onboarding/step-7' as any);
-    } else {
-      setValue(isPainState, 'isPain');
-      router.push('/sync-data' as any);
-    }
+  const selectRegularPeriod = (period: RegularPeriodType, isActive: boolean) => {
+    isActive
+      ? setIsRegular(isRegular.filter(item => item !== period))
+      : setIsRegular([...isRegular, period]);
   };
 
-  const title = isPainState ? 'Next' : 'Get my care plan?';
-  const isDisabled = isPainState === null || (isPainState && (painTypeState === '' || painIntensity === 0));
-  const progressPercentage = 55.56; // Step 6 = 55.56%
+  const next = () => {
+    setValue(flowState, 'flow');
+    setValue(isRegular, 'isRegularPeriod');
+    router.push('/onboarding/step-7' as any);
+  };
+
+  const progressPercentage = 54.55; // Step 6 = 54.55% (6/11 * 100)
 
   return (
     <View style={styles.container}>
@@ -58,14 +54,14 @@ export default function Step6() {
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="6" />
-        <Text style={[typography.h1, styles.title]}>Your period</Text>
-        <Text style={typography.subtitle}>Are your periods painful?</Text>
-
-        <View style={styles.tagsContainer}>
-          {['No', 'Yes'].map(item => {
-            const isActive = isPainState === (item === 'Yes' ? true : false);
+        <Text style={[typography.h1, styles.title]}>Is your period regular?</Text>
+        <Text style={[typography.subtitle, styles.subtitle]}>What is your flow?</Text>
+        
+        <View style={[styles.tagsContainer, styles.flowContainer]}>
+          {FLOW_LABELS.map(item => {
+            const isActive = flowState === item;
             return (
-              <Pressable key={item} onPress={() => setIsPainState(item === 'Yes' ? true : false)}>
+              <Pressable key={item} onPress={() => setFlowState(item)}>
                 <Text
                   style={[
                     typography.p,
@@ -78,44 +74,33 @@ export default function Step6() {
           })}
         </View>
 
-        {isPainState && (
-          <>
-            <Text style={typography.subtitle}>What's its intensity from 1 to 10?</Text>
-            <Slider
-              value={painIntensity}
-              onValueChange={setPainIntensity}
-              minimumValue={0}
-              maximumValue={10}
-              step={1}
-            />
-            <Text style={[typography.subtitle, styles.painTypeTitle]}>What type of pain do you feel?</Text>
-            <View style={styles.tagsContainer}>
-              {PAIN_TYPES.map(item => {
-                const isActive = painTypeState === item;
-                return (
-                  <Pressable key={item} onPress={() => setPainTypeState(item)}>
-                    <Text
-                      style={[
-                        typography.p,
-                        styles.tag,
-                        isActive ? styles.tagActive : styles.tagInactive
-                      ]}
-                    >{item}</Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-          </>
-        )}
+        <Text style={[typography.subtitle, styles.subtitle]}>Is your period regular?</Text>
+        
+        <View style={styles.tagsContainer}>
+          {REGULAR_PERIOD_LABELS.map(item => {
+            const isActive = isRegular.find(i => i === item) ? true : false;
+            return (
+              <Pressable key={item} onPress={() => selectRegularPeriod(item, isActive)}>
+                <Text
+                  style={[
+                    typography.p,
+                    styles.tag,
+                    isActive ? styles.tagActive : styles.tagInactive
+                  ]}
+                >{item}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
       </ScrollView>
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={isDisabled}
-          title={title}
+          disabled={flowState === '' || isRegular.length === 0}
+          title="Next"
           icon={(
             <MaterialIcons
-              color={isDisabled ? '#999999' : '#000000'}
+              color={flowState === '' || isRegular.length === 0 ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />
@@ -142,14 +127,20 @@ const styles = StyleSheet.create({
   },
   title: {
     width: '100%',
-    marginBottom: 32,
+    marginBottom: 24,
     marginTop: 12,
+  },
+  subtitle: {
+    width: '100%',
+    marginBottom: 16,
   },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
     paddingVertical: 12,
+  },
+  flowContainer: {
     marginBottom: 32,
     marginTop: 16,
   },
@@ -165,9 +156,6 @@ const styles = StyleSheet.create({
   },
   tagInactive: {
     backgroundColor: 'transparent',
-  },
-  painTypeTitle: {
-    marginTop: 32,
   },
   buttonContainer: {
     position: 'absolute',

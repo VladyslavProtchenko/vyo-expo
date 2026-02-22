@@ -1,26 +1,40 @@
+import Name from '@/app/profile/personal/components/Name';
+import NumericField from '@/app/profile/personal/components/NumericField';
+import { useDeleteAccount } from '@/hooks/useDeleteAccount';
+import useUserStore from '@/store/useUserStore';
 import { FontAwesome6, Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function PersonalSettings() {
   const router = useRouter();
+  const { 
+    email, 
+    diagnoses 
+  } = useUserStore();
+  const { mutate: deleteAccount, isPending } = useDeleteAccount();
 
   const personalFields = [
-    { label: 'Name', value: 'Lily Adams', hasArrow: true, isHighlighted: false },
-    { label: 'Date of birth', value: '06 June 1986', hasArrow: false, isHighlighted: true },
-    { label: 'Email', value: 'lily@gmail.com', hasArrow: true, isHighlighted: false },
-    { label: 'Health conditions', value: '2', hasArrow: true, isHighlighted: false },
-    { label: 'Weight', value: '65', hasArrow: true, isHighlighted: false },
-    { label: 'Height', value: '165', hasArrow: true, isHighlighted: false },
-    { label: 'Waist', value: '70', hasArrow: true, isHighlighted: false },
-    { label: 'Hips', value: '100', hasArrow: true, isHighlighted: false },
-    { label: 'Cycle length', value: '28', hasArrow: true, isHighlighted: false },
-    { label: 'Period length', value: '5', hasArrow: true, isHighlighted: false },
+    { label: 'Email', value: email, hasArrow: true, isHighlighted: false },
+    { label: 'Health conditions', value: diagnoses?.length?.toString() || '0', hasArrow: true, isHighlighted: false },
   ];
 
   const handleDeleteAccount = () => {
-    // Handle delete account
-    console.log('Delete account');
+    Alert.alert(
+      'Delete Account',
+      'Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently deleted.',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: () => deleteAccount(),
+        },
+      ]
+    );
   };
 
   return (
@@ -32,6 +46,7 @@ export default function PersonalSettings() {
       </TouchableOpacity>
 
       <View style={styles.menuContainer}>
+        <Name />
         {personalFields.map((field) => (
           <TouchableOpacity
             key={field.label}
@@ -53,14 +68,23 @@ export default function PersonalSettings() {
             </View>
           </TouchableOpacity>
         ))}
+        <NumericField title="Weight" field="weight" defaultValue="65" />
+        <NumericField title="Height" field="height" defaultValue="165" />
+        <NumericField title="Waist" field="waist" defaultValue="70" />
+        <NumericField title="Hips" field="hips" defaultValue="100" />
+        <NumericField title="Cycle length" field="cycleDuration" defaultValue="28" />
+        <NumericField title="Period length" field="menstruationDuration" defaultValue="5" />
       </View>
 
       <TouchableOpacity
         style={styles.deleteButton}
         onPress={handleDeleteAccount}
         activeOpacity={0.7}
+        disabled={isPending}
       >
-        <Text style={styles.deleteButtonText}>Delete account</Text>
+        <Text style={styles.deleteButtonText}>
+          {isPending ? 'Deleting...' : 'Delete account'}
+        </Text>
       </TouchableOpacity>
     </ScrollView>
   );

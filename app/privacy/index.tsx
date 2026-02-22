@@ -24,7 +24,7 @@ export default function Privacy() {
           <ButtonRounded
             type='black'
             title='I accept'
-            onPress={() => router.push('/complete-profile' as any)}
+            onPress={() => router.push('/onboarding/step-1' as any)}
           />
         </View>
       </ImageBackground>
