@@ -4,6 +4,7 @@ interface UserStore {
   id: string | null;
   name: string;
   email: string;
+  avatarUrl: string | null;
   age: number;
   weight: number;
   height: number;
@@ -48,6 +49,7 @@ const initialState = {
   id: null,
   name: '',
   email: '',
+  avatarUrl: null,
   age: 0,
   weight: 0,
   height: 0,

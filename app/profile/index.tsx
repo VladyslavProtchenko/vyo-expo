@@ -1,13 +1,20 @@
+import Avatar from '@/components/Avatar';
+import { useUpdateAvatar } from '@/hooks/useUpdateAvatar';
 import useUserStore from '@/store/useUserStore';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import { useRouter } from 'expo-router';
-import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
   
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { name } = useUserStore();
+  const { name, avatarUrl } = useUserStore();
+  const { pickAndUploadImage, isProcessing } = useUpdateAvatar();
+
+  const handleAvatarEdit = async () => {
+    await pickAndUploadImage('gallery');
+  };
 
   const menuGroups = [
     // Card 1: Personal (single item)
@@ -111,11 +118,17 @@ export default function ProfileScreen() {
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.profileSection}>
           <View style={styles.avatarContainer}>
-            <Image
-              source={require('@/assets/images/avatar.png')}
-              style={styles.avatar}
+            <Avatar 
+              avatarUrl={avatarUrl} 
+              name={name || 'User'} 
+              size={82}
             />
-            <TouchableOpacity style={styles.editButton} activeOpacity={0.7}>
+            <TouchableOpacity 
+              style={styles.editButton} 
+              activeOpacity={0.7}
+              onPress={handleAvatarEdit}
+              disabled={isProcessing}
+            >
               <Feather name="edit-2" size={20} color="black" />
             </TouchableOpacity>
           </View>
@@ -211,11 +224,6 @@ const styles = StyleSheet.create({
   avatarContainer: {
     position: 'relative',
     marginBottom: 16,
-  },
-  avatar: {
-    width: 82,
-    height: 82,
-    borderRadius: 50,
   },
   editButton: {
     position: 'absolute',

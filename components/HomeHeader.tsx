@@ -2,10 +2,11 @@ import { typography } from '@/constants/typography';
 import useUserStore from '@/store/useUserStore';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Avatar from './Avatar';
 
 export default function HomeHeader() {
-  const { name } = useUserStore();
+  const { name, avatarUrl } = useUserStore();
   const router = useRouter();
 
   return (
@@ -15,7 +16,11 @@ export default function HomeHeader() {
         onPress={() => router.push('/profile' as any)}
         activeOpacity={0.7}
       >
-        <Image source={require('@/assets/images/avatar.png')} style={styles.headerIcon} />
+        <Avatar 
+          avatarUrl={avatarUrl} 
+          name={name || 'User'} 
+          size={44}
+        />
         <Text style={[typography.p]}>Today's Your day, {name || 'Sonya'}</Text>
       </TouchableOpacity>
       <TouchableOpacity 
@@ -47,9 +52,5 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  headerIcon: {
-    width: 44,
-    height: 44,
   },
 });

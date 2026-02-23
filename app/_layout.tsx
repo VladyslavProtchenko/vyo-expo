@@ -66,7 +66,6 @@ const protectedScreens = [
   'welcome',
   'youtube-screen',
   'physiotherapy',
-  'intro',
 ] as const;
 
 export default function RootLayout() {

@@ -28,6 +28,7 @@ export const useLoadUserData = () => {
         id: profile.id,
         name: profile.name,
         email: profile.email,
+        avatarUrl: profile.avatar_url,
         age: profile.age,
         weight: profile.weight,
         height: profile.height,

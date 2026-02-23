@@ -71,12 +71,12 @@ export default function EmailRegistration() {
             console.log('✅ Registration successful');
             await new Promise(resolve => setTimeout(resolve, 500));
             
-            // Check session (Supabase v2)
             const { data: { session } } = await supabase.auth.getSession();
             console.log('📱 Session after signup:', session ? 'EXISTS' : 'NULL');
             console.log('👤 User name:', data.name);
             
-            router.push('/privacy' as any);
+            // After registration, always go to onboarding
+            router.replace('/privacy' as any);
         } else {
             console.error('❌ Registration failed:', result.error);
         }

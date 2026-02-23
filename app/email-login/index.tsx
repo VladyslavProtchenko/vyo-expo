@@ -1,6 +1,8 @@
 import ButtonRounded from '@/components/ui/ButtonRounded';
 import Input from '@/components/ui/Input';
+import { supabase } from '@/config/supabase';
 import { globalStyles, typography } from '@/constants/typography';
+import { useLoadUserData } from '@/hooks/useLoadUserData';
 import { useSignIn } from '@/hooks/useSupabaseAuth';
 import { LoginFormData, loginSchema } from '@/types/validationSchemas';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -13,6 +15,7 @@ import { Animated, Dimensions, ImageBackground, Keyboard, KeyboardAvoidingView, 
 export default function EmailLogin() {
     const router = useRouter();
     const { signIn, loading: isPending } = useSignIn();
+    const { refetch: loadUserData } = useLoadUserData();
     const overlayOpacity = useRef(new Animated.Value(0)).current; 
     const [keyboardOffset, setKeyboardOffset] = useState(Dimensions.get('window').height * 0.25);
     const [errorMessage, setErrorMessage] = useState('');
@@ -50,8 +53,26 @@ export default function EmailLogin() {
         const result = await signIn(data.email, data.password);
         
         if (result.success) {
-            console.log('✅ Login successful, navigating to Privacy');
-            router.push('/privacy' as any);
+            console.log('✅ Login successful, checking onboarding status...');
+            
+            await loadUserData();
+            
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) return;
+            
+            const { data: profile } = await supabase
+                .from('profiles')
+                .select('onboarding_completed')
+                .eq('id', session.user.id)
+                .single();
+            
+            if (profile?.onboarding_completed) {
+                console.log('🏠 Onboarding completed - redirecting to home');
+                router.replace('/(tabs)/home' as any);
+            } else {
+                console.log('📝 Onboarding not completed - redirecting to onboarding');
+                router.replace('/onboarding/step-1' as any);
+            }
         } else {
             console.error('❌ Login error:', result.error || 'Failed to login');
             setErrorMessage(result.error || 'Failed to login');
