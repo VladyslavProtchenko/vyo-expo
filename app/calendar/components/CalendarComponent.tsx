@@ -117,7 +117,9 @@ export default function CalendarComponent() {
     const row = Math.floor(flatIndex / 7);
     const col = flatIndex % 7;
 
-    const cellWidth = calendarWidth / 7;
+    const calendarPadding = 8;
+    const availableWidth = calendarWidth - (calendarPadding * 2);
+    const cellWidth = availableWidth / 7;
     const ringSize = 44;
 
     // Calibrated for react-native-calendars layout to keep the ring center-aligned
@@ -125,7 +127,7 @@ export default function CalendarComponent() {
     const topOffset = 90;
     const rowHeight = 64;
     const overlayShiftX = 0;
-    const overlayShiftY =-1;
+    const overlayShiftY = 1;
 
     // Determine phase for today and use saturated color for border
     const todayColor = markedDates?.[today]?.color;
@@ -142,7 +144,7 @@ export default function CalendarComponent() {
     }
 
     return {
-      left: col * cellWidth + (cellWidth - ringSize) / 2 + overlayShiftX,
+      left: calendarPadding + col * cellWidth + (cellWidth - ringSize) / 2 + overlayShiftX,
       top: topOffset + row * rowHeight + overlayShiftY,
       borderColor,
     };
