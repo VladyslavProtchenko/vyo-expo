@@ -9,6 +9,8 @@ import FocusOnCard from '@/app/products/components/FocusOnCard';
 import B from '@/components/B';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import ButtonRounded from '@/components/ui/ButtonRounded';
+import { useDeletedProducts } from '@/hooks/useDeletedProducts';
+import { useProductSettings } from '@/hooks/useProductSettings';
 import { CurrentPhaseInfo } from '@/store/phase';
 import { Products as AllProducts, Product } from '@/store/products';
 import { generateProductVariants } from '@/utils/openai';
@@ -21,49 +23,25 @@ export default function Products() {
     return shuffled.slice(0, 9);
   };
 
+  const normalizeProductName = (name: string): string => {
+    return name.toLowerCase().trim().replace(/\s*\([^)]*\)\s*/g, '');
+  };
+
   const findProductsByNames = (names: string[]): Product[] => {
     return names
       .map((name) => {
         const normalized = name.toLowerCase().trim();
+        const normalizedWithoutParens = normalizeProductName(name);
         
-        // Приоритет 1: Точное совпадение
-        let product = AllProducts.find((p) => p.name.toLowerCase() === normalized);
-        if (product) return product;
-        
-        // Приоритет 2: Название продукта начинается с искомого слова
-        // Например: "apple" -> "Apple with skin"
-        product = AllProducts.find((p) => {
+        return AllProducts.find((p) => {
           const productName = p.name.toLowerCase();
-          return productName.startsWith(normalized + ' ') || productName === normalized;
+          const productNameNormalized = normalizeProductName(p.name);
+          
+          return productName === normalized || 
+                 productNameNormalized === normalizedWithoutParens ||
+                 productName.includes(normalized) || 
+                 normalized.includes(productName);
         });
-        if (product) return product;
-        
-        // Приоритет 3: Искомое слово начинается с названия продукта
-        // Например: "Fresh strawberries" -> "Strawberries" (если бы было просто "Strawberries")
-        product = AllProducts.find((p) => {
-          const productName = p.name.toLowerCase();
-          return normalized.startsWith(productName + ' ') || normalized === productName;
-        });
-        if (product) return product;
-        
-        // Приоритет 4: Название продукта содержит искомое слово (как отдельное слово)
-        // Например: "strawberries" -> "Fresh strawberries"
-        const normalizedWords = normalized.split(' ');
-        product = AllProducts.find((p) => {
-          const productName = p.name.toLowerCase();
-          const productWords = productName.split(' ');
-          // Проверяем, что все слова из запроса есть в названии продукта
-          return normalizedWords.every((word) => productWords.includes(word));
-        });
-        if (product) return product;
-        
-        // Приоритет 5: Простое включение (последний вариант)
-        product = AllProducts.find((p) => {
-          const productName = p.name.toLowerCase();
-          return productName.includes(normalized) || normalized.includes(productName);
-        });
-        
-        return product;
       })
       .filter((p): p is Product => p !== undefined);
   };
@@ -71,6 +49,8 @@ export default function Products() {
   const [selectedProducts, setSelectedProducts] = useState<Product[]>(() => getRandomProducts());
   const [loading, setLoading] = useState(false);
   const [previousLists, setPreviousList] = useState<Record<number, string[]>>({});
+  const { deletedProducts } = useDeletedProducts();
+  const { isVegetarian, isVegan } = useProductSettings();
 
   const loadProducts = async () => {
     try {
@@ -78,7 +58,7 @@ export default function Products() {
       const currentPhase = CurrentPhaseInfo().phaseName;
       console.log('🔵 Generating products for phase:', currentPhase);
 
-      const productNames = await generateProductVariants(currentPhase, previousLists);
+      const productNames = await generateProductVariants(currentPhase, previousLists, deletedProducts, isVegetarian, isVegan);
       console.log('✅ Received product names:', JSON.stringify(productNames, null, 2));
 
       if (productNames && productNames.length === 9) {
@@ -86,11 +66,20 @@ export default function Products() {
         console.log('✅ Found products:', foundProducts.length);
         
         // Логируем какие продукты не найдены
+        const normalizeForComparison = (str: string) => {
+          return str.replace(/\s*\([^)]*\)\s*/g, '').trim();
+        };
+        
         const missingProducts = productNames.filter((name) => {
           const normalized = name.toLowerCase().trim();
+          const normalizedWithoutParens = normalizeForComparison(normalized);
           return !AllProducts.some((p) => {
             const productName = p.name.toLowerCase();
-            return productName === normalized || productName.includes(normalized) || normalized.includes(productName);
+            const productNameNormalized = normalizeForComparison(productName);
+            return productName === normalized 
+              || productNameNormalized === normalizedWithoutParens
+              || productName.includes(normalized) 
+              || normalized.includes(productName);
           });
         });
         if (missingProducts.length > 0) {

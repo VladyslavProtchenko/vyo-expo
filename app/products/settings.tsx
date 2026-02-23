@@ -1,20 +1,18 @@
 import { useRouter } from 'expo-router';
 import { MoveLeft, Trash } from 'lucide-react-native';
-import { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import FocusOnCard from '@/app/products/components/FocusOnCard';
 import ButtonRounded from '@/components/ui/ButtonRounded';
 import CustomSwitch from '@/components/ui/CustomSwitch';
+import { useDeletedProducts } from '@/hooks/useDeletedProducts';
+import { useProductSettings } from '@/hooks/useProductSettings';
 import { Product, Products } from '@/store/products';
 
 export default function ProductsSettings() {
   const router = useRouter();
-  const [isVegetarian, setIsVegetarian] = useState(false);
-  const [isVegan, setIsVegan] = useState(false);
-
-  const allProducts = Products.map((p) => p.name);
+  const { isVegetarian, isVegan, updateSettings } = useProductSettings();
 
   return (
     <SafeAreaView style={styles.container}>
@@ -23,12 +21,6 @@ export default function ProductsSettings() {
         style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}
       >
         <MoveLeft size={30} color="black" />
-        <ButtonRounded
-          type="black"
-          className={{ width: 70, minHeight: 34, paddingHorizontal: 12, paddingVertical: 8 }}
-          title="Save"
-          onPress={() => router.back()}
-        />
       </TouchableOpacity>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ backgroundColor: '#F5F3F3', borderRadius: 12, justifyContent: 'center', padding: 16, marginTop: 16 }}>
@@ -49,11 +41,11 @@ export default function ProductsSettings() {
             }}
           >
             <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '600' }}>I am vegetarian</Text>
-            <CustomSwitch value={isVegetarian} onValueChange={setIsVegetarian} />
+            <CustomSwitch value={isVegetarian} onValueChange={(value) => updateSettings({ is_vegetarian: value })} />
           </View>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingVertical: 4 }}>
             <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '600' }}>I am vegan</Text>
-            <CustomSwitch value={isVegan} onValueChange={setIsVegan} />
+            <CustomSwitch value={isVegan} onValueChange={(value) => updateSettings({ is_vegan: value })} />
           </View>
         </View>
         <FocusOnCard />
@@ -105,22 +97,28 @@ const getNutrientsForCategory = (category: string): string[] => {
 };
 
 // Функция фильтрации продуктов по питательным веществам
-const filterProductsByNutrients = (category: string): Product[] => {
+const filterProductsByNutrients = (category: string, deletedProducts: string[] = []): Product[] => {
   const nutrients = getNutrientsForCategory(category);
   if (nutrients.length === 0) return [];
 
   return Products.filter((product) => {
-    return nutrients.some((nutrient) => product.nutrients.includes(nutrient));
+    return !deletedProducts.includes(product.name) && 
+           nutrients.some((nutrient) => product.nutrients.includes(nutrient));
   });
 };
 
 const CategoryList = ({ title }: { title: string }) => {
   const router = useRouter();
+  const { deletedProducts, updateDeletedProducts } = useDeletedProducts();
   
-  // Фильтруем продукты по питательным веществам категории
-  const filteredProducts = filterProductsByNutrients(title);
-  // Берем топ 10 продуктов
+  const filteredProducts = filterProductsByNutrients(title, deletedProducts);
   const topProducts = filteredProducts.slice(0, 10);
+
+  const handleDelete = (productName: string) => {
+    if (!deletedProducts.includes(productName)) {
+      updateDeletedProducts([...deletedProducts, productName]);
+    }
+  };
 
   return (
     <>
@@ -137,6 +135,8 @@ const CategoryList = ({ title }: { title: string }) => {
           return (
             <View key={product.name} style={{ width: 100, alignItems: 'center', position: 'relative' }}>
               <TouchableOpacity
+                onPress={() => handleDelete(product.name)}
+                disabled={deletedProducts.includes(product.name)}
                 style={{
                   position: 'absolute',
                   top: 4,
@@ -145,7 +145,9 @@ const CategoryList = ({ title }: { title: string }) => {
                   borderRadius: 100,
                   padding: 6,
                   paddingHorizontal: 10,
-                  backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                  backgroundColor: deletedProducts.includes(product.name) 
+                    ? 'rgba(128, 128, 128, 0.8)' 
+                    : 'rgba(0, 0, 0, 0.8)',
                 }}
               >
                 <Trash size={20} color="white" />

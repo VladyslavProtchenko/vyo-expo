@@ -4,9 +4,31 @@ const OPENAI_API_KEY = process.env.EXPO_PUBLIC_OPENAI_API_KEY || '';
 
 export const generateProductVariants = async (
   phase: PhaseName,
-  previousLists?: Record<number, string[]>
+  previousLists?: Record<number, string[]>,
+  deletedProducts: string[] = [],
+  isVegetarian: boolean = false,
+  isVegan: boolean = false
 ): Promise<string[]> => {
-  const prompt = createPrompt(phase, previousLists);
+  // TEMPORARY: Return mock data for development
+  const mockProducts = [
+    "Baked salmon",
+    "Cooked chickpeas",
+    "Cooked spinach",
+    "Baked sweet potato",
+    "Pumpkin seeds",
+    "Boiled egg",
+    "Whole milk",
+    "Banana",
+    "Dark chocolate (70%)"
+  ];
+  
+  console.log('🔵 [OpenAI] Using mock data for development');
+  console.log('✅ [OpenAI] Mock products:', mockProducts.length);
+  return mockProducts;
+
+  // COMMENTED OUT: OpenAI API call
+  /*
+  const prompt = createPrompt(phase, previousLists, deletedProducts, isVegetarian, isVegan);
 
   console.log('🔵 [OpenAI] Starting request for phase:', phase);
   if (previousLists && Object.keys(previousLists).length > 0) {
@@ -64,17 +86,103 @@ export const generateProductVariants = async (
     console.error('❌ [OpenAI] Error:', error.message);
     throw error;
   }
+  */
 };
 
-export const createPrompt = (phase: PhaseName, previousLists?: Record<number, string[]>) => {
-  const productsList: Record<PhaseName, string> = {
-    menstrual: `Menstrual Phase (Fe, Mg, Ω3, K, B1, B2, B6, B9, B12):Beef liver, cooked; Chicken liver; Stewed beef; Cooked pork; Roast turkey; Boiled chicken breast; Baked salmon; Cooked Atlantic salmon; Raw Atlantic mackerel; Pacific herring, cooked; Cooked bluefin tuna; Canned tuna; Canned sardines; Cooked mussels; Baked trout; Salmon fish oil; Boiled egg; Whole milk; Plain yogurt; Cottage cheese; Cheddar cheese; Brie cheese; Fortified nutritional yeast; Tofu; Cooked lentils; Cooked chickpeas; Cooked white beans; Cooked kidney beans; Cooked green peas; Cooked beans; Cooked buckwheat; Cooked oats; Cooked millet; Cooked brown rice; Cooked pearl barley; Durum wheat pasta; Whole grain bread; Wheat bread; Boiled potato; Baked sweet potato; Cooked spinach; Cooked broccoli; Cooked cauliflower; Cooked asparagus; Cooked Brussels sprouts; Avocado; Banana; Orange; Orange juice; Raisins; Dates; Dried figs; Dried apricots; Pumpkin seeds; Sunflower seeds; Sesame seeds; Almonds; Cashews; Pistachios; Peanuts; Walnuts; Dark chocolate 70%`,
-    follicular: `Follicular Phase (Mg, B1, B2, B6, B9, B12, Ch): Baked salmon; Boiled egg; Whole milk; Plain yogurt; Cottage cheese; Beef liver, cooked; Chicken liver; Stewed beef; Roast turkey; Boiled chicken breast; Canned tuna; Tofu; Cooked lentils; Cooked chickpeas; Cooked white beans; Cooked green peas; Cooked beans; Cooked buckwheat; Cooked oats; Cooked millet; Cooked brown rice; Whole grain bread; Baked sweet potato; Cooked spinach; Cooked broccoli; Avocado; Banana; Orange; Dates; Dried figs; Dried apricots; Pumpkin seeds; Sunflower seeds; Sesame seeds; Almonds; Cashews; Pistachios; Peanuts; Fortified cereal; Fortified plant milk`,
-    ovulation: `Ovulatory Phase (Mg, B1, B2, B6, B9, B12, Ch, Fib, AO, S):Baked salmon; Boiled egg; Whole milk; Plain yogurt; Cottage cheese; Beef liver, cooked; Chicken liver; Stewed beef; Roast turkey; Boiled chicken breast; Canned tuna; Cooked lentils; Cooked chickpeas; Cooked white beans; Cooked green peas; Cooked beans; Cooked buckwheat; Cooked oats; Cooked millet; Cooked brown rice; Whole grain bread; Baked sweet potato; Cooked spinach; Cooked broccoli; Cooked cauliflower; Cooked Brussels sprouts; Raw cabbage; White cabbage; Raw carrot; Avocado; Banana; Apple with skin; Pear with skin; Raspberries; Fresh strawberries; Black currant; Kiwifruit; Acerola cherry; Rose hips, raw; Orange; Dates; Dried figs; Dried apricots; Pumpkin seeds; Sunflower seeds; Sesame seeds; Almonds; Cashews; Pistachios; Peanuts; Walnuts; Ground flaxseed; Chia seeds; Dark chocolate (70%); Fortified cereal; Fortified plant milk`,
-    luteal: `Luteal Phase (Mg, B6, Fib, Ω3, E):Baked salmon; Boiled egg; Whole milk; Plain yogurt; Cooked lentils; Cooked chickpeas; Cooked white beans; Cooked buckwheat; Cooked oats; Cooked millet; Cooked brown rice; Baked sweet potato; Cooked spinach; Avocado; Banana; Dates; Dried figs; Dried apricots; Pumpkin seeds; Sunflower seeds; Sesame seeds; Almonds; Cashews; Pistachios; Peanuts; Walnuts; Flaxseed ground; Flaxseed oil; Chia seeds; Canola oil; Soybean oil; Dark chocolate 70%`,
+export const createPrompt = (
+  phase: PhaseName, 
+  previousLists?: Record<number, string[]>, 
+  deletedProducts: string[] = [],
+  isVegetarian: boolean = false,
+  isVegan: boolean = false
+) => {
+  const meatProducts = [
+    'Beef liver, cooked', 'Chicken liver', 'Stewed beef', 'Cooked pork', 'Roast turkey', 'Boiled chicken breast'
+  ];
+
+  const fishProducts = [
+    'Baked salmon', 'Cooked Atlantic salmon', 'Raw Atlantic mackerel', 'Pacific herring, cooked', 
+    'Cooked bluefin tuna', 'Canned tuna', 'Canned sardines', 'Cooked mussels', 'Baked trout', 'Salmon fish oil'
+  ];
+
+  const dairyAndEggs = [
+    'Boiled egg', 'Whole milk', 'Plain yogurt', 'Cottage cheese', 'Cheddar cheese', 'Brie cheese'
+  ];
+
+  const productsArrays: Record<PhaseName, string[]> = {
+    menstrual: [
+      'Beef liver, cooked', 'Chicken liver', 'Stewed beef', 'Cooked pork', 'Roast turkey', 'Boiled chicken breast',
+      'Baked salmon', 'Cooked Atlantic salmon', 'Raw Atlantic mackerel', 'Pacific herring, cooked', 'Cooked bluefin tuna',
+      'Canned tuna', 'Canned sardines', 'Cooked mussels', 'Baked trout', 'Salmon fish oil', 'Boiled egg', 'Whole milk',
+      'Plain yogurt', 'Cottage cheese', 'Cheddar cheese', 'Brie cheese', 'Fortified nutritional yeast', 'Tofu',
+      'Cooked lentils', 'Cooked chickpeas', 'Cooked white beans', 'Cooked kidney beans', 'Cooked green peas', 'Cooked beans',
+      'Cooked buckwheat', 'Cooked oats', 'Cooked millet', 'Cooked brown rice', 'Cooked pearl barley', 'Durum wheat pasta',
+      'Whole grain bread', 'Wheat bread', 'Boiled potato', 'Baked sweet potato', 'Cooked spinach', 'Cooked broccoli',
+      'Cooked cauliflower', 'Cooked asparagus', 'Cooked Brussels sprouts', 'Avocado', 'Banana', 'Orange', 'Orange juice',
+      'Raisins', 'Dates', 'Dried figs', 'Dried apricots', 'Pumpkin seeds', 'Sunflower seeds', 'Sesame seeds', 'Almonds',
+      'Cashews', 'Pistachios', 'Peanuts', 'Walnuts', 'Dark chocolate (70%)'
+    ],
+    follicular: [
+      'Baked salmon', 'Boiled egg', 'Whole milk', 'Plain yogurt', 'Cottage cheese', 'Beef liver, cooked', 'Chicken liver',
+      'Stewed beef', 'Roast turkey', 'Boiled chicken breast', 'Canned tuna', 'Tofu', 'Cooked lentils', 'Cooked chickpeas',
+      'Cooked white beans', 'Cooked green peas', 'Cooked beans', 'Cooked buckwheat', 'Cooked oats', 'Cooked millet',
+      'Cooked brown rice', 'Whole grain bread', 'Baked sweet potato', 'Cooked spinach', 'Cooked broccoli', 'Avocado',
+      'Banana', 'Orange', 'Dates', 'Dried figs', 'Dried apricots', 'Pumpkin seeds', 'Sunflower seeds', 'Sesame seeds',
+      'Almonds', 'Cashews', 'Pistachios', 'Peanuts', 'Fortified cereal', 'Fortified plant milk'
+    ],
+    ovulation: [
+      'Baked salmon', 'Boiled egg', 'Whole milk', 'Plain yogurt', 'Cottage cheese', 'Beef liver, cooked', 'Chicken liver',
+      'Stewed beef', 'Roast turkey', 'Boiled chicken breast', 'Canned tuna', 'Cooked lentils', 'Cooked chickpeas',
+      'Cooked white beans', 'Cooked green peas', 'Cooked beans', 'Cooked buckwheat', 'Cooked oats', 'Cooked millet',
+      'Cooked brown rice', 'Whole grain bread', 'Baked sweet potato', 'Cooked spinach', 'Cooked broccoli', 'Cooked cauliflower',
+      'Cooked Brussels sprouts', 'Raw cabbage', 'White cabbage', 'Raw carrot', 'Avocado', 'Banana', 'Apple with skin',
+      'Pear with skin', 'Raspberries', 'Fresh strawberries', 'Black currant', 'Kiwifruit', 'Acerola cherry', 'Rose hips, raw',
+      'Orange', 'Dates', 'Dried figs', 'Dried apricots', 'Pumpkin seeds', 'Sunflower seeds', 'Sesame seeds', 'Almonds',
+      'Cashews', 'Pistachios', 'Peanuts', 'Walnuts', 'Ground flaxseed', 'Chia seeds', 'Dark chocolate (70%)',
+      'Fortified cereal', 'Fortified plant milk'
+    ],
+    luteal: [
+      'Baked salmon', 'Boiled egg', 'Whole milk', 'Plain yogurt', 'Cooked lentils', 'Cooked chickpeas', 'Cooked white beans',
+      'Cooked buckwheat', 'Cooked oats', 'Cooked millet', 'Cooked brown rice', 'Baked sweet potato', 'Cooked spinach',
+      'Avocado', 'Banana', 'Dates', 'Dried figs', 'Dried apricots', 'Pumpkin seeds', 'Sunflower seeds', 'Sesame seeds',
+      'Almonds', 'Cashews', 'Pistachios', 'Peanuts', 'Walnuts', 'Flaxseed ground', 'Flaxseed oil', 'Chia seeds',
+      'Canola oil', 'Soybean oil', 'Dark chocolate (70%)'
+    ],
   };
 
-  const actualProducts = productsList[phase as keyof typeof productsList];
+  const phaseHeaders: Record<PhaseName, string> = {
+    menstrual: 'Menstrual Phase (Fe, Mg, Ω3, K, B1, B2, B6, B9, B12)',
+    follicular: 'Follicular Phase (Mg, B1, B2, B6, B9, B12, Ch)',
+    ovulation: 'Ovulatory Phase (Mg, B1, B2, B6, B9, B12, Ch, Fib, AO, S)',
+    luteal: 'Luteal Phase (Mg, B6, Fib, Ω3, E)',
+  };
+
+  let filteredProducts = productsArrays[phase];
+  
+  if (isVegan) {
+    filteredProducts = filteredProducts.filter(p => 
+      !meatProducts.includes(p) && 
+      !fishProducts.includes(p) && 
+      !dairyAndEggs.includes(p)
+    );
+  } else if (isVegetarian) {
+    filteredProducts = filteredProducts.filter(p => 
+      !meatProducts.includes(p) && 
+      !fishProducts.includes(p)
+    );
+  }
+
+  if (deletedProducts.length > 0) {
+    filteredProducts = filteredProducts.filter(p => !deletedProducts.includes(p));
+  }
+
+  const actualProducts = `${phaseHeaders[phase]}: ${filteredProducts.join('; ')}`;
+
+  const dietaryNote = isVegan 
+    ? '\n\n⚠️ DIETARY RESTRICTION: User is VEGAN. All meat, fish, dairy, and eggs have been excluded from the available products list.'
+    : isVegetarian 
+    ? '\n\n⚠️ DIETARY RESTRICTION: User is VEGETARIAN. All meat and fish have been excluded from the available products list.'
+    : '';
 
   let previousListsText = '';
   if (previousLists && Object.keys(previousLists).length > 0) {
@@ -90,7 +198,7 @@ You are an expert Clinical Nutritionist specializing in women's hormonal health 
 
 PHASE: ${phase}
 AVAILABLE PRODUCTS LIST (COMPLETE AND FINAL):
-${actualProducts}${previousListsText}
+${actualProducts}${dietaryNote}${previousListsText}
 
 ### YOUR TASK:
 Generate ONLY 1 optimal set of 9 products maximally balanced for the ${phase} phase.

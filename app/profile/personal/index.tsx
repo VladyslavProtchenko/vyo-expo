@@ -10,13 +10,16 @@ export default function PersonalSettings() {
   const router = useRouter();
   const { 
     email, 
-    diagnoses 
+    diagnoses,
+    isPain
   } = useUserStore();
   const { mutate: deleteAccount, isPending } = useDeleteAccount();
 
+  const healthConditionsCount = (diagnoses?.length || 0) + (isPain ? 1 : 0);
+
   const personalFields = [
     { label: 'Email', value: email, hasArrow: true, isHighlighted: false },
-    { label: 'Health conditions', value: diagnoses?.length?.toString() || '0', hasArrow: true, isHighlighted: false },
+    { label: 'Health conditions', value: healthConditionsCount.toString(), hasArrow: true, isHighlighted: false },
   ];
 
   const handleDeleteAccount = () => {
@@ -53,6 +56,7 @@ export default function PersonalSettings() {
             style={styles.menuCard}
             activeOpacity={0.7}
             disabled={!field.hasArrow}
+            onPress={field.label === 'Health conditions' ? () => router.push('/profile/personal/health-conditions' as any) : undefined}
           >
             <Text style={styles.menuItemText}>{field.label}</Text>
             <View style={styles.valueContainer}>

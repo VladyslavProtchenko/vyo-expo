@@ -3,16 +3,47 @@ import { MoveLeft, Trash } from 'lucide-react-native';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import ButtonGradient from '@/components/ui/ButtonGradient';
-import { Products } from '@/store/products';
+import { useDeletedProducts } from '@/hooks/useDeletedProducts';
+import { Product, Products } from '@/store/products';
+
+const getNutrientsForCategory = (category: string): string[] => {
+  const mapping: Record<string, string[]> = {
+    'Iron': ['iron'],
+    'Omega-3': ['omega-3'],
+    'Potassium': ['potassium'],
+    'B vitamins': ['vitamin-b1', 'vitamin-b2', 'vitamin-b6', 'vitamin-b9', 'vitamin-b12'],
+    'Magnesium': ['magnesium'],
+  };
+  return mapping[category] || [];
+};
+
+// Функция фильтрации продуктов по питательным веществам
+const filterProductsByNutrients = (category: string, deletedProducts: string[] = []): Product[] => {
+  const nutrients = getNutrientsForCategory(category);
+  if (nutrients.length === 0) return [];
+
+  return Products.filter((product) => {
+    return !deletedProducts.includes(product.name) && 
+           nutrients.some((nutrient) => product.nutrients.includes(nutrient));
+  });
+};
 
 export default function ProductsAll() {
   const router = useRouter();
   const { categoryName } = useLocalSearchParams<{ categoryName?: string }>();
   const displayCategoryName = categoryName || 'Products';
+  const { deletedProducts, updateDeletedProducts } = useDeletedProducts();
 
-  // Получаем все продукты из захардкоженного массива
-  const allProducts = Products.map((p) => p.name);
+  const handleDelete = (productName: string) => {
+    if (!deletedProducts.includes(productName)) {
+      updateDeletedProducts([...deletedProducts, productName]);
+    }
+  };
+
+  // Фильтруем продукты по категории и исключаем удаленные
+  const filteredProducts = categoryName 
+    ? filterProductsByNutrients(categoryName, deletedProducts)
+    : Products.filter((product) => !deletedProducts.includes(product.name));
 
   return (
     <SafeAreaView style={styles.container}>
@@ -26,14 +57,13 @@ export default function ProductsAll() {
         </Text>
       </TouchableOpacity>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', marginTop: 24 }}>
-          {allProducts.map((productName) => {
-            const product = Products.find((p) => p.name === productName);
-            if (!product) return null;
-
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'flex-start', marginTop: 24, gap: 12 }}>
+          {filteredProducts.map((product) => {
             return (
-              <View key={productName} style={{ width: 100, alignItems: 'center', position: 'relative', marginBottom: 16 }}>
+              <View key={product.name} style={{ width: '31%', alignItems: 'center', position: 'relative', marginBottom: 16 }}>
                 <TouchableOpacity
+                  onPress={() => handleDelete(product.name)}
+                  disabled={deletedProducts.includes(product.name)}
                   style={{
                     position: 'absolute',
                     top: 4,
@@ -42,7 +72,9 @@ export default function ProductsAll() {
                     borderRadius: 100,
                     padding: 6,
                     paddingHorizontal: 10,
-                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    backgroundColor: deletedProducts.includes(product.name) 
+                      ? 'rgba(128, 128, 128, 0.8)' 
+                      : 'rgba(0, 0, 0, 0.8)',
                   }}
                 >
                   <Trash size={20} color="white" />
@@ -65,21 +97,18 @@ export default function ProductsAll() {
                     }}
                   >
                     <Text style={{ fontSize: 32, fontWeight: '600', color: '#999', textTransform: 'uppercase' }}>
-                      {productName.charAt(0)}
+                      {product.name.charAt(0)}
                     </Text>
                   </View>
                 )}
                 <Text style={{ textAlign: 'center', fontSize: 12, fontFamily: 'Poppins', color: '#404040' }}>
-                  {productName}
+                  {product.name}
                 </Text>
               </View>
             );
           })}
         </View>
       </ScrollView>
-      <View style={{ position: 'absolute', bottom: 35, left: 0, right: 0, alignItems: 'center', paddingHorizontal: 16 }}>
-        <ButtonGradient title="save" className={{ width: '100%' }} onPress={() => router.back()} />
-      </View>
     </SafeAreaView>
   );
 }
