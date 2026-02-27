@@ -13,7 +13,7 @@ export default function CarePlanPreview() {
       <View style={styles.imageContainer}>
         <View style={styles.bottomCoverWrapper}>
           <Image
-            source={require('@/assets/images/care-plan-preview.webp')}
+            source={require('@/assets/images/care-plan/care-plan-preview.webp')}
             style={styles.bottomCoverImage}
             resizeMode="cover"
           />
@@ -23,13 +23,13 @@ export default function CarePlanPreview() {
         <View style={styles.card}>
           <View style={styles.cardHeader}>
             <Text style={[typography.h1, styles.title]}>Thank you for sharing!</Text>
-            <Image source={require('@/assets/images/Yellow.png')} style={styles.cardHeaderImage} />
+            <Image source={require('@/assets/images/care-plan/pink.webp')} style={styles.cardHeaderImage} />
           </View>
           <Text style={[typography.p, { marginBottom: 8 }]}>Your symptoms may indicate secondary dysmenorrhea, sometimes linked to conditions like endometriosis. Please talk to you gynecologist for clarity.</Text>
-          <Text style={[typography.p]}>Remember — you're not alone in this. We're here to support you through the pain, and your personalized care plan is just one click away.</Text>
+          <Text style={[typography.p]}>Remember — you’re not alone in this. We’re here to support you through the pain, and your personalized care plan is just one click away.</Text>
         </View>
         <View style={styles.card}>
-          <Image source={require('@/assets/images/icons/pinkChem.png')} style={styles.pink} />
+          <Image source={require('@/assets/images/care-plan/green.webp')} style={styles.pink} />
           <Text style={[typography.h1, styles.title, { marginBottom: 8 }]}>Backed by science</Text>
           <Text style={[typography.p]}>The plan is science-based, built on modern protocols, and validated by medical experts</Text>
         </View>
@@ -49,6 +49,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     width: '100%',
+    backgroundColor: '#F3F3F3',
   },
   imageContainer: {
     flex: 0.5,

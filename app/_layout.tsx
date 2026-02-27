@@ -11,6 +11,7 @@ import Toast, { ErrorToast, ToastConfig } from 'react-native-toast-message';
 import { SessionProvider, useSession } from '@/contexts/session';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSessionKeepAlive } from '@/hooks/useSessionKeepAlive';
+import PhaseScreen from './phase';
 
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
@@ -66,9 +67,11 @@ const protectedScreens = [
   'welcome',
   'youtube-screen',
   'physiotherapy',
+  'phase',
 ] as const;
 
 export default function RootLayout() {
+  return <PhaseScreen />;
   const colorScheme = useColorScheme();
   useSessionKeepAlive();
 

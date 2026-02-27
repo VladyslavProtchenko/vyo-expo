@@ -6,6 +6,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CarePlanList from '@/app/(tabs)/components/List';
 import FocusOnCard from '@/app/products/components/FocusOnCard';
+import References from '@/app/products/components/References';
 import B from '@/components/B';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import ButtonRounded from '@/components/ui/ButtonRounded';
@@ -228,6 +229,14 @@ export default function Products() {
           ))}
         </View>
         <Text style={{ marginBottom: 16 }}>Dosages are based on evidence-based protocols. Learn more</Text>
+
+        <References />
+
+        <View style={styles.disclaimerBox}>
+          <Text style={styles.disclaimerText}>
+            This app is not a medical device and does not provide diagnoses. These recommendations are based on published research and general wellness practices. Always consult your healthcare provider before starting new supplements or making significant lifestyle changes.
+          </Text>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -252,5 +261,17 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     backgroundColor: 'white',
+  },
+  disclaimerBox: {
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: '#F5F5F5',
+    marginBottom: 24,
+  },
+  disclaimerText: {
+    fontFamily: 'Poppins',
+    fontSize: 12,
+    lineHeight: 18,
+    color: '#404040',
   },
 });
