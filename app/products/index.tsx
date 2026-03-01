@@ -5,6 +5,7 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CarePlanList from '@/app/(tabs)/components/List';
+import SkipPoster from '@/app/phase/components/SkipPoster';
 import FocusOnCard from '@/app/products/components/FocusOnCard';
 import References from '@/app/products/components/References';
 import B from '@/components/B';
@@ -14,6 +15,7 @@ import { useDeletedProducts } from '@/hooks/useDeletedProducts';
 import { useProductSettings } from '@/hooks/useProductSettings';
 import { CurrentPhaseInfo } from '@/store/phase';
 import { Products as AllProducts, Product } from '@/store/products';
+import useUserStore from '@/store/useUserStore';
 import { generateProductVariants } from '@/utils/openai';
 
 export default function Products() {
@@ -52,6 +54,7 @@ export default function Products() {
   const [previousLists, setPreviousList] = useState<Record<number, string[]>>({});
   const { deletedProducts } = useDeletedProducts();
   const { isVegetarian, isVegan } = useProductSettings();
+  const { isQuizSkipped } = useUserStore();
 
   const loadProducts = async () => {
     try {
@@ -135,7 +138,7 @@ export default function Products() {
 
         <FocusOnCard />
 
-        <CarePlanList isGray={true} />
+        {isQuizSkipped ? <SkipPoster /> : <CarePlanList isGray={true} />}
 
         <View
           style={{

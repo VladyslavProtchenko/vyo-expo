@@ -1,5 +1,8 @@
+import SkipPoster from '@/app/phase/components/SkipPoster';
+import StressManagementList from '@/app/stress-management/components/StressManagementList';
 import YoutubeCard from '@/components/YoutubeCard';
 import { typography } from '@/constants/typography';
+import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'expo-router';
 import { MoveLeft } from 'lucide-react-native';
 import { useState } from 'react';
@@ -9,6 +12,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function StressManagement() {
   const router = useRouter();
   const [level, setLevel] = useState<'nevbie' | 'medium' | 'advanced'>('nevbie');
+  const { isQuizSkipped } = useUserStore();
 
   const items = [
     { title: 'Pilates', count: 13 },
@@ -21,10 +25,7 @@ export default function StressManagement() {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <TouchableOpacity
-        onPress={() => router.back()}
-        style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}
-      >
+      <TouchableOpacity onPress={() => router.back()} style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
         <MoveLeft size={30} color="black" />
         <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '600', marginLeft: 12 }}>
           Stress Management
@@ -48,6 +49,8 @@ export default function StressManagement() {
           );
         })}
       </View>
+
+      {isQuizSkipped ? <SkipPoster /> : <StressManagementList />}
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: 16 }}>
@@ -79,6 +82,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
+    marginBottom: 16,
   },
   tag: {
     paddingHorizontal: 16,

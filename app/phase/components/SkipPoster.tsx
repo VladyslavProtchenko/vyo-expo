@@ -2,7 +2,7 @@ import ButtonRounded from '@/components/ui/ButtonRounded';
 import { CurrentPhaseInfo } from '@/store/phase';
 import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'expo-router';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 
 const phaseBackgroundColors = {
   menstrual: '#FFCED1',
@@ -18,7 +18,7 @@ const phaseImages = {
   luteal: require('@/assets/images/home-page/girl-4.webp'),
 };
 
-export default function SkipPoster() {
+export default function SkipPoster({ style }: { style?: StyleProp<ViewStyle> }) {
   const router = useRouter();
   const { phaseName } = CurrentPhaseInfo();
   const { lastCompletedQuizStep } = useUserStore();
@@ -29,7 +29,7 @@ export default function SkipPoster() {
   const nextStep = lastCompletedQuizStep || 1;
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
+    <View style={[styles.container, { backgroundColor }, style]}>
       <View style={styles.textContainer}>
         <Text style={styles.title}>Make your care truly yours.</Text>
         <Text style={styles.subtitle}>Complete the questionnaire and unlock your personalized Care Plan.</Text>
@@ -50,9 +50,9 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 24,
     padding: 16,
-    marginTop: 24,
     position: 'relative',
     overflow: 'hidden',
+    minHeight: 126,
   },
   textContainer: {
     flex: 1,

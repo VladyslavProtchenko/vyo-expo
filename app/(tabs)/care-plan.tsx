@@ -1,17 +1,21 @@
-import HomeHeader from '@/components/HomeHeader';
 import CarePlanCard from '@/app/(tabs)/components/Card';
 import CarePlanList from '@/app/(tabs)/components/List';
 import CarePlanMenu from '@/app/(tabs)/components/Menu';
+import SkipPoster from '@/app/phase/components/SkipPoster';
+import HomeHeader from '@/components/HomeHeader';
+import useUserStore from '@/store/useUserStore';
 import React from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
 
 export default function CarePlan() {
+  const { isQuizSkipped } = useUserStore();
+
   return (
     <ScrollView style={styles.scrollView}>
       <HomeHeader />
       <CarePlanCard />
       <View style={styles.listContainer}>
-        <CarePlanList />
+        {isQuizSkipped ? <SkipPoster /> : <CarePlanList />}
         <CarePlanMenu />
       </View>
       <View style={{ paddingBottom: 200 }}></View>

@@ -5,25 +5,29 @@ import InfoCard from '@/app/(tabs)/components/InfoCard';
 import Missions from '@/app/(tabs)/components/Missions';
 import SkipPoster from '@/app/phase/components/SkipPoster';
 import HomeHeader from '@/components/HomeHeader';
+import { useDismissAnnouncement } from '@/hooks/useDismissAnnouncement';
+import { useGlobalAnnouncement } from '@/hooks/useGlobalAnnouncement';
 import { useLoadUserData } from '@/hooks/useLoadUserData';
 import useStates from '@/store/useStates';
 import useUserStore from '@/store/useUserStore';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
 export default function HomePage() {
   const { isDayCardOpen } = useStates();
-  const [isInfo, setIsInfo] = useState(true);
   const { refetch: loadUserData } = useLoadUserData();
   const { isQuizSkipped } = useUserStore();
+  const { data: announcement } = useGlobalAnnouncement();
+  const dismissAnnouncement = useDismissAnnouncement();
 
   useEffect(() => {
     loadUserData();
   }, [loadUserData]);
 
-  const infoCardData = {
-    title: "We noticed you had less than 6 hours of sleep last night.",
-    description: "During menstruation, your body needs more recovery. Lack of sleep can increase fatigue, pain, and sensitivity. If you can, try going to bed a bit earlier.",
+  const handleDismissAnnouncement = () => {
+    if (announcement?.id) {
+      dismissAnnouncement.mutate(announcement.id);
+    }
   };
 
   return (
@@ -36,8 +40,14 @@ export default function HomePage() {
       <CalendarWidgetNew />
       {/* <YoutubeCard playButtonPosition="center" playButtonSize={50} /> */}
       {isDayCardOpen && <ExploreCard />}
-      {isInfo && <InfoCard title={infoCardData.title} description={infoCardData.description} onClose={() => setIsInfo(false)} />}
-      {isQuizSkipped && <SkipPoster />}
+      {announcement && (
+        <InfoCard 
+          title={announcement.title} 
+          description={announcement.description} 
+          onClose={handleDismissAnnouncement} 
+        />
+      )}
+      {isQuizSkipped && <SkipPoster style={{ marginTop: 24 }} />}
       <Missions />
       <FeelingCard />
     </ScrollView>

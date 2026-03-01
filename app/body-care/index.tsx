@@ -1,4 +1,6 @@
-import YoutubeCard from '@/components/YoutubeCard';
+import RecommendedVideos from '@/app/body-care/components/RecommendedVideos';
+import SkipPoster from '@/app/phase/components/SkipPoster';
+import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'expo-router';
 import { ChevronRight, MoveLeft } from 'lucide-react-native';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
@@ -6,6 +8,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function BodyCare() {
   const router = useRouter();
+  const { isQuizSkipped } = useUserStore();
 
   const categories = [
     { title: 'Pilates', count: 13, image: require('@/assets/images/body-care/category-1.webp') },
@@ -26,27 +29,8 @@ export default function BodyCare() {
         <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '600', marginLeft: 12 }}>Body care</Text>
       </TouchableOpacity>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={{ fontFamily: 'ArchivoBlack-Regular', fontSize: 16, marginBottom: 12, marginTop: 24 }}>
-          Recommended for today
-        </Text>
-
-        <View style={{ height: 130, marginBottom: 24 }}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {Array.from({ length: 13 }).map((_, index) => (
-              <YoutubeCard
-                key={index}
-                playButtonPosition="center"
-                playButtonSize={28}
-                style={{
-                  width: 130,
-                  height: 130,
-                  marginRight: index < 12 ? 12 : 0,
-                }}
-              />
-            ))}
-          </ScrollView>
-        </View>
-        <Text style={{ fontFamily: 'ArchivoBlack-Regular', fontSize: 16, marginBottom: 12 }}>All categories</Text>
+        {isQuizSkipped ? <SkipPoster /> : <RecommendedVideos />}
+        <Text style={{ fontFamily: 'ArchivoBlack-Regular', fontSize: 16, marginBottom: 12, marginTop: 24 }}>All categories</Text>
 
         <View>
           {categories.map((category, index) => (

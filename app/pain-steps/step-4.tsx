@@ -1,0 +1,138 @@
+import Progress from '@/components/Progress';
+import ButtonGradient from '@/components/ui/ButtonGradient';
+import Number from '@/components/ui/Number';
+import { typography } from '@/constants/typography';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateIsPain } from '@/hooks/useUpdateIsPain';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
+import { PAIN_CHANGES, PainChangeType } from '@/types/diagnosis';
+import { useRouter } from 'expo-router';
+import React, { useEffect, useState } from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+
+export default function PainStep4() {
+  const router = useRouter();
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const { mutate: updateIsPain, isPending: isUpdatingIsPain } = useUpdateIsPain();
+  const [formData, setFormData] = useState({ isPainChange: '' as PainChangeType | '' });
+
+  useEffect(() => {
+    if (data?.medical?.is_pain_change) {
+      setFormData({
+        isPainChange: data.medical.is_pain_change as PainChangeType,
+      });
+    }
+  }, [data]);
+
+  const goBack = () => router.back();
+
+  const next = () => {
+    updateMedical(
+      {
+        is_pain_change: formData.isPainChange || undefined,
+      },
+      {
+        onSuccess: () => {
+          updateIsPain(true, {
+            onSuccess: () => {
+              router.push('/profile/personal/health-conditions' as any);
+            },
+          });
+        },
+      }
+    );
+  };
+
+  const progressPercentage = 100;
+
+  return (
+    <View style={styles.container}>
+      <Progress 
+        percentage={progressPercentage} 
+        isSkip={false} 
+        goBack={goBack}
+        currentStep={4}
+      />
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+        <Number number="4" />
+        <Text style={[typography.h1, styles.title]}>Your pain details</Text>
+        <Text style={typography.subtitle}>Have you noticed the pain change for last 3 months?</Text>
+
+        <View style={styles.tagsContainer}>
+          {PAIN_CHANGES.map(item => {
+            const isActive = formData.isPainChange === item;
+            return (
+              <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, isPainChange: item }))}>
+                <Text
+                  style={[
+                    typography.p,
+                    styles.tag,
+                    isActive ? styles.tagActive : styles.tagInactive
+                  ]}
+                >{item}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+      </ScrollView>
+
+      <View style={styles.buttonContainer}>
+        <ButtonGradient
+          disabled={formData.isPainChange === '' || isUpdatingMedical || isUpdatingIsPain}
+          title={isUpdatingMedical || isUpdatingIsPain ? "Saving..." : "Finish"}
+          onPress={next}
+        />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 60,
+    backgroundColor: 'white',
+  },
+  scrollView: {
+    flex: 1,
+    paddingHorizontal: 16,
+  },
+  contentContainer: {
+    paddingBottom: 120,
+  },
+  title: {
+    width: '100%',
+    marginBottom: 32,
+    marginTop: 12,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
+    paddingVertical: 12,
+    marginBottom: 32,
+    marginTop: 16,
+  },
+  tag: {
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderRadius: 24,
+    borderColor: '#E7E8ED',
+  },
+  tagActive: {
+    backgroundColor: '#FEF08A',
+  },
+  tagInactive: {
+    backgroundColor: 'transparent',
+  },
+  buttonContainer: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
+    paddingBottom: 36,
+  },
+});

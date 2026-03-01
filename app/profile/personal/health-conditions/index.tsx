@@ -1,3 +1,4 @@
+import PainModal from '@/app/profile/personal/health-conditions/components/PainModal';
 import { useUpdateIsPain } from '@/hooks/useUpdateIsPain';
 import { useUpdateMedicalArray } from '@/hooks/useUpdateMedicalArray';
 import useUserStore from '@/store/useUserStore';
@@ -26,6 +27,7 @@ export default function HealthConditions() {
   const { mutate: updateMedicalArray } = useUpdateMedicalArray();
   const { mutate: updateIsPain } = useUpdateIsPain();
   const [selectedConditions, setSelectedConditions] = useState<string[]>([]);
+  const [showPainModal, setShowPainModal] = useState(false);
 
   useEffect(() => {
     const initialSelected: string[] = [];
@@ -49,58 +51,68 @@ export default function HealthConditions() {
   };
 
   const handleToggle = (condition: string) => {
+    if (condition === 'Painful period') {
+      const isSelected = selectedConditions.includes(condition);
+      if (!isSelected) {
+        setShowPainModal(true);
+      } else {
+        setSelectedConditions((prev) => prev.filter((c) => c !== condition));
+        updateIsPain(false);
+      }
+      return;
+    }
+
     setSelectedConditions((prev) => {
       const isSelected = prev.includes(condition);
       const newConditions = isSelected
         ? prev.filter((c) => c !== condition)
         : [...prev, condition];
       
-      if (condition === 'Painful period') {
-        updateIsPain(!isSelected);
-      } else {
-        const currentDiagnoses = (diagnoses || []) as string[];
-        const updatedDiagnoses = toggleDiagnosis(condition, currentDiagnoses);
-        const diagnosesToSave = updatedDiagnoses.filter(
-          (c) => DIAGNOSIS_LABELS.includes(c as DiagnosisType)
-        ) as DiagnosisType[];
-        updateMedicalArray({
-          field: 'diagnosed_conditions',
-          value: diagnosesToSave,
-        });
-      }
+      const currentDiagnoses = (diagnoses || []) as string[];
+      const updatedDiagnoses = toggleDiagnosis(condition, currentDiagnoses);
+      const diagnosesToSave = updatedDiagnoses.filter(
+        (c) => DIAGNOSIS_LABELS.includes(c as DiagnosisType)
+      ) as DiagnosisType[];
+      updateMedicalArray({
+        field: 'diagnosed_conditions',
+        value: diagnosesToSave,
+      });
       
       return newConditions;
     });
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <TouchableOpacity style={styles.header} onPress={() => router.back()}
-          activeOpacity={0.7}>
-          <FontAwesome6 name="arrow-left-long" size={24} color="black" />
-        <Text style={styles.title}>Health conditions</Text>
-      </TouchableOpacity>
+    <>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <TouchableOpacity style={styles.header} onPress={() => router.back()}
+            activeOpacity={0.7}>
+            <FontAwesome6 name="arrow-left-long" size={24} color="black" />
+          <Text style={styles.title}>Health conditions</Text>
+        </TouchableOpacity>
 
-      <View style={styles.menuContainer}>
-        {HEALTH_CONDITIONS.map((condition) => {
-          const isSelected = selectedConditions.includes(condition);
-          
-          return (
-            <View key={condition} style={styles.menuCard}>
-              <Text style={styles.menuItemText}>{condition}</Text>
-              <View style={styles.switchContainer}>
-                <Switch
-                  value={isSelected}
-                  onValueChange={() => handleToggle(condition)}
-                  trackColor={{ false: '#E5E5E5', true: '#34C759' }}
-                  thumbColor="#FFFFFF"
-                />
+        <View style={styles.menuContainer}>
+          {HEALTH_CONDITIONS.map((condition) => {
+            const isSelected = selectedConditions.includes(condition);
+            
+            return (
+              <View key={condition} style={styles.menuCard}>
+                <Text style={styles.menuItemText}>{condition}</Text>
+                <View style={styles.switchContainer}>
+                  <Switch
+                    value={isSelected}
+                    onValueChange={() => handleToggle(condition)}
+                    trackColor={{ false: '#E5E5E5', true: '#34C759' }}
+                    thumbColor="#FFFFFF"
+                  />
+                </View>
               </View>
-            </View>
-          );
-        })}
-      </View>
-    </ScrollView>
+            );
+          })}
+        </View>
+      </ScrollView>
+      <PainModal visible={showPainModal} onClose={() => setShowPainModal(false)} />
+    </>
   );
 }
 

@@ -12,6 +12,7 @@ import { supabase } from '@/config/supabase';
 import { SessionProvider, useSession } from '@/contexts/session';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSessionKeepAlive } from '@/hooks/useSessionKeepAlive';
+import PainStep1 from '@/app/pain-steps/step-1';
 
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
@@ -71,7 +72,7 @@ const protectedScreens = [
 ] as const;
 
 export default function RootLayout() {
-  // return <PhaseScreen />;
+  // return <PainStep1 />;
   const colorScheme = useColorScheme();
   useSessionKeepAlive();
 
