@@ -1,9 +1,14 @@
 import { useOnboardingData } from "./useOnboardingData";
 
+type Scores = { primary: number; secondary: number; menstrualPain: number };
+
 const range = (age: number | null, min: number, max: number): boolean => {
   if (!age) return false;
   return age >= min && age <= max;
 };
+
+const has = (arr: string[], value: string): boolean => arr.includes(value);
+const hasAny = (arr: string[], values: string[]): boolean => values.some(v => arr.includes(v));
 
 export const useDiagnosis = () => {
   const { data } = useOnboardingData();
@@ -22,285 +27,126 @@ export const useDiagnosis = () => {
   const isMedicine = data?.medical?.is_medicine || '';
   const isPainChange = data?.medical?.is_pain_change || '';
 
-  let primary = 0
-  let secondary = 0
-  let menstrualPain = 0
+  const scores: Scores = { primary: 0, secondary: 0, menstrualPain: 0 };
 
-  //AGE S1 - S - step 1 
-  if (range(age, 13, 20)) {
-      primary += 3
-      menstrualPain += 2
-    } else if (range(age, 21, 25)) {
-      primary += 2
-      secondary += 1
-      menstrualPain += 2
-    } else if (range(age, 26, 35)) {
-      primary += 1
-      secondary += 2
-      menstrualPain += 1
-    } else if (range(age, 36, 45)) {
-      secondary += 3
-    } else if(age > 45) {
-      primary -= 1
-      secondary += 3
-      menstrualPain -= 2
-  }
+  const add = (p: number, s: number, m: number) => {
+    scores.primary += p;
+    scores.secondary += s;
+    scores.menstrualPain += m;
+  };
 
+  if (range(age, 13, 20)) add(3, 0, 2);
+  else if (range(age, 21, 25)) add(2, 1, 2);
+  else if (range(age, 26, 35)) add(1, 2, 1);
+  else if (range(age, 36, 45)) add(0, 3, 0);
+  else if (age > 45) add(-1, 3, -2);
 
-  //DIAGNOSES S3
-  if(diagnoses.includes('Normal')) {
-      primary += 3
-      menstrualPain += 2
-    } else if(
-      diagnoses.includes('Endometriosis') 
-      || diagnoses.includes('Adenomyosis')
-      || diagnoses.includes('Fibroids')
-      || diagnoses.includes('Infertillity')
-      || diagnoses.includes('Polycystic ovary syndrome')
-    ) {
-      primary -= 1
-      secondary += 3
-      menstrualPain -= 2
-    } else if(diagnoses.includes("Cysts")) {
-      secondary += 2
-      menstrualPain -= 1
-    } else if(diagnoses.includes("Hyperplasia")) {
-      secondary += 3
-      menstrualPain -= 2
-  }
+  if (has(diagnoses, 'Normal')) add(3, 0, 2);
+  else if (hasAny(diagnoses, ['Endometriosis', 'Adenomyosis', 'Fibroids', 'Infertillity', 'Polycystic ovary syndrome'])) add(-1, 3, -2);
+  else if (has(diagnoses, 'Cysts')) add(0, 2, -1);
+  else if (has(diagnoses, 'Hyperplasia')) add(0, 3, -2);
 
+  if (has(symptoms, 'Nausea')) add(2, 1, 0);
+  else if (has(symptoms, 'Diarrhea')) add(0, 3, 1);
+  else if (has(symptoms, 'Headache')) add(1, 0, 0);
+  else if (has(symptoms, 'Dizziness')) add(1, 1, 0);
+  else if (has(symptoms, 'Intermenstrual bleeding')) add(-1, 3, -2);
 
-  //SYMPTOMS S4
-  if(symptoms.includes("Nausea")) {
-      primary += 2
-      secondary += 1
-    } else if(symptoms.includes("Diarrhea")) {
-      secondary += 3
-      menstrualPain += 1
-    } else if(symptoms.includes("Headache")) {
-      primary += 1
-    } else if(symptoms.includes("Dizziness")) {
-      primary += 1
-      secondary += 1
-    } else if(symptoms.includes("Intermenstrual bleeding")) {
-      secondary -= 1
-      secondary += 3
-      menstrualPain -= 2
-  }
+  const flowMap: Record<string, [number, number, number]> = {
+    'Medium': [0, 1, 3],
+    'Moderately elevated': [0, 4, 0],
+    'Heavy / Clots': [0, 3, -2],
+    'Light / Spotting': [0, 2, -1]
+  };
+  if (flowMap[flow]) add(...flowMap[flow]);
 
+  if (has(isRegularPeriod, 'Regular')) add(1, 0, 3);
+  if (has(isRegularPeriod, 'Not regular')) add(3, 2, -1);
+  if (has(isRegularPeriod, 'Long delays/Amenorrhea')) add(0, 3, -2);
 
-  //FLOW S5
-  if(flow === 'Medium') {
-      secondary += 1
-      menstrualPain += 3
-    } else if(flow === 'Moderately elevated') {
-      secondary += 2
-      secondary += 2
-    } else if(flow === 'Heavy / Clots') {
-      secondary += 3
-      menstrualPain -= 2
-    } else if(flow === 'Light / Spotting') {
-      secondary += 2
-      menstrualPain -= 1
-  }
+  const painTypeMap: Record<string, [number, number, number]> = {
+    'Cramping': [3, 0, 1],
+    'Aching': [0, 3, 0],
+    'Sharp': [2, 1, -1],
+    'Dull': [0, 3, 0]
+  };
+  if (painTypeMap[painType]) add(...painTypeMap[painType]);
 
+  if (intensity <= 3) add(0, 0, 3);
+  else if (intensity >= 4 && intensity <= 6) add(2, 1, 0);
+  else if (intensity > 6) add(3, 2, -2);
 
-  //REGULAR PERIOD S5
-  if(isRegularPeriod.includes('Regular')) {
-      primary += 1
-      menstrualPain += 3
-    }
-    if(isRegularPeriod.includes('Not regular')) {
-      primary += 3
-      secondary += 2
-      menstrualPain -= 1
-    }
-    if(isRegularPeriod.includes('Long delays/Amenorrhea')) {
-      secondary += 3
-      menstrualPain -= 2
-  }
+  const painPeriodMap: Record<string, [number, number, number]> = {
+    'Before period': [3, 2, 1],
+    'During period': [2, 1, 2],
+    'Ovulation': [0, 2, 0],
+    'Not phase-dependent': [-1, 3, -1],
+    'Inconsistent': [0, 1, 0]
+  };
+  if (painPeriodMap[painPeriod]) add(...painPeriodMap[painPeriod]);
 
+  if (has(painLocation, 'Lower abdomen')) add(3, 2, 0);
+  if (has(painLocation, 'Lower back')) add(2, 2, 0);
+  if (has(painLocation, 'Legs')) add(1, 3, 0);
+  if (has(painLocation, 'Pelvic area')) add(0, 3, 0);
 
-  //PAIN TYPE S6
-  if(painType === 'Cramping') {
-      primary += 3
-      menstrualPain += 1
-    } else if(painType === 'Aching') {
-      secondary += 3
-    } else if(painType === 'Sharp') {
-      primary += 2
-      secondary += 1
-      menstrualPain -= 1
-    } else if(painType === 'Dull') {
-      secondary += 3
-  }
-  
+  const painDurationMap: Record<string, [number, number, number]> = {
+    '1-2 days': [1, 0, 3],
+    'Few hours': [3, 1, 1],
+    '>2 days': [1, 3, -2]
+  };
+  if (painDurationMap[painDuration]) add(...painDurationMap[painDuration]);
 
-  //PAIN INTENSITY S6
-  if( intensity <= 3) {
-      menstrualPain += 3
-    } else if(intensity >= 4 && intensity <= 6) {
-      primary += 2
-      secondary += 1
-    } else if(intensity > 6 ) {
-      primary += 3
-      secondary += 2
-      menstrualPain -= 2
-  }
+  const painCaseMap: Record<string, [number, number, number]> = {
+    'Physical activity': [-1, 2, 0],
+    'Intercourse': [0, 3, 1],
+    'Bowel movement': [0, 3, -1],
+    'Urination': [0, 2, -1],
+    'No connection with actions': [2, 0, 2]
+  };
+  if (painCaseMap[painCase]) add(...painCaseMap[painCase]);
 
+  const medicineMap: Record<string, [number, number, number]> = {
+    'Weel relieve': [3, 0, 3],
+    'Well relieve': [3, 0, 3],
+    'Partially help': [1, 2, 1],
+    "Don't help": [-1, 3, -2]
+  };
+  if (medicineMap[isMedicine]) add(...medicineMap[isMedicine]);
 
-  //PAIN PERIOD S7
-  if(painPeriod === 'Before period') {
-      primary += 3
-      secondary += 2
-      menstrualPain += 1
-    } else if(painPeriod === 'During period') {
-      primary += 2
-      secondary += 1
-      menstrualPain += 2
-    } else if(painPeriod === 'Ovulation') {
-      secondary += 2
-    } else if(painPeriod === 'Not phase-dependent') {
-      primary -= 1
-      secondary += 3
-      menstrualPain -= 1
-    } else if(painPeriod === 'Inconsistent') {
-      secondary += 1
-  }
+  const painChangeMap: Record<string, [number, number, number]> = {
+    'No': [2, 0, 2],
+    'A little': [1, 1, 0],
+    'Nocitably': [0, 3, -1],
+    'Strongly': [-1, 3, -2],
+    'The pain is new': [-2, 3, -2]
+  };
+  if (painChangeMap[isPainChange]) add(...painChangeMap[isPainChange]);
 
+  if ((painType === 'Cramping' && (isMedicine === 'Well relieve' || isMedicine === 'Weel relieve'))) add(2, 0, 0);
+  if (has(isRegularPeriod, 'Not regular') && painCase === 'Bowel movement') add(0, 2, 0);
+  if (isPainChange !== 'No' && age > 25) add(-2, 0, 0);
+  if (flow === 'Heavy / Clots' && has(isRegularPeriod, 'Not regular')) add(0, 2, 0);
+  if (has(symptoms, 'Diarrhea') && has(symptoms, 'Nausea')) add(2, 0, 0);
+  if (has(painLocation, 'Legs') && has(painLocation, 'Pelvic area')) add(0, 2, 0);
+  if (has(isRegularPeriod, 'Regular') && flow === 'Medium') add(0, 0, 2);
+  if (has(isRegularPeriod, 'Not regular') && flow === 'Light / Spotting') add(0, 2, 0);
+  if (painPeriod === 'During period' && painDuration === '1-2 days') add(0, 2, 0);
+  if (has(isRegularPeriod, 'Not regular') && has(isRegularPeriod, 'Long delays/Amenorrhea')) add(0, 2, -1);
+  if (has(painLocation, 'Lower abdomen') && has(painLocation, 'Lower back') && has(painLocation, 'Legs')) add(0, 2, 0);
+  if (has(symptoms, 'Nausea') && has(symptoms, 'Headache') && has(symptoms, 'Dizziness')) add(2, 0, 0);
+  if ((isMedicine === 'Well relieve' || isMedicine === 'Weel relieve') && painDuration === 'Few hours') add(0, 0, 2);
+  if (painCase === 'Bowel movement' && flow === 'Heavy / Clots') add(0, 2, -1);
+  if (isPainChange !== 'No' && has(isRegularPeriod, 'Not regular') && !has(diagnoses, 'Normal') && !has(diagnoses, "Haven't done it")) add(0, 3, -2);
 
-  //PAIN LOCATION S7
-  if(painLocation.includes('Lower abdomen')) {
-      primary += 3
-      secondary += 2
-    }
-    if(painLocation.includes('Lower back')) {
-      primary += 2
-      secondary += 2
-    }
-    if(painLocation.includes('Legs')) {
-      primary += 1
-      secondary += 3
-    }
-    if(painLocation.includes('Pelvic area')) {
-      secondary += 3
-  }
-
-
-  //PAIN DURATION S7
-  if(painDuration === '1-2 days') {
-      primary += 1
-      menstrualPain += 3
-    } else if(painDuration === 'Few hours') {
-      primary += 3
-      secondary += 1
-      menstrualPain += 1
-    } else if(painDuration === '>2 days') {
-      primary += 1
-      secondary += 3
-      menstrualPain -= 2
-  }
-
-  //PAIN CASE S8
-  if(painCase === 'Physical activity') {
-      primary -= 1
-      secondary += 2
-    } else if(painCase === 'Intercourse') {
-      secondary += 3
-      menstrualPain += 1
-    } else if(painCase === 'Bowel movement') {
-      secondary += 3
-      menstrualPain -= 1
-    } else if(painCase === 'Urination') {
-      secondary += 2
-      menstrualPain -= 1
-    } else if(painCase === 'No connection with actions') {
-      primary += 2
-      menstrualPain += 2
-  }
-
-  //MEDICINE EFFECT S8
-  if(isMedicine === 'Weel relieve') {
-      primary += 3
-      menstrualPain += 3
-    } else if(isMedicine === 'Partially help') {
-      primary += 1
-      secondary += 2
-      menstrualPain += 1
-    } else if(isMedicine === "Don't help") {
-      primary -= 1
-      secondary += 3
-      menstrualPain -= 2
-  }
-
-  //PAIN CHANGES S9
-  if(isPainChange === 'No') {
-      primary += 2
-      menstrualPain += 2
-    } else if(isPainChange === 'A little') {
-      primary += 1
-      secondary += 1
-    } else if(isPainChange === 'Nocitably') {
-      secondary += 3
-      menstrualPain -= 1
-    } else if(isPainChange === 'Strongly') {
-      primary -= 1
-      secondary += 3
-      menstrualPain -= 2
-    } else if(isPainChange === 'The pain is new') {
-      primary -= 2
-      secondary += 3
-      menstrualPain -= 2
-  }
-
-
-  //BONUSE POINTS
-  if(painType === 'Cramping'  && isMedicine === 'Well relieve') primary += 2;
-  if(isRegularPeriod.includes('Not regular') && painCase === 'Bowel movement') secondary += 2;
-  if(isPainChange !== 'No'  && age > 25) primary -= 2;
-  if(flow === 'Heavy / Clots' && isRegularPeriod.includes('Not regular')) secondary += 2;
-  if(symptoms.includes("Diarrhea") && symptoms.includes("Nausea")) primary += 2;
-
-  if(painLocation.includes('Legs') && painLocation.includes('Pelvic area')) secondary += 2;
-  if(isRegularPeriod.includes('Regular') && flow === 'Medium')  menstrualPain += 2;
-  if(isRegularPeriod.includes('Not regular') && flow === 'Light / Spotting')  secondary += 2;
-  if(painPeriod === 'During period' && painDuration === '1-2 days')  secondary += 2;
-
-  if(isRegularPeriod.includes('Not regular') && isRegularPeriod.includes('Long delays/Amenorrhea')) {
-    secondary += 2;
-    menstrualPain -= 1;
-  }
-  if(painLocation.includes('Lower abdomen') && painLocation.includes('Lower back') && painLocation.includes('Legs')) secondary += 2;
-  if(symptoms.includes("Nausea") && symptoms.includes("Headache") && symptoms.includes("Dizziness")) primary += 2;
-
-  if(isMedicine === 'Well relieve' && painDuration === 'Few hours') menstrualPain += 2;
-  if(painCase === 'Bowel movement' && flow === 'Heavy / Clots') {
-    secondary += 2;
-    menstrualPain -= 1;
-  } 
-  if(isPainChange !== 'No' && isRegularPeriod.includes('Not regular') && (
-    !diagnoses.includes('Normal')
-    && !diagnoses.includes("Haven't done it")
-  )) {
-    secondary += 3;
-    menstrualPain -= 2;
-  }
-
-  const winner = Math.max(primary, secondary, menstrualPain);
-  
-  let diagnosisName = 'menstrualPain';
-  if (winner === primary) {
-    diagnosisName = 'primary';
-  } else if (winner === secondary) {
-    diagnosisName = 'secondary';
-  }
+  const winner = Math.max(scores.primary, scores.secondary, scores.menstrualPain);
+  const diagnosisName = winner === scores.primary ? 'primary' : winner === scores.secondary ? 'secondary' : 'menstrualPain';
 
   const titles: Record<string, string> = {
-    "primary": 'Primary dysmenorrhea',
-    "secondary": 'Secondary dysmenorrhea',
-    "menstrualPain": 'Menstrual pain',
-  }
+    primary: 'Primary dysmenorrhea',
+    secondary: 'Secondary dysmenorrhea',
+    menstrualPain: 'Menstrual pain',
+  };
 
-
-  return { primary, secondary, menstrualPain, diagnosis: titles[diagnosisName] }; 
+  return { ...scores, diagnosis: titles[diagnosisName] };
 };
