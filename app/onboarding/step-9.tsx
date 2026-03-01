@@ -2,7 +2,8 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { MEDICINE_EFFECTS, MedicineEffectType, PAIN_CASES, PainCaseType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,27 +12,38 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step9() {
   const router = useRouter();
-  const { setValue, painCase, isMedicine } = useRegistrationStore();
-  const [painCaseState, setPainCaseState] = useState<PainCaseType | ''>('');
-  const [isMedicineState, setIsMedicineState] = useState<MedicineEffectType | ''>('');
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const [formData, setFormData] = useState({
+    painCase: '' as PainCaseType | '',
+    isMedicine: '' as MedicineEffectType | '',
+  });
 
   useEffect(() => {
-    if (painCase) setPainCaseState(painCase as PainCaseType);
-    if (isMedicine) setIsMedicineState(isMedicine as MedicineEffectType);
-  }, [painCase, isMedicine]);
+    if (data?.medical) {
+      setFormData({
+        painCase: (data.medical.pain_case as PainCaseType) || '',
+        isMedicine: (data.medical.is_medicine as MedicineEffectType) || '',
+      });
+    }
+  }, [data]);
 
   const goBack = () => {
-    router.back();
-  };
-
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
+    router.push('/onboarding/step-8' as any);
   };
 
   const next = () => {
-    setValue(painCaseState, 'painCase');
-    setValue(isMedicineState, 'isMedicine');
-    router.push('/onboarding/step-10' as any);
+    updateMedical(
+      {
+        pain_case: formData.painCase || undefined,
+        is_medicine: formData.isMedicine || undefined,
+      },
+      {
+        onSuccess: () => {
+          router.push('/onboarding/step-10' as any);
+        },
+      }
+    );
   };
 
   const progressPercentage = 81.82; // Step 9 = 81.82% (9/11 * 100)
@@ -42,7 +54,7 @@ export default function Step9() {
         percentage={progressPercentage} 
         isSkip={true} 
         goBack={goBack}
-        onSkip={handleSkip}
+        currentStep={9}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="9" />
@@ -51,9 +63,9 @@ export default function Step9() {
 
         <View style={styles.tagsContainer}>
           {PAIN_CASES.map(item => {
-            const isActive = painCaseState === item;
+            const isActive = formData.painCase === item;
             return (
-              <Pressable key={item} onPress={() => setPainCaseState(item)}>
+              <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, painCase: item }))}>
                 <Text
                   style={[
                     typography.p,
@@ -69,9 +81,9 @@ export default function Step9() {
         <Text style={[typography.subtitle]}>Do painkillers (ibuprofen, nurofen etc) help you?</Text>
         <View style={styles.tagsContainer}>
           {MEDICINE_EFFECTS.map(item => {
-            const isActive = isMedicineState === item;
+            const isActive = formData.isMedicine === item;
             return (
-              <Pressable key={item} onPress={() => setIsMedicineState(item)}>
+              <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, isMedicine: item }))}>
                 <Text
                   style={[
                     typography.p,
@@ -87,11 +99,11 @@ export default function Step9() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={painCaseState === '' || isMedicineState === ''}
-          title="Next"
+          disabled={formData.painCase === '' || formData.isMedicine === '' || isUpdatingMedical}
+          title={isUpdatingMedical ? "Saving..." : "Next"}
           icon={(
             <MaterialIcons
-              color={painCaseState === '' || isMedicineState === '' ? '#999999' : '#000000'}
+              color={formData.painCase === '' || formData.isMedicine === '' || isUpdatingMedical ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

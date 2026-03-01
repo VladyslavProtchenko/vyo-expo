@@ -2,7 +2,8 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { SYMPTOM_LABELS, SymptomType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,24 +12,31 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step5() {
   const router = useRouter();
-  const { setValue, symptoms } = useRegistrationStore();
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const [tags, setTags] = useState<SymptomType[]>([]);
 
   useEffect(() => {
-    if (symptoms && symptoms.length > 0) setTags(symptoms);
-  }, [symptoms]);
+    if (data?.medical?.symptoms && data.medical.symptoms.length > 0) {
+      setTags(data.medical.symptoms as SymptomType[]);
+    }
+  }, [data]);
 
   const goBack = () => {
-    router.back();
-  };
-
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
+    router.push('/onboarding/step-4' as any);
   };
 
   const next = () => {
-    setValue(tags, 'symptoms');
-    router.push('/onboarding/step-6' as any);
+    updateMedical(
+      {
+        symptoms: tags,
+      },
+      {
+        onSuccess: () => {
+          router.push('/onboarding/step-6' as any);
+        },
+      }
+    );
   };
 
   const selectTag = (tag: SymptomType, isActive: boolean) => {
@@ -45,7 +53,7 @@ export default function Step5() {
         percentage={progressPercentage} 
         isSkip={true} 
         goBack={goBack}
-        onSkip={handleSkip}
+        currentStep={5}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="5" />
@@ -72,11 +80,11 @@ export default function Step5() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={tags.length === 0}
-          title="Next"
+          disabled={tags.length === 0 || isUpdatingMedical}
+          title={isUpdatingMedical ? "Saving..." : "Next"}
           icon={(
             <MaterialIcons
-              color={tags.length === 0 ? '#999999' : '#000000'}
+              color={tags.length === 0 || isUpdatingMedical ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

@@ -3,10 +3,11 @@ import ExploreCard from '@/app/(tabs)/components/ExploreCard';
 import FeelingCard from '@/app/(tabs)/components/FeelingCard';
 import InfoCard from '@/app/(tabs)/components/InfoCard';
 import Missions from '@/app/(tabs)/components/Missions';
+import SkipPoster from '@/app/phase/components/SkipPoster';
 import HomeHeader from '@/components/HomeHeader';
-import YoutubeCard from '@/components/YoutubeCard';
 import { useLoadUserData } from '@/hooks/useLoadUserData';
 import useStates from '@/store/useStates';
+import useUserStore from '@/store/useUserStore';
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
@@ -14,6 +15,7 @@ export default function HomePage() {
   const { isDayCardOpen } = useStates();
   const [isInfo, setIsInfo] = useState(true);
   const { refetch: loadUserData } = useLoadUserData();
+  const { isQuizSkipped } = useUserStore();
 
   useEffect(() => {
     loadUserData();
@@ -35,6 +37,7 @@ export default function HomePage() {
       {/* <YoutubeCard playButtonPosition="center" playButtonSize={50} /> */}
       {isDayCardOpen && <ExploreCard />}
       {isInfo && <InfoCard title={infoCardData.title} description={infoCardData.description} onClose={() => setIsInfo(false)} />}
+      {isQuizSkipped && <SkipPoster />}
       <Missions />
       <FeelingCard />
     </ScrollView>

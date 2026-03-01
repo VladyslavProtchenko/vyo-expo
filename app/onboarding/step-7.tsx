@@ -3,7 +3,9 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import Slider from '@/components/ui/Slider';
 import { typography } from '@/constants/typography';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
+import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { PAIN_TYPES, PainType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -12,40 +14,72 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step7() {
   const router = useRouter();
-  const { setValue, isPain, painType, intensity } = useRegistrationStore();
-  const [isPainState, setIsPainState] = useState<boolean | null>(isPain);
-  const [painIntensity, setPainIntensity] = useState<number>(intensity || 0);
-  const [painTypeState, setPainTypeState] = useState<PainType | ''>(painType as PainType || '');
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
+  const [formData, setFormData] = useState({
+    isPain: null as boolean | null,
+    painIntensity: 0,
+    painType: '' as PainType | '',
+  });
 
   useEffect(() => {
-    if (isPain !== null && isPain !== undefined) setIsPainState(isPain);
-    if (intensity !== null && intensity !== undefined) setPainIntensity(intensity);
-    if (painType) setPainTypeState(painType as PainType);
-  }, [isPain, painType, intensity]);
+    if (data?.medical) {
+      setFormData({
+        isPain: data.medical.is_pain,
+        painIntensity: data.medical.pain_intensity || 0,
+        painType: (data.medical.pain_type as PainType) || '',
+      });
+    }
+  }, [data]);
 
   const goBack = () => {
-    router.back();
-  };
-
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
+    router.push('/onboarding/step-6' as any);
   };
 
   const next = () => {
-    if (isPainState === null) return;
-    if (isPainState === true) {
-      setValue(isPainState, 'isPain');
-      setValue(painTypeState, 'painType');
-      setValue(painIntensity, 'intensity');
-      router.push('/onboarding/step-8' as any);
+    if (formData.isPain === null) return;
+    
+    if (formData.isPain === true) {
+      updateMedical(
+        {
+          is_pain: formData.isPain,
+          pain_type: formData.painType || undefined,
+          pain_intensity: formData.painIntensity || undefined,
+        },
+        {
+          onSuccess: () => {
+            router.push('/onboarding/step-8' as any);
+          },
+        }
+      );
     } else {
-      setValue(isPainState, 'isPain');
-      router.push('/sync-data' as any);
+      updateMedical(
+        {
+          is_pain: formData.isPain,
+        },
+        {
+          onSuccess: () => {
+            updateProfile(
+              { 
+                onboarding_completed: true,
+                is_quiz_skipped: false,
+                last_completed_quiz_step: 7,
+              },
+              {
+                onSuccess: () => {
+                  router.push('/sync-data' as any);
+                },
+              }
+            );
+          },
+        }
+      );
     }
   };
 
-  const title = isPainState ? 'Next' : 'Get my care plan?';
-  const isDisabled = isPainState === null || (isPainState && (painTypeState === '' || painIntensity === 0));
+  const title = formData.isPain ? 'Next' : 'Get my care plan?';
+  const isDisabled = formData.isPain === null || (formData.isPain && (formData.painType === '' || formData.painIntensity === 0)) || isUpdatingMedical || isUpdatingProfile;
   const progressPercentage = 63.64; // Step 7 = 63.64% (7/11 * 100)
 
   return (
@@ -54,7 +88,7 @@ export default function Step7() {
         percentage={progressPercentage} 
         isSkip={true} 
         goBack={goBack}
-        onSkip={handleSkip}
+        currentStep={7}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="7" />
@@ -63,9 +97,9 @@ export default function Step7() {
 
         <View style={styles.tagsContainer}>
           {['No', 'Yes'].map(item => {
-            const isActive = isPainState === (item === 'Yes' ? true : false);
+            const isActive = formData.isPain === (item === 'Yes' ? true : false);
             return (
-              <Pressable key={item} onPress={() => setIsPainState(item === 'Yes' ? true : false)}>
+              <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, isPain: item === 'Yes' ? true : false }))}>
                 <Text
                   style={[
                     typography.p,
@@ -78,12 +112,12 @@ export default function Step7() {
           })}
         </View>
 
-        {isPainState && (
+        {formData.isPain && (
           <>
             <Text style={typography.subtitle}>What's its intensity from 1 to 10?</Text>
             <Slider
-              value={painIntensity}
-              onValueChange={setPainIntensity}
+              value={formData.painIntensity}
+              onValueChange={(value) => setFormData(prev => ({ ...prev, painIntensity: value }))}
               minimumValue={0}
               maximumValue={10}
               step={1}
@@ -91,9 +125,9 @@ export default function Step7() {
             <Text style={[typography.subtitle, styles.painTypeTitle]}>What type of pain do you feel?</Text>
             <View style={styles.tagsContainer}>
               {PAIN_TYPES.map(item => {
-                const isActive = painTypeState === item;
+                const isActive = formData.painType === item;
                 return (
-                  <Pressable key={item} onPress={() => setPainTypeState(item)}>
+                  <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, painType: item }))}>
                     <Text
                       style={[
                         typography.p,
@@ -112,7 +146,7 @@ export default function Step7() {
       <View style={styles.buttonContainer}>
         <ButtonGradient
           disabled={isDisabled}
-          title={title}
+          title={isUpdatingMedical || isUpdatingProfile ? "Saving..." : title}
           icon={(
             <MaterialIcons
               color={isDisabled ? '#999999' : '#000000'}

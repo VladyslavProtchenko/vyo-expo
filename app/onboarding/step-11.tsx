@@ -4,8 +4,10 @@ import Calendar from '@/components/ui/Calendar';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
 import { useDiagnosis } from '@/hooks/useDiagnosis';
-import { useSaveDiagnosis, useSaveProfile } from '@/hooks/useProfileData';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useSaveDiagnosis } from '@/hooks/useProfileData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
+import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -30,79 +32,83 @@ const otherSymptomsLabels = [
 
 export default function Step11() {
   const router = useRouter();
-  const { setValue, surgery, surgeryDate, otherSymptoms, isDiagnosed } = useRegistrationStore();
-  const { saveProfileData, loading: profileLoading } = useSaveProfile();
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
   const { saveDiagnosisResults, loading: diagnosisLoading } = useSaveDiagnosis();
   const diagnosisResult = useDiagnosis();
   
-  const loading = profileLoading || diagnosisLoading;
+  const loading = isUpdatingMedical || isUpdatingProfile || diagnosisLoading;
   
-  const [surgeryState, setSurgeryState] = useState<string>(surgery || '');
-  const [surgeryDateState, setSurgeryDateState] = useState<string | null>(surgeryDate || null);
-  const [otherSymptomsState, setOtherSymptomsState] = useState<string[]>(otherSymptoms || []);
+  const [formData, setFormData] = useState({
+    surgery: '',
+    surgeryDate: null as string | null,
+    otherSymptoms: [] as string[],
+  });
+
+  const isDiagnosed = data?.medical?.is_diagnosed || false;
 
   useEffect(() => {
-    if (surgery) setSurgeryState(surgery);
-    if (surgeryDate) setSurgeryDateState(surgeryDate);
-    if (otherSymptoms) setOtherSymptomsState(otherSymptoms);
-  }, [surgery, surgeryDate, otherSymptoms]);
+    if (data?.medical) {
+      setFormData({
+        surgery: data.medical.surgery || '',
+        surgeryDate: data.medical.surgery_date || null,
+        otherSymptoms: data.medical.other_symptoms || [],
+      });
+    }
+  }, [data]);
 
   const goBack = () => {
-    router.back();
-  };
-
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
+    router.push('/onboarding/step-10' as any);
   };
 
   const selectTag = (tag: string, isActive: boolean) => {
     isActive
-      ? setOtherSymptomsState(otherSymptomsState.filter(item => item !== tag))
-      : setOtherSymptomsState([...otherSymptomsState, tag]);
+      ? setFormData(prev => ({ ...prev, otherSymptoms: prev.otherSymptoms.filter(item => item !== tag) }))
+      : setFormData(prev => ({ ...prev, otherSymptoms: [...prev.otherSymptoms, tag] }));
   };
 
   const next = async () => {
     try {
-      // 1. Update local state with final answers
-      if (isDiagnosed) {
-        setValue(surgeryState, 'surgery');
-        setValue(surgeryDateState, 'surgeryDate');
-        setValue(otherSymptomsState, 'otherSymptoms');
-      } else {
-        setValue(otherSymptomsState, 'otherSymptoms');
-      }
-
-      // 2. Calculate diagnosis
-      console.log('📊 Calculating diagnosis...');
       const { primary, secondary, menstrualPain, diagnosis } = diagnosisResult;
-      console.log('📊 Diagnosis results:', { primary, secondary, menstrualPain, diagnosis });
 
-      // 3. Save profile and medical data
-      console.log('💾 Saving profile data...');
-      const profileResult = await saveProfileData();
-      if (!profileResult.success) {
-        console.error('❌ Failed to save profile data:', profileResult.error);
-        alert('Failed to save profile data. Please try again.');
-        return;
-      }
+      updateMedical(
+        {
+          surgery: isDiagnosed ? formData.surgery || undefined : undefined,
+          surgery_date: isDiagnosed ? formData.surgeryDate || undefined : undefined,
+          other_symptoms: formData.otherSymptoms,
+        },
+        {
+          onSuccess: async () => {
+            const diagnosisResultSave = await saveDiagnosisResults(
+              primary,
+              secondary,
+              menstrualPain,
+              diagnosis
+            );
+            
+            if (!diagnosisResultSave.success) {
+              console.error('❌ Failed to save diagnosis results:', diagnosisResultSave.error);
+              alert('Failed to save diagnosis results. Please try again.');
+              return;
+            }
 
-      // 4. Save diagnosis results
-      console.log('💾 Saving diagnosis results...');
-      const diagnosisResultSave = await saveDiagnosisResults(
-        primary,
-        secondary,
-        menstrualPain,
-        diagnosis
+            updateProfile(
+              { 
+                onboarding_completed: true,
+                is_quiz_skipped: false,
+                last_completed_quiz_step: 11,
+              },
+              {
+                onSuccess: () => {
+                  console.log('✅ Onboarding completed! All data saved successfully');
+                  router.push('/sync-data' as any);
+                },
+              }
+            );
+          },
+        }
       );
-      
-      if (!diagnosisResultSave.success) {
-        console.error('❌ Failed to save diagnosis results:', diagnosisResultSave.error);
-        alert('Failed to save diagnosis results. Please try again.');
-        return;
-      }
-
-      console.log('✅ Onboarding completed! All data saved successfully');
-      router.push('/sync-data' as any);
     } catch (error: any) {
       console.error('❌ Error during onboarding completion:', error);
       alert('An error occurred. Please try again.');
@@ -117,7 +123,7 @@ export default function Step11() {
         percentage={progressPercentage}
         isSkip={true}
         goBack={goBack}
-        onSkip={handleSkip}
+        currentStep={11}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="11" />
@@ -128,9 +134,9 @@ export default function Step11() {
 
             <View style={styles.tagsContainer}>
               {surgeries.map(item => {
-                const isActive = surgeryState === item;
+                const isActive = formData.surgery === item;
                 return (
-                  <Pressable key={item} onPress={() => setSurgeryState(item)}>
+                  <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, surgery: item }))}>
                     <Text
                       style={[
                         typography.p,
@@ -147,8 +153,8 @@ export default function Step11() {
             <View style={styles.calendarSpacing}>
               <Calendar
                 title="Select date"
-                value={surgeryDateState}
-                setValue={setSurgeryDateState}
+                value={formData.surgeryDate}
+                setValue={(value) => setFormData(prev => ({ ...prev, surgeryDate: value }))}
               />
             </View>
           </>
@@ -159,7 +165,7 @@ export default function Step11() {
 
             <View style={styles.tagsContainer}>
               {otherSymptomsLabels.map(item => {
-                const isActive = otherSymptomsState.find(i => i === item) ? true : false;
+                const isActive = formData.otherSymptoms.find(i => i === item) ? true : false;
                 return (
                   <Pressable key={item} onPress={() => selectTag(item, isActive)}>
                     <Text
@@ -182,8 +188,8 @@ export default function Step11() {
           disabled={
             loading ||
             (isDiagnosed
-              ? surgeryState === '' || surgeryDateState === null || surgeryDateState === ''
-              : otherSymptomsState.length === 0)
+              ? formData.surgery === '' || formData.surgeryDate === null || formData.surgeryDate === ''
+              : formData.otherSymptoms.length === 0)
           }
           title={loading ? "Saving..." : "Get my care plan"}
           icon={
@@ -193,10 +199,10 @@ export default function Step11() {
               <MaterialIcons
                 color={
                   isDiagnosed
-                    ? surgeryState === '' || surgeryDateState === null || surgeryDateState === ''
+                    ? formData.surgery === '' || formData.surgeryDate === null || formData.surgeryDate === ''
                       ? '#999999'
                       : '#000000'
-                    : otherSymptomsState.length === 0
+                    : formData.otherSymptoms.length === 0
                       ? '#999999'
                       : '#000000'
                 }

@@ -1,23 +1,35 @@
 import ButtonRounded from '@/components/ui/ButtonRounded';
 import { typography } from '@/constants/typography';
+import { useSavePartialQuiz } from '@/hooks/useProfileData';
+import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
 interface SkipQuizProps {
-  onSkip: () => void;
+  currentStep: number;
 }
 
-export default function SkipQuiz({ onSkip }: SkipQuizProps) {
+export default function SkipQuiz({ currentStep }: SkipQuizProps) {
   const [open, setOpen] = useState(false);
+  const { savePartialQuizData, loading } = useSavePartialQuiz();
+  const router = useRouter();
 
-  const handleSkip = () => {
+  const handleSkip = async () => {
     setOpen(false);
-    onSkip();
+    
+    const result = await savePartialQuizData(currentStep);
+    
+    if (result.success) {
+      router.push('/sync-data' as any);
+    } else {
+      console.error('Failed to save partial quiz:', result.error);
+      alert('Failed to save data. Please try again.');
+    }
   };
 
   return (
     <View>
-      <Pressable onPress={() => setOpen(true)}>
+      <Pressable onPress={() => setOpen(true)} disabled={loading}>
         <Text style={typography.p}>Skip</Text>
       </Pressable>
 
@@ -33,10 +45,14 @@ export default function SkipQuiz({ onSkip }: SkipQuizProps) {
                 title="Stay and proceed"
                 type='black'
                 onPress={() => setOpen(false)}
+                enabled={!loading}
+                className={styles.fullWidthButton}
               />  
               <ButtonRounded
-                title="Skip"
+                title={loading ? "Saving..." : "Skip"}
                 onPress={handleSkip}
+                enabled={!loading}
+                className={styles.fullWidthButton}
               />  
             </View>
           </Pressable>
@@ -61,6 +77,9 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     gap: 12,
-    alignItems: 'center',
+    width: '100%',
+  },
+  fullWidthButton: {
+    width: '100%',
   },
 });

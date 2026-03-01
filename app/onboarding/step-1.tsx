@@ -5,7 +5,9 @@ import Input from '@/components/ui/Input';
 import Number from '@/components/ui/Number';
 import Select from '@/components/ui/Select';
 import { typography } from '@/constants/typography';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
+import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { MaterialIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
@@ -14,33 +16,51 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step1() {
   const router = useRouter();
-  const { setValue, age, startMenstruation, menstruationDuration, cycleDuration } = useRegistrationStore();
-  const [ageState, setAgeState] = useState<number>(0);
-  const [menstruationDate, setMenstruationDate] = useState<string | null>(null);
-  const [menstrDuration, setMenstrDuration] = useState<number>(5);
-  const [cycle, setCycle] = useState<number>(0);
+  const { data } = useOnboardingData();
+  const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const [formData, setFormData] = useState({
+    age: 0,
+    menstruationDate: null as string | null,
+    menstrDuration: 5,
+    cycle: 0,
+  });
 
   useEffect(() => {
-    if (age && age > 0) setAgeState(age);
-    if (startMenstruation) setMenstruationDate(startMenstruation);
-    if (menstruationDuration) setMenstrDuration(menstruationDuration);
-    if (cycleDuration && cycleDuration > 0) setCycle(cycleDuration);
-  }, [age, startMenstruation, menstruationDuration, cycleDuration]);
+    if (data) {
+      setFormData({
+        age: data.profile?.age && data.profile.age > 0 ? data.profile.age : 0,
+        menstruationDate: data.medical?.start_menstruation || null,
+        menstrDuration: data.medical?.menstruation_duration || 5,
+        cycle: data.medical?.cycle_duration && data.medical.cycle_duration > 0 ? data.medical.cycle_duration : 0,
+      });
+    }
+  }, [data]);
 
   const goBack = () => {
     router.back();
   };
 
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
-  };
-
   const next = () => {
-    setValue(ageState, 'age');
-    setValue(menstruationDate, 'startMenstruation');
-    setValue(menstrDuration, 'menstruationDuration');
-    setValue(cycle, 'cycleDuration');
-    router.push('/onboarding/step-2' as any);
+    updateProfile(
+      { age: formData.age },
+      {
+        onSuccess: () => {
+          updateMedical(
+            {
+              start_menstruation: formData.menstruationDate,
+              menstruation_duration: formData.menstrDuration,
+              cycle_duration: formData.cycle,
+            },
+            {
+              onSuccess: () => {
+                router.push('/onboarding/step-2' as any);
+              },
+            }
+          );
+        },
+      }
+    );
   };
 
   const progressPercentage = 9.09; // Step 1 = 9.09% (1/11 * 100)
@@ -51,7 +71,6 @@ export default function Step1() {
         percentage={progressPercentage} 
         isSkip={false} 
         goBack={goBack}
-        onSkip={handleSkip}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="1" />
@@ -62,10 +81,10 @@ export default function Step1() {
         <View style={styles.calendarSpacing}>
           <Input
             type="numeric"
-            value={ageState > 0 ? String(ageState) : ''}
+            value={formData.age > 0 ? String(formData.age) : ''}
             onChange={(value: string) => {
               const numericValue = value.replace(/[^0-9]/g, '');
-              setAgeState(numericValue ? parseInt(numericValue, 10) : 0);
+              setFormData(prev => ({ ...prev, age: numericValue ? parseInt(numericValue, 10) : 0 }));
             }}
             placeholder="Your Age"
           />
@@ -75,8 +94,8 @@ export default function Step1() {
 
         <View style={styles.calendarSpacing}>
           <Calendar
-            value={menstruationDate}
-            setValue={setMenstruationDate}
+            value={formData.menstruationDate}
+            setValue={(value) => setFormData(prev => ({ ...prev, menstruationDate: value }))}
             title="Start of last menstruation"
           />
         </View>
@@ -84,8 +103,8 @@ export default function Step1() {
         <View style={styles.selectSpacing}>
           <Select
             title="Menstruation duration"
-            value={menstrDuration}
-            setValue={setMenstrDuration}
+            value={formData.menstrDuration}
+            setValue={(value) => setFormData(prev => ({ ...prev, menstrDuration: value }))}
             values={Array.from({ length: 16 }, (_, i) => i + 1)}
           />
         </View>
@@ -93,10 +112,10 @@ export default function Step1() {
         <View style={styles.selectSpacing}>
           <Input
             type="numeric"
-            value={cycle > 0 ? String(cycle) : ''}
+            value={formData.cycle > 0 ? String(formData.cycle) : ''}
             onChange={(value: string) => {
               const numericValue = value.replace(/[^0-9]/g, '');
-              setCycle(numericValue ? parseInt(numericValue, 10) : 0);
+              setFormData(prev => ({ ...prev, cycle: numericValue ? parseInt(numericValue, 10) : 0 }));
             }}
             placeholder="Cycle duration, ie 28 or 28-32"
           />
@@ -105,11 +124,11 @@ export default function Step1() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={!ageState || !menstruationDate || !menstrDuration || !cycle}
-          title="Next"
+          disabled={!formData.age || !formData.menstruationDate || !formData.menstrDuration || !formData.cycle || isUpdatingProfile || isUpdatingMedical}
+          title={isUpdatingProfile || isUpdatingMedical ? "Saving..." : "Next"}
           icon={(
             <MaterialIcons
-              color={!ageState || !menstruationDate || !menstrDuration || !cycle ? '#999999' : '#000000'}
+              color={!formData.age || !formData.menstruationDate || !formData.menstrDuration || !formData.cycle ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

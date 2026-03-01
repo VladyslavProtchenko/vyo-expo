@@ -1,5 +1,4 @@
 import { supabase } from '@/config/supabase';
-import useRegistrationStore from '@/store/useRegistrationStore';
 import { useEffect, useState } from 'react';
 
 interface SaveProfileResult {
@@ -11,96 +10,6 @@ interface ProfileStatus {
   onboardingCompleted: boolean;
   loading: boolean;
 }
-
-export const useSaveProfile = () => {
-  const [loading, setLoading] = useState(false);
-  const profileData = useRegistrationStore();
-
-  const saveProfileData = async (): Promise<SaveProfileResult> => {
-    setLoading(true);
-    
-    try {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session?.user) {
-        return { success: false, error: 'User not authenticated' };
-      }
-
-      // 1. Update profile - only update physical parameters, don't touch name and email
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .update({ 
-          age: profileData.age,
-          weight: profileData.weight,
-          height: profileData.height,
-          waist: profileData.waist,
-          hips: profileData.hips,
-          unit_system: profileData.unitSystem,
-          onboarding_completed: true,
-        })
-        .eq('id', session.user.id);
-
-      if (profileError) {
-        console.error('Error upserting profile:', profileError);
-        return { success: false, error: profileError.message };
-      }
-
-      // 2. Save medical data
-      console.log('💾 Saving medical data:', {
-        isMedicine: profileData.isMedicine,
-        painType: profileData.painType,
-        isPainChange: profileData.isPainChange,
-      });
-
-      const { error: medicalError } = await supabase
-        .from('medical_data')
-        .upsert({
-          user_id: session.user.id,
-          start_menstruation: profileData.startMenstruation,
-          menstruation_duration: profileData.menstruationDuration,
-          cycle_duration: profileData.cycleDuration,
-          flow: profileData.flow || null,
-          is_regular_period: profileData.isRegularPeriod,
-          is_diagnosed: profileData.isDiagnosed,
-          diagnosed_conditions: profileData.diagnoses,
-          symptoms: profileData.symptoms,
-          additional_symptoms: profileData.additionalSymptoms || [],
-          other_symptoms: profileData.otherSymptoms,
-          is_pain: profileData.isPain,
-          pain_type: profileData.painType || '',
-          pain_intensity: profileData.intensity,
-          pain_period: profileData.painPeriod || '',
-          pain_location: profileData.painLocation,
-          pain_duration: profileData.painDuration || '',
-          pain_case: profileData.painCase || '',
-          is_medicine: profileData.isMedicine || '',
-          is_pain_change: profileData.isPainChange || '',
-          surgery: profileData.surgery,
-          surgery_date: profileData.surgeryDate || null,
-        }, {
-          onConflict: 'user_id'
-        });
-
-      if (medicalError) {
-        console.error('Error saving medical data:', medicalError);
-        return { success: false, error: medicalError.message };
-      }
-
-      profileData.setValue(true, 'finished');
-
-      console.log('✅ Profile data saved successfully');
-      return { success: true };
-      
-    } catch (error: any) {
-      console.error('Error saving profile:', error);
-      return { success: false, error: error.message };
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return { saveProfileData, loading };
-};
 
 export const useSaveDiagnosis = () => {
   const [loading, setLoading] = useState(false);
@@ -150,6 +59,44 @@ export const useSaveDiagnosis = () => {
   };
 
   return { saveDiagnosisResults, loading };
+};
+
+export const useSavePartialQuiz = () => {
+  const [loading, setLoading] = useState(false);
+
+  const savePartialQuizData = async (currentStep: number): Promise<SaveProfileResult> => {
+    setLoading(true);
+    
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session?.user) {
+        return { success: false, error: 'User not authenticated' };
+      }
+
+      const { error } = await supabase
+        .from('profiles')
+        .update({ 
+          onboarding_completed: true,
+          is_quiz_skipped: true,
+          last_completed_quiz_step: currentStep,
+        })
+        .eq('id', session.user.id);
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+      
+    } catch (error: any) {
+      return { success: false, error: error.message };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return { savePartialQuizData, loading };
 };
 
 export const useCheckOnboarding = (): ProfileStatus => {

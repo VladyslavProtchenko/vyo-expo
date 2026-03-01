@@ -2,7 +2,8 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { PAIN_DURATIONS, PAIN_LOCATIONS, PAIN_PERIODS, PainDurationType, PainLocationType, PainPeriodType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,38 +12,47 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step8() {
   const router = useRouter();
-  const { setValue, painPeriod, painLocation, painDuration } = useRegistrationStore();
-  const [painPeriodState, setPainPeriodState] = useState<PainPeriodType | ''>('');
-  const [painLocationState, setPainLocationState] = useState<PainLocationType[]>([]);
-  const [painDurationState, setPainDurationState] = useState<PainDurationType | ''>('');
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const [formData, setFormData] = useState({
+    painPeriod: '' as PainPeriodType | '',
+    painLocation: [] as PainLocationType[],
+    painDuration: '' as PainDurationType | '',
+  });
 
   useEffect(() => {
-    if (painPeriod) setPainPeriodState(painPeriod as PainPeriodType);
-    if (Array.isArray(painLocation) && painLocation.length > 0) {
-      setPainLocationState(painLocation as PainLocationType[]);
+    if (data?.medical) {
+      setFormData({
+        painPeriod: (data.medical.pain_period as PainPeriodType) || '',
+        painLocation: (data.medical.pain_location as PainLocationType[]) || [],
+        painDuration: (data.medical.pain_duration as PainDurationType) || '',
+      });
     }
-    if (painDuration) setPainDurationState(painDuration as PainDurationType);
-  }, [painPeriod, painLocation, painDuration]);
+  }, [data]);
 
   const goBack = () => {
-    router.back();
-  };
-
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
+    router.push('/onboarding/step-7' as any);
   };
 
   const selectPainLocation = (location: PainLocationType, isActive: boolean) => {
     isActive
-      ? setPainLocationState(painLocationState.filter(item => item !== location))
-      : setPainLocationState([...painLocationState, location]);
+      ? setFormData(prev => ({ ...prev, painLocation: prev.painLocation.filter(item => item !== location) }))
+      : setFormData(prev => ({ ...prev, painLocation: [...prev.painLocation, location] }));
   };
 
   const next = () => {
-    setValue(painPeriodState, 'painPeriod');
-    setValue(painLocationState, 'painLocation');
-    setValue(painDurationState, 'painDuration');
-    router.push('/onboarding/step-9' as any);
+    updateMedical(
+      {
+        pain_period: formData.painPeriod || undefined,
+        pain_location: formData.painLocation,
+        pain_duration: formData.painDuration || undefined,
+      },
+      {
+        onSuccess: () => {
+          router.push('/onboarding/step-9' as any);
+        },
+      }
+    );
   };
 
   const progressPercentage = 72.73; // Step 8 = 72.73% (8/11 * 100)
@@ -53,7 +63,7 @@ export default function Step8() {
         percentage={progressPercentage} 
         isSkip={true} 
         goBack={goBack}
-        onSkip={handleSkip}
+        currentStep={8}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="8" />
@@ -62,9 +72,9 @@ export default function Step8() {
 
         <View style={styles.tagsContainer}>
           {PAIN_PERIODS.map(item => {
-            const isActive = painPeriodState === item;
+            const isActive = formData.painPeriod === item;
             return (
-              <Pressable key={item} onPress={() => setPainPeriodState(item)}>
+              <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, painPeriod: item }))}>
                 <Text
                   style={[
                     typography.p,
@@ -80,7 +90,7 @@ export default function Step8() {
         <Text style={[typography.subtitle]}>Where do you feel the pain?</Text>
         <View style={styles.tagsContainer}>
           {PAIN_LOCATIONS.map(item => {
-            const isActive = painLocationState.find(i => i === item) ? true : false;
+            const isActive = formData.painLocation.find(i => i === item) ? true : false;
             return (
               <Pressable key={item} onPress={() => selectPainLocation(item, isActive)}>
                 <Text
@@ -98,9 +108,9 @@ export default function Step8() {
         <Text style={[typography.subtitle]}>How long does the pain last?</Text>
         <View style={styles.tagsContainer}>
           {PAIN_DURATIONS.map(item => {
-            const isActive = painDurationState === item;
+            const isActive = formData.painDuration === item;
             return (
-              <Pressable key={item} onPress={() => setPainDurationState(item)}>
+              <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, painDuration: item }))}>
                 <Text
                   style={[
                     typography.p,
@@ -116,11 +126,11 @@ export default function Step8() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={painPeriodState === '' || painLocationState.length === 0 || painDurationState === ''}
-          title="Next"
+          disabled={formData.painPeriod === '' || formData.painLocation.length === 0 || formData.painDuration === '' || isUpdatingMedical}
+          title={isUpdatingMedical ? "Saving..." : "Next"}
           icon={(
             <MaterialIcons
-              color={painPeriodState === '' || painLocationState.length === 0 || painDurationState === '' ? '#999999' : '#000000'}
+              color={formData.painPeriod === '' || formData.painLocation.length === 0 || formData.painDuration === '' || isUpdatingMedical ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

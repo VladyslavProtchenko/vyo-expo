@@ -12,12 +12,12 @@ import { ActivityIndicator, ImageBackground, Pressable, StyleSheet, Text, View }
 export default function Login() {
     const router = useRouter();
     
-    // TEMPORARY: Return step-4 directly for design work
     const { signInWithGoogle, loading: isGoogleLoading } = useGoogleSignIn();
     const [checking, setChecking] = useState(true);
     const { refetch: loadUserData } = useLoadUserData();
     
     useEffect(() => {
+        checkAuthStatus();
     }, []);
 
     const checkAuthStatus = async () => {
@@ -41,9 +41,35 @@ export default function Login() {
                 .eq('id', session.user.id)
                 .single();
 
-            if (error) {
+            if (error && error.code !== 'PGRST116') {
                 console.error('❌ Error checking profile:', error);
                 setChecking(false);
+                return;
+            }
+
+            if (!profile) {
+                console.log('📝 Profile not found - creating profile...');
+                const fullName = session.user.user_metadata?.full_name || 
+                               session.user.user_metadata?.name || 
+                               session.user.email?.split('@')[0] || '';
+                const firstName = fullName.split(' ')[0];
+                
+                const { error: createError } = await supabase
+                    .from('profiles')
+                    .insert({
+                        id: session.user.id,
+                        email: session.user.email || '',
+                        name: firstName,
+                    });
+                
+                if (createError) {
+                    console.error('❌ Error creating profile:', createError);
+                    setChecking(false);
+                    return;
+                }
+                
+                console.log('✅ Profile created - redirecting to onboarding');
+                router.replace('/onboarding/step-1' as any);
                 return;
             }
 
@@ -66,7 +92,6 @@ export default function Login() {
             const result = await signInWithGoogle();
             if (result.success) {
                 console.log('✅ Google sign in successful, checking onboarding...');
-                // Re-check auth status to redirect properly
                 await checkAuthStatus();
             } else {
                 console.error('❌ Google sign in error:', result.error);

@@ -2,7 +2,8 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { DIAGNOSIS_LABELS, DiagnosisType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,27 +12,38 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step3() {
   const router = useRouter();
-  const { setValue, diagnoses } = useRegistrationStore();
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const [tags, setTags] = useState<DiagnosisType[]>([]);
 
   useEffect(() => {
-    if (diagnoses && diagnoses.length > 0) setTags(diagnoses);
-  }, [diagnoses]);
+    if (data?.medical?.diagnosed_conditions && data.medical.diagnosed_conditions.length > 0) {
+      setTags(data.medical.diagnosed_conditions as DiagnosisType[]);
+    }
+  }, [data]);
 
   const goBack = () => {
-    router.back();
-  };
-
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
+    router.push('/onboarding/step-2' as any);
   };
 
   const next = () => {
-    if (tags.includes('Endometriosis') || tags.includes('Adenomyosis')) {
-      setValue(true, 'isDiagnosed');
+    if (tags.length === 0) {
+      return;
     }
-    setValue(tags, 'diagnoses');
-    router.push('/onboarding/step-4' as any);
+    
+    const isDiagnosed = tags.includes('Endometriosis') || tags.includes('Adenomyosis');
+    
+    updateMedical(
+      {
+        diagnosed_conditions: tags,
+        is_diagnosed: isDiagnosed,
+      },
+      {
+        onSuccess: () => {
+          router.push('/onboarding/step-4' as any);
+        },
+      }
+    );
   };
 
   const selectTag = (tag: DiagnosisType, isActive: boolean) => {
@@ -40,15 +52,14 @@ export default function Step3() {
       : setTags([...tags, tag]);
   };
 
-  const progressPercentage = 27.27; // Step 3 = 27.27% (3/11 * 100)
-
+  const progressPercentage = 27.27; 
   return (
     <View style={styles.container}>
       <Progress 
         percentage={progressPercentage} 
         isSkip={true} 
         goBack={goBack}
-        onSkip={handleSkip}
+        currentStep={3}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="3" />
@@ -75,11 +86,11 @@ export default function Step3() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={tags.length === 0}
-          title="Next"
+          disabled={tags.length === 0 || isUpdatingMedical}
+          title={isUpdatingMedical ? "Saving..." : "Next"}
           icon={(
             <MaterialIcons
-              color={tags.length === 0 ? '#999999' : '#000000'}
+              color={tags.length === 0 || isUpdatingMedical ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

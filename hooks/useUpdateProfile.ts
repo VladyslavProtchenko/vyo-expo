@@ -1,57 +1,40 @@
 import { supabase } from '@/config/supabase';
-import useUserStore from '@/store/useUserStore';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-type ProfileField = 'name' | 'weight' | 'height' | 'waist' | 'hips' | 'age' | 'cycleDuration' | 'menstruationDuration' | 'unitSystem';
+export interface UpdateProfileData {
+  age?: number;
+  weight?: number;
+  height?: number;
+  waist?: number;
+  hips?: number;
+  unit_system?: 'metric' | 'imperial';
+  onboarding_completed?: boolean;
+  is_quiz_skipped?: boolean;
+  last_completed_quiz_step?: number;
+}
 
 export const useUpdateProfile = () => {
   const queryClient = useQueryClient();
-  const { setUser } = useUserStore();
 
   return useMutation({
-    mutationFn: async ({ field, value }: { field: ProfileField; value: string | number }) => {
+    mutationFn: async (data: UpdateProfileData) => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) throw new Error('User not authenticated');
-
-      const profileFields: ProfileField[] = ['name', 'weight', 'height', 'waist', 'hips', 'age', 'unitSystem'];
-      const medicalFields: ProfileField[] = ['cycleDuration', 'menstruationDuration'];
-
-      if (profileFields.includes(field)) {
-        const dbFieldMap: Record<'name' | 'weight' | 'height' | 'waist' | 'hips' | 'age' | 'unitSystem', string> = {
-          name: 'name',
-          weight: 'weight',
-          height: 'height',
-          waist: 'waist',
-          hips: 'hips',
-          age: 'age',
-          unitSystem: 'unit_system',
-        };
-
-        const { error } = await supabase
-          .from('profiles')
-          .update({ [dbFieldMap[field as keyof typeof dbFieldMap]]: value })
-          .eq('id', session.user.id);
-
-        if (error) throw error;
-      } else if (medicalFields.includes(field)) {
-        const dbFieldMap: Record<'cycleDuration' | 'menstruationDuration', string> = {
-          cycleDuration: 'cycle_duration',
-          menstruationDuration: 'menstruation_duration',
-        };
-
-        const { error } = await supabase
-          .from('medical_data')
-          .update({ [dbFieldMap[field as keyof typeof dbFieldMap]]: value })
-          .eq('user_id', session.user.id);
-
-        if (error) throw error;
+      
+      if (!session?.user) {
+        throw new Error('Not authenticated');
       }
 
-      return { field, value };
+      const { error } = await supabase
+        .from('profiles')
+        .update(data)
+        .eq('id', session.user.id);
+
+      if (error) throw error;
+
+      return data;
     },
-    onSuccess: ({ field, value }) => {
-      setUser({ [field]: value });
-      queryClient.invalidateQueries({ queryKey: ['userData'] });
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['onboarding-data'] });
     },
   });
 };

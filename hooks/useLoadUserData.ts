@@ -35,6 +35,8 @@ export const useLoadUserData = () => {
         waist: profile.waist,
         hips: profile.hips,
         unitSystem: profile.unit_system,
+        isQuizSkipped: profile.is_quiz_skipped || false,
+        lastCompletedQuizStep: profile.last_completed_quiz_step || 0,
       });
 
       if (medical) {

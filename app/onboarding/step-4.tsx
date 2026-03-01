@@ -2,7 +2,8 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { ADDITIONAL_SYMPTOM_LABELS, AdditionalSymptomType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,24 +12,31 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step4() {
   const router = useRouter();
-  const { setValue, additionalSymptoms } = useRegistrationStore();
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const [tags, setTags] = useState<AdditionalSymptomType[]>([]);
 
   useEffect(() => {
-    if (additionalSymptoms && additionalSymptoms.length > 0) setTags(additionalSymptoms);
-  }, [additionalSymptoms]);
+    if (data?.medical?.additional_symptoms && data.medical.additional_symptoms.length > 0) {
+      setTags(data.medical.additional_symptoms as AdditionalSymptomType[]);
+    }
+  }, [data]);
 
   const goBack = () => {
-    router.back();
-  };
-
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
+    router.push('/onboarding/step-3' as any);
   };
 
   const next = () => {
-    setValue(tags, 'additionalSymptoms');
-    router.push('/onboarding/step-5' as any);
+    updateMedical(
+      {
+        additional_symptoms: tags,
+      },
+      {
+        onSuccess: () => {
+          router.push('/onboarding/step-5' as any);
+        },
+      }
+    );
   };
   const selectTag = (tag: AdditionalSymptomType, isActive: boolean) => {
     isActive
@@ -44,7 +52,7 @@ export default function Step4() {
         percentage={progressPercentage} 
         isSkip={true} 
         goBack={goBack}
-        onSkip={handleSkip}
+        currentStep={4}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="4" />
@@ -71,10 +79,11 @@ export default function Step4() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          title="Next"
+          disabled={isUpdatingMedical}
+          title={isUpdatingMedical ? "Saving..." : "Next"}
           icon={(
             <MaterialIcons
-              color="#000000"
+              color={isUpdatingMedical ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

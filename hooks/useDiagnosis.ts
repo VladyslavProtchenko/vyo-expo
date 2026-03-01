@@ -1,11 +1,26 @@
-import useRegistrationStore from "@/store/useRegistrationStore";
+import { useOnboardingData } from "./useOnboardingData";
 
-const range = (age: number, min: number, max: number): boolean => {
+const range = (age: number | null, min: number, max: number): boolean => {
+  if (!age) return false;
   return age >= min && age <= max;
 };
 
 export const useDiagnosis = () => {
-  const { age, diagnoses, symptoms, flow, isRegularPeriod, intensity, painType, painPeriod, painLocation, painDuration, painCase, isMedicine, isPainChange } = useRegistrationStore();
+  const { data } = useOnboardingData();
+  
+  const age = data?.profile?.age || 0;
+  const diagnoses = (data?.medical?.diagnosed_conditions || []) as string[];
+  const symptoms = (data?.medical?.symptoms || []) as string[];
+  const flow = data?.medical?.flow || '';
+  const isRegularPeriod = (data?.medical?.is_regular_period || []) as string[];
+  const intensity = data?.medical?.pain_intensity || 0;
+  const painType = data?.medical?.pain_type || '';
+  const painPeriod = data?.medical?.pain_period || '';
+  const painLocation = (data?.medical?.pain_location || []) as string[];
+  const painDuration = data?.medical?.pain_duration || '';
+  const painCase = data?.medical?.pain_case || '';
+  const isMedicine = data?.medical?.is_medicine || '';
+  const isPainChange = data?.medical?.is_pain_change || '';
 
   let primary = 0
   let secondary = 0

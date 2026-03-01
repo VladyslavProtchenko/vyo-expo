@@ -2,7 +2,8 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { PAIN_CHANGES, PainChangeType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,24 +12,35 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step10() {
   const router = useRouter();
-  const { setValue, isPainChange } = useRegistrationStore();
-  const [isPainChangeState, setIsPainChangeState] = useState<PainChangeType | ''>('');
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const [formData, setFormData] = useState({
+    isPainChange: '' as PainChangeType | '',
+  });
 
   useEffect(() => {
-    if (isPainChange) setIsPainChangeState(isPainChange as PainChangeType);
-  }, [isPainChange]);
+    if (data?.medical?.is_pain_change) {
+      setFormData({
+        isPainChange: data.medical.is_pain_change as PainChangeType,
+      });
+    }
+  }, [data]);
 
   const goBack = () => {
-    router.back();
-  };
-
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
+    router.push('/onboarding/step-9' as any);
   };
 
   const next = () => {
-    setValue(isPainChangeState, 'isPainChange');
-    router.push('/onboarding/step-11' as any);
+    updateMedical(
+      {
+        is_pain_change: formData.isPainChange || undefined,
+      },
+      {
+        onSuccess: () => {
+          router.push('/onboarding/step-11' as any);
+        },
+      }
+    );
   };
 
   const progressPercentage = 90.91; // Step 10 = 90.91% (10/11 * 100)
@@ -39,7 +51,7 @@ export default function Step10() {
         percentage={progressPercentage} 
         isSkip={true} 
         goBack={goBack}
-        onSkip={handleSkip}
+        currentStep={10}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="10" />
@@ -48,9 +60,9 @@ export default function Step10() {
 
         <View style={styles.tagsContainer}>
           {PAIN_CHANGES.map(item => {
-            const isActive = isPainChangeState === item;
+            const isActive = formData.isPainChange === item;
             return (
-              <Pressable key={item} onPress={() => setIsPainChangeState(item)}>
+              <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, isPainChange: item }))}>
                 <Text
                   style={[
                     typography.p,
@@ -66,11 +78,11 @@ export default function Step10() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={isPainChangeState === ''}
-          title="Next"
+          disabled={formData.isPainChange === '' || isUpdatingMedical}
+          title={isUpdatingMedical ? "Saving..." : "Next"}
           icon={(
             <MaterialIcons
-              color={isPainChangeState === '' ? '#999999' : '#000000'}
+              color={formData.isPainChange === '' || isUpdatingMedical ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

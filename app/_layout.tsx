@@ -1,17 +1,17 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import Toast, { ErrorToast, ToastConfig } from 'react-native-toast-message';
 
+import { supabase } from '@/config/supabase';
 import { SessionProvider, useSession } from '@/contexts/session';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSessionKeepAlive } from '@/hooks/useSessionKeepAlive';
-import PhaseScreen from './phase';
 
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
@@ -71,7 +71,7 @@ const protectedScreens = [
 ] as const;
 
 export default function RootLayout() {
-  return <PhaseScreen />;
+  // return <PhaseScreen />;
   const colorScheme = useColorScheme();
   useSessionKeepAlive();
 
@@ -103,6 +103,9 @@ type RootNavigatorProps = {
 
 function RootNavigator({ fontsLoaded, fontError }: RootNavigatorProps) {
   const { session, isLoading } = useSession();
+  const segments = useSegments();
+  const router = useRouter();
+  const [onboardingCompleted, setOnboardingCompleted] = useState<boolean | null>(null);
 
   useEffect(() => {
     if ((fontsLoaded || fontError) && !isLoading) {
@@ -110,16 +113,37 @@ function RootNavigator({ fontsLoaded, fontError }: RootNavigatorProps) {
     }
   }, [fontsLoaded, fontError, isLoading]);
 
-  if ((!fontsLoaded && !fontError) || isLoading) {
+  useEffect(() => {
+    if (!session || isLoading) return;
+
+    const checkOnboarding = async () => {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', session.user.id)
+        .single();
+
+      const completed = profile?.onboarding_completed ?? false;
+      setOnboardingCompleted(completed);
+
+      const inOnboarding = segments[0] === 'onboarding';
+      const inPublicScreen = publicScreens.includes(segments[0] as any);
+
+      if (!completed && !inOnboarding && !inPublicScreen) {
+        router.replace('/onboarding/step-1' as any);
+      }
+    };
+
+    checkOnboarding();
+  }, [session, isLoading, segments]);
+
+  if ((!fontsLoaded && !fontError) || isLoading || (session && onboardingCompleted === null)) {
     return null;
   }
 
   return (
     <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
+      screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={!session}>
         {publicScreens.map((name) => (
           <Stack.Screen key={name} name={name} />

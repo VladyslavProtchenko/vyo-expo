@@ -6,14 +6,14 @@ interface ProgressProps {
   percentage: number; // 0-100
   isSkip: boolean;
   goBack: () => void;
-  onSkip: () => void;
+  currentStep?: number; // Номер текущего шага
 }
 
 export default function Progress({ 
   percentage, 
   isSkip,
   goBack,
-  onSkip,
+  currentStep = 1,
 }: ProgressProps) {
   const clampedPercentage = Math.max(0, Math.min(100, percentage));
   
@@ -32,7 +32,7 @@ export default function Progress({
           />
         </View>
       </View>
-      {isSkip ? <SkipQuiz onSkip={onSkip} /> : <View style={{width: 24}}></View>}
+      {isSkip ? <SkipQuiz currentStep={currentStep} /> : <View style={{width: 24}}></View>}
     </View>
   );
 }

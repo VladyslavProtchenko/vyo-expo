@@ -2,7 +2,8 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import useRegistrationStore from '@/store/useRegistrationStore';
+import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { FLOW_LABELS, FlowType, REGULAR_PERIOD_LABELS, RegularPeriodType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -11,35 +12,44 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step6() {
   const router = useRouter();
-  const { setValue, flow, isRegularPeriod } = useRegistrationStore();
-  const [isRegular, setIsRegular] = useState<RegularPeriodType[]>([]);
-  const [flowState, setFlowState] = useState<FlowType | ''>('');
+  const { data } = useOnboardingData();
+  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const [formData, setFormData] = useState({
+    flow: '' as FlowType | '',
+    isRegular: [] as RegularPeriodType[],
+  });
 
   useEffect(() => {
-    if (Array.isArray(isRegularPeriod) && isRegularPeriod.length > 0) {
-      setIsRegular(isRegularPeriod as RegularPeriodType[]);
+    if (data?.medical) {
+      setFormData({
+        flow: (data.medical.flow as FlowType) || '',
+        isRegular: (data.medical.is_regular_period as RegularPeriodType[]) || [],
+      });
     }
-    if (flow) setFlowState(flow as FlowType);
-  }, [flow, isRegularPeriod]);
+  }, [data]);
 
   const goBack = () => {
-    router.back();
-  };
-
-  const handleSkip = () => {
-    router.push('/sync-data' as any);
+    router.push('/onboarding/step-5' as any);
   };
 
   const selectRegularPeriod = (period: RegularPeriodType, isActive: boolean) => {
     isActive
-      ? setIsRegular(isRegular.filter(item => item !== period))
-      : setIsRegular([...isRegular, period]);
+      ? setFormData(prev => ({ ...prev, isRegular: prev.isRegular.filter(item => item !== period) }))
+      : setFormData(prev => ({ ...prev, isRegular: [...prev.isRegular, period] }));
   };
 
   const next = () => {
-    setValue(flowState, 'flow');
-    setValue(isRegular, 'isRegularPeriod');
-    router.push('/onboarding/step-7' as any);
+    updateMedical(
+      {
+        flow: formData.flow || undefined,
+        is_regular_period: formData.isRegular,
+      },
+      {
+        onSuccess: () => {
+          router.push('/onboarding/step-7' as any);
+        },
+      }
+    );
   };
 
   const progressPercentage = 54.55; // Step 6 = 54.55% (6/11 * 100)
@@ -50,7 +60,7 @@ export default function Step6() {
         percentage={progressPercentage} 
         isSkip={true} 
         goBack={goBack}
-        onSkip={handleSkip}
+        currentStep={6}
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="6" />
@@ -59,9 +69,9 @@ export default function Step6() {
         
         <View style={[styles.tagsContainer, styles.flowContainer]}>
           {FLOW_LABELS.map(item => {
-            const isActive = flowState === item;
+            const isActive = formData.flow === item;
             return (
-              <Pressable key={item} onPress={() => setFlowState(item)}>
+              <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, flow: item }))}>
                 <Text
                   style={[
                     typography.p,
@@ -78,7 +88,7 @@ export default function Step6() {
         
         <View style={styles.tagsContainer}>
           {REGULAR_PERIOD_LABELS.map(item => {
-            const isActive = isRegular.find(i => i === item) ? true : false;
+            const isActive = formData.isRegular.find(i => i === item) ? true : false;
             return (
               <Pressable key={item} onPress={() => selectRegularPeriod(item, isActive)}>
                 <Text
@@ -96,11 +106,11 @@ export default function Step6() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={flowState === '' || isRegular.length === 0}
-          title="Next"
+          disabled={formData.flow === '' || formData.isRegular.length === 0 || isUpdatingMedical}
+          title={isUpdatingMedical ? "Saving..." : "Next"}
           icon={(
             <MaterialIcons
-              color={flowState === '' || isRegular.length === 0 ? '#999999' : '#000000'}
+              color={formData.flow === '' || formData.isRegular.length === 0 || isUpdatingMedical ? '#999999' : '#000000'}
               name="arrow-forward"
               size={26}
             />

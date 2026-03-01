@@ -1,4 +1,5 @@
 import Avatar from '@/components/Avatar';
+import { useSignOut } from '@/hooks/useSupabaseAuth';
 import { useUpdateAvatar } from '@/hooks/useUpdateAvatar';
 import useUserStore from '@/store/useUserStore';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
@@ -9,8 +10,9 @@ import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'r
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { name, avatarUrl } = useUserStore();
+  const { name, avatarUrl, resetUser } = useUserStore();
   const { pickAndUploadImage, isProcessing } = useUpdateAvatar();
+  const { signOut, loading: isSigningOut } = useSignOut();
 
   const handleAvatarEdit = async () => {
     await pickAndUploadImage('gallery');
@@ -101,9 +103,12 @@ export default function ProfileScreen() {
     ],
   ];
 
-  const handleSignOut = () => {
-    // Handle sign out
-    router.replace('/login' as any);
+  const handleSignOut = async () => {
+    const result = await signOut();
+    if (result.success) {
+      resetUser();
+      router.replace('/' as any);
+    }
   };
 
   return (
@@ -179,8 +184,11 @@ export default function ProfileScreen() {
           style={styles.signOutButton}
           onPress={handleSignOut}
           activeOpacity={0.7}
+          disabled={isSigningOut}
         >
-          <Text style={styles.signOutText}>Sign out</Text>
+          <Text style={styles.signOutText}>
+            {isSigningOut ? 'Signing out...' : 'Sign out'}
+          </Text>
         </TouchableOpacity>
       </ScrollView>
     </>

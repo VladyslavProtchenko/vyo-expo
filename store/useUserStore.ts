@@ -41,6 +41,9 @@ interface UserStore {
   secondaryScore: number;
   menstrualPainScore: number;
   
+  isQuizSkipped: boolean;
+  lastCompletedQuizStep: number;
+  
   setUser: (data: Partial<UserStore>) => void;
   resetUser: () => void;
 }
@@ -80,6 +83,8 @@ const initialState = {
   primaryScore: 0,
   secondaryScore: 0,
   menstrualPainScore: 0,
+  isQuizSkipped: false,
+  lastCompletedQuizStep: 0,
 };
 
 const useUserStore = create<UserStore>((set) => ({

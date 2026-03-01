@@ -14,7 +14,12 @@
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can choose a profile picture.",
         "NSCameraUsageDescription": "We need access to your camera so you can take a profile picture.",
-        "NSPhotoLibraryAddUsageDescription": "We need access to save photos to your library."
+        "NSPhotoLibraryAddUsageDescription": "We need access to save photos to your library.",
+        "CFBundleURLTypes": [
+          {
+            "CFBundleURLSchemes": ["com.vyo"]
+          }
+        ]
       }
     },
     "android": {
