@@ -1,4 +1,5 @@
 import ButtonRounded from '@/components/ui/ButtonRounded';
+import { PHASES } from '@/constants/phases';
 import { CurrentPhaseInfo } from '@/store/phase';
 import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'expo-router';

@@ -1,7 +1,9 @@
 import dayjs, { Dayjs } from 'dayjs';
+import { PHASES, PHASE_NAMES, PhaseName } from '@/constants/phases';
 import useUserStore from './useUserStore';
 
-export type PhaseName = 'menstrual' | 'follicular' | 'ovulation' | 'luteal';
+export type { PhaseName } from '@/constants/phases';
+export { PHASES, PHASE_NAMES } from '@/constants/phases';
 
 interface PhaseResult {
   phaseName: PhaseName;
@@ -39,10 +41,10 @@ export function CurrentPhaseInfo(): PhaseResult {
   const ovulationDay = finalCycleDuration - 14;
 
   const phases = [
-    { name: 'menstrual', start: 0, end: finalMenstruationDuration - 1, color: 'red' },
-    { name: 'follicular', start: finalMenstruationDuration, end: ovulationDay - 1, color: 'pink' },
-    { name: 'ovulation', start: ovulationDay, end: ovulationDay, color: 'yellow' },
-    { name: 'luteal', start: ovulationDay + 1, end: finalCycleDuration - 1, color: 'green' },
+    { name: 'menstrual', start: 0, end: finalMenstruationDuration - 1, color: PHASES.menstrual.color },
+    { name: 'follicular', start: finalMenstruationDuration, end: ovulationDay - 1, color: PHASES.follicular.color },
+    { name: 'ovulation', start: ovulationDay, end: ovulationDay, color: PHASES.ovulation.color },
+    { name: 'luteal', start: ovulationDay + 1, end: finalCycleDuration - 1, color: PHASES.luteal.color },
   ];
 
   const current = phases.find(phase => dayInCycle >= phase.start && dayInCycle <= phase.end) || phases[0];

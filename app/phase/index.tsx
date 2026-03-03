@@ -1,3 +1,4 @@
+import ChartsBackground from '@/components/ChartsBackground';
 import PhaseCircleIndicator from '@/app/phase/components/PhaseCircleIndicator';
 import PhaseInfo from '@/app/phase/components/PhaseInfo';
 import { useRouter } from 'expo-router';

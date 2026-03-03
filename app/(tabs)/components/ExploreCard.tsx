@@ -1,37 +1,40 @@
 import ButtonRounded from "@/components/ui/ButtonRounded";
+import { PHASES } from "@/constants/phases";
 import { typography } from "@/constants/typography";
 import { CurrentPhaseInfo } from "@/store/phase";
+import { useRouter } from "expo-router";
 import { Image, StyleSheet, Text, View } from "react-native";
 import NoteCard from "./NoteCard";
 
 const phaseConfig = {
   menstrual: {
     name: 'Menstrual phase',
-    icon: require('@/assets/images/icons/pi1.png'),
-    backgroundColor: '#FFE5E5', 
+    icon: PHASES.menstrual.icon,
+    backgroundColor: PHASES.menstrual.colorLight,
     description: 'Energy may dip and mood can shift — gentle rest and care will help your body recover.'
   },
   follicular: {
     name: 'Follicular phase',
-    icon: require('@/assets/images/icons/pi2.png'),
-    backgroundColor: '#FFE5F5',
+    icon: PHASES.follicular.icon,
+    backgroundColor: PHASES.follicular.colorLight,
     description: 'Energy is rising and creativity flows — perfect time for new projects and social activities.'
   },
   ovulation: {
     name: 'Ovulation phase',
-    icon: require('@/assets/images/icons/pi3.png'),
-    backgroundColor: '#FFF8E5',
+    icon: PHASES.ovulation.icon,
+    backgroundColor: PHASES.ovulation.colorLight,
     description: 'Peak energy and confidence — ideal time for important decisions and challenging tasks.'
   },
   luteal: {
     name: 'Luteal phase',
-    icon: require('@/assets/images/icons/pi4.png'),
-    backgroundColor: '#E5FFF5',
+    icon: PHASES.luteal.icon,
+    backgroundColor: PHASES.luteal.colorLight,
     description: 'Focus on self-care and reflection — time to slow down and prepare for the next cycle.'
   }
 };
 
 export default function ExploreCard() {
+  const router = useRouter();
   const { phaseName } = CurrentPhaseInfo();
   const phase = phaseConfig[phaseName] || phaseConfig.menstrual;
 
@@ -50,7 +53,7 @@ export default function ExploreCard() {
             title='Explore' 
             type='white' 
             className={styles.exploreButton}
-            onPress={() => {}} 
+            onPress={() => router.push('/phase' as any)} 
           />
         </View>
         <Text style={[typography.p, styles.description]}>{phase.description}</Text>

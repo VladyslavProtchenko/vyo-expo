@@ -31,6 +31,7 @@ export default function StressManagement() {
           Stress Management
         </Text>
       </TouchableOpacity>
+      {isQuizSkipped ? <SkipPoster /> : <StressManagementList />}
       <View style={styles.tagsContainer}>
         {['nevbie', 'medium', 'advanced'].map((item) => {
           const isActive = level === item;
@@ -50,10 +51,9 @@ export default function StressManagement() {
         })}
       </View>
 
-      {isQuizSkipped ? <SkipPoster /> : <StressManagementList />}
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginTop: 16 }}>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
           {items.map((item, index) => (
             <YoutubeCard
               key={index}
@@ -77,12 +77,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     backgroundColor: 'white',
+    gap: 16,
   },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    marginBottom: 16,
   },
   tag: {
     paddingHorizontal: 16,

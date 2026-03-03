@@ -1,6 +1,7 @@
 import References from '@/app/products/components/References';
 import ButtonGradient from '@/components/ui/ButtonGradient';
-import { colors } from '@/constants/typography';
+import ChartsBackground from '@/components/ChartsBackground';
+import { PHASES } from '@/constants/phases';
 import { CurrentPhaseInfo } from '@/store/phase';
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
@@ -19,46 +20,46 @@ export default function PhaseInfo() {
   const { phaseName } = CurrentPhaseInfo();
   const data = phaseData[phaseName as PhaseName];
 
-  const phaseColors = {
-    menstrual: colors.menstrual,
-    follicular: colors.follicular,
-    ovulation: colors.ovulation,
-    luteal: colors.luteal,
-  };
-
-  const backgroundColor = hexToRgba(phaseColors[phaseName as keyof typeof phaseColors], 0.1);
+  const backgroundColor = hexToRgba(PHASES[phaseName].color, 0.1);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.phaseTitle}>{data.fullName}</Text>
 
-      <View style={[styles.challengesBox, { backgroundColor }]}>
-        <Text style={styles.sectionTitle}>Potential challenges</Text>
-        <View style={styles.challengesContainer}>
-          {data.challenges.map((challenge, index) => (
-            <View key={index} style={styles.challengeTag}>
-              <Text style={styles.challengeEmoji}>{challenge.emoji}</Text>
-              <Text style={styles.challengeLabel}>{challenge.label}</Text>
-            </View>
-          ))}
+      <View style={styles.wrapper}>   
+        <Text style={styles.phaseTitle}>{data.fullName}</Text>
+        <View style={[styles.challengesBox, { backgroundColor }]}>
+          <Text style={styles.sectionTitle}>Potential challenges</Text>
+          <View style={styles.challengesContainer}>
+            {data.challenges.map((challenge, index) => (
+              <View key={index} style={styles.challengeTag}>
+                <Text style={styles.challengeEmoji}>{challenge.emoji}</Text>
+                <Text style={styles.challengeLabel}>{challenge.label}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      </View>
+      <View style={styles.wrapper}>
+        <View style={[styles.hormonesBox, { marginBottom: 16 }]}>
+          <Text style={styles.sectionTitle}>Hormones and body</Text>
+          <Text style={styles.description}>{data.description}</Text>
         </View>
       </View>
 
-      <View style={[styles.hormonesBox, { marginBottom: 16 }]}>
-        <Text style={styles.sectionTitle}>Hormones and body</Text>
-        <Text style={styles.description}>{data.description}</Text>
-      </View>
-      <View style={[styles.hormonesBox, { marginBottom: 16 }]}>
-        <Text style={styles.description}>Listening to your body isn't a weakness — it's a precise response to the physiology of this phase.</Text>
+      <ChartsBackground />
+
+      <View style={styles.wrapper}>
+        <View style={[styles.hormonesBox, { marginBottom: 16 }]}>
+          <Text style={styles.description}>Listening to your body isn't a weakness — it's a precise response to the physiology of this phase.</Text>
+        </View>
+        <SkipPoster />
+        <References />
+
+        <View style={styles.buttonContainer}>
+          <ButtonGradient title="Got It!" onPress={() => router.back()} />
+        </View>
       </View>
 
-      <SkipPoster />
-      <References />
-
-
-      <View style={styles.buttonContainer}>
-        <ButtonGradient title="Got It!" onPress={() => router.back()} />
-      </View>
     </View>
   );
 }
@@ -66,8 +67,11 @@ export default function PhaseInfo() {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-    paddingHorizontal: 16,
     marginTop: 32,
+  },
+  wrapper: {
+    paddingHorizontal: 16,
+
   },
   phaseTitle: {
     fontFamily: 'ArchivoBlack-Regular',

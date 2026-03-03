@@ -1,4 +1,6 @@
+import { PHASES } from '@/constants/phases';
 import { typography } from '@/constants/typography';
+import { CurrentPhaseInfo } from '@/store/phase';
 import React, { useState } from 'react';
 import { Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
 import BodyCareCard from './BodyCareCard';
@@ -6,20 +8,14 @@ import NutritionCard from './NutritionCard';
 import StressCard from './StressCard';
 
 export default function Missions() {
+  const { phaseName } = CurrentPhaseInfo();
   const [missions, setMissions] = useState({
     1: false,
     2: false,
     3: false,
   });
 
-  const icons = {
-    25: require('@/assets/images/progress25.png'),
-    50: require('@/assets/images/progress50.png'),
-    75: require('@/assets/images/progress75.png'),
-    100: require('@/assets/images/progress100.png'),
-  };
-
-  const icon = icons[75];
+  const icon = PHASES[phaseName].image;
 
   return (
     <View style={styles.container}>

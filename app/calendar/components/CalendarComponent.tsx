@@ -1,4 +1,4 @@
-import { colors } from '@/constants/typography';
+import { PHASES } from '@/constants/phases';
 import useUserStore from '@/store/useUserStore';
 import { MaterialIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
@@ -10,14 +10,6 @@ import { Calendar } from 'react-native-calendars';
 
 dayjs.extend(isSameOrBefore);
 dayjs.extend(isSameOrAfter);
-
-// Светлые оттенки для всех фаз цикла
-const lightColors = {
-  menstrual: '#FFADAD', // Светлый красный (50% от #FF5B5B на белом)
-  follicular: '#BCADFF', // Светлый фиолетовый (50% от #795BFF на белом)
-  ovulation: '#B9FFAD', // Светлый зеленый (50% от #74FF5B на белом)
-  luteal: '#E8ADFF', // Светлый розовый (50% от #D15BFF на белом)
-};
 
 export default function CalendarComponent() {
   const { startMenstruation, cycleDuration, menstruationDuration } = useUserStore();
@@ -41,7 +33,7 @@ export default function CalendarComponent() {
         const dateObj = cycleStart.add(i, 'day');
         const date = dateObj.format('YYYY-MM-DD');
         marked[date] = {
-          color: lightColors.menstrual,
+          color: PHASES.menstrual.colorLight,
           startingDay: i === 0,
           endingDay: i === menstruationDuration - 1,
         };
@@ -52,7 +44,7 @@ export default function CalendarComponent() {
         const dateObj = cycleStart.add(i, 'day');
         const date = dateObj.format('YYYY-MM-DD');
         marked[date] = {
-          color: lightColors.follicular,
+          color: PHASES.follicular.colorLight,
           startingDay: i === menstruationDuration,
           endingDay: i === ovulationDay - 1,
         };
@@ -62,7 +54,7 @@ export default function CalendarComponent() {
       const ovulationDateObj = cycleStart.add(ovulationDay, 'day');
       const ovulationDate = ovulationDateObj.format('YYYY-MM-DD');
       marked[ovulationDate] = {
-        color: lightColors.ovulation,
+        color: PHASES.ovulation.colorLight,
         startingDay: true,
         endingDay: true,
       };
@@ -72,7 +64,7 @@ export default function CalendarComponent() {
         const dateObj = cycleStart.add(i, 'day');
         const date = dateObj.format('YYYY-MM-DD');
         marked[date] = {
-          color: lightColors.luteal,
+          color: PHASES.luteal.colorLight,
           startingDay: i === ovulationDay + 1,
           endingDay: i === cycleDuration - 1,
         };
@@ -129,18 +121,17 @@ export default function CalendarComponent() {
     const overlayShiftX = 0;
     const overlayShiftY = 1;
 
-    // Determine phase for today and use saturated color for border
     const todayColor = markedDates?.[today]?.color;
-    let borderColor = colors.menstrual; // default
-    
-    if (todayColor === lightColors.menstrual) {
-      borderColor = colors.menstrual;
-    } else if (todayColor === lightColors.follicular) {
-      borderColor = colors.follicular;
-    } else if (todayColor === lightColors.ovulation) {
-      borderColor = colors.ovulation;
-    } else if (todayColor === lightColors.luteal) {
-      borderColor = colors.luteal;
+    let borderColor = PHASES.menstrual.color;
+
+    if (todayColor === PHASES.menstrual.colorLight) {
+      borderColor = PHASES.menstrual.color;
+    } else if (todayColor === PHASES.follicular.colorLight) {
+      borderColor = PHASES.follicular.color;
+    } else if (todayColor === PHASES.ovulation.colorLight) {
+      borderColor = PHASES.ovulation.color;
+    } else if (todayColor === PHASES.luteal.colorLight) {
+      borderColor = PHASES.luteal.color;
     }
 
     return {
@@ -233,19 +224,19 @@ export default function CalendarComponent() {
       </View>
       <View style={styles.labels}>
         <View style={styles.label}>
-          <View style={{ width: 12, height: 12, backgroundColor: colors.menstrual, borderRadius: 10 }} />
+          <View style={{ width: 12, height: 12, backgroundColor: PHASES.menstrual.color, borderRadius: 10 }} />
           <Text style={styles.labelText}>Period</Text>
         </View>
         <View style={styles.label}>
-          <View style={{ width: 12, height: 12, backgroundColor: colors.follicular, borderRadius: 10 }} />
+          <View style={{ width: 12, height: 12, backgroundColor: PHASES.follicular.color, borderRadius: 10 }} />
           <Text style={styles.labelText}>Follicular</Text>
         </View>
         <View style={styles.label}>
-          <View style={{ width: 12, height: 12, backgroundColor: colors.ovulation, borderRadius: 10 }} />
+          <View style={{ width: 12, height: 12, backgroundColor: PHASES.ovulation.color, borderRadius: 10 }} />
           <Text style={styles.labelText}>Ovulation</Text>
         </View>
         <View style={styles.label}>
-          <View style={{ width: 12, height: 12, backgroundColor: colors.luteal, borderRadius: 10 }} />
+          <View style={{ width: 12, height: 12, backgroundColor: PHASES.luteal.color, borderRadius: 10 }} />
           <Text style={styles.labelText}>Luteal</Text>
         </View>
       </View>

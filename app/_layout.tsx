@@ -2,6 +2,7 @@ import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -13,7 +14,9 @@ import { SessionProvider, useSession } from '@/contexts/session';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { useSessionKeepAlive } from '@/hooks/useSessionKeepAlive';
 import PainStep1 from '@/app/pain-steps/step-1';
-
+import PhaseScreen from './phase';
+import ShoppingList from './shopping-list';
+import ShoppingListAdd from './shopping-list/add';
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
@@ -72,7 +75,11 @@ const protectedScreens = [
 ] as const;
 
 export default function RootLayout() {
-  // return <PainStep1 />;
+  // return (
+  //   <GestureHandlerRootView style={{ flex: 1 }}>
+  //     <ShoppingListAdd />
+  //   </GestureHandlerRootView>
+  // );
   const colorScheme = useColorScheme();
   useSessionKeepAlive();
 
@@ -85,15 +92,17 @@ export default function RootLayout() {
   });
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <SessionProvider>
-          <RootNavigator fontsLoaded={fontsLoaded} fontError={fontError} />
-        </SessionProvider>
-        <StatusBar style="auto" />
-        <Toast config={toastConfig} topOffset={64} />
-      </ThemeProvider>
-    </QueryClientProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+          <SessionProvider>
+            <RootNavigator fontsLoaded={fontsLoaded} fontError={fontError} />
+          </SessionProvider>
+          <StatusBar style="auto" />
+          <Toast config={toastConfig} topOffset={64} />
+        </ThemeProvider>
+      </QueryClientProvider>
+    </GestureHandlerRootView>
   );
 }
 

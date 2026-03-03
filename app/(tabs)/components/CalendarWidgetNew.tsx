@@ -50,37 +50,26 @@ export default function CalendarWidgetNew() {
     return phases.find(p => dayInCycle >= p.start && dayInCycle <= p.end);
   };
 
+  const hexToRgba = (hex: string, alpha: number): string => {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+  };
+
   const getColorStyle = (color: string): ViewStyle => {
-    const colorMap: Record<string, ViewStyle> = {
-      gray: { borderWidth: 1, borderColor: '#E5E7EB' },
-      red: { borderWidth: 2, borderColor: '#F87171' },
-      pink: { borderWidth: 2, borderColor: '#F472B6' },
-      yellow: { borderWidth: 2, borderColor: '#FBBF24' },
-      green: { borderWidth: 2, borderColor: '#34D399' },
-    };
-    return colorMap[color] || { borderWidth: 1, borderColor: '#E5E7EB' };
+    if (color === 'gray') return { borderWidth: 1, borderColor: '#E5E7EB' };
+    return { borderWidth: 2, borderColor: color };
   };
 
   const getTodayStyle = (color: string): ViewStyle => {
-    const todayMap: Record<string, ViewStyle> = {
-      gray: { backgroundColor: '#E5E7EB' },
-      red: { backgroundColor: '#F87171' },
-      pink: { backgroundColor: '#F472B6' },
-      yellow: { backgroundColor: '#FBBF24' },
-      green: { backgroundColor: '#34D399' },
-    };
-    return todayMap[color] || { backgroundColor: '#E5E7EB' };
+    if (color === 'gray') return { backgroundColor: '#E5E7EB' };
+    return { backgroundColor: color };
   };
 
   const getPastStyle = (color: string): ViewStyle => {
-    const pastMap: Record<string, ViewStyle> = {
-      gray: { backgroundColor: 'rgba(229, 231, 235, 0.6)' },
-      red: { backgroundColor: 'rgba(248, 113, 113, 0.6)' },
-      pink: { backgroundColor: 'rgba(244, 114, 182, 0.6)' },
-      yellow: { backgroundColor: 'rgba(251, 191, 36, 0.6)' },
-      green: { backgroundColor: 'rgba(52, 211, 153, 0.6)' },
-    };
-    return pastMap[color] || { backgroundColor: 'rgba(229, 231, 235, 0.6)' };
+    if (color === 'gray') return { backgroundColor: 'rgba(229, 231, 235, 0.6)' };
+    return { backgroundColor: hexToRgba(color, 0.6) };
   };
 
   return (

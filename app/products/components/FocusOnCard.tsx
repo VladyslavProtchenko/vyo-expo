@@ -1,3 +1,4 @@
+import { PHASES } from '@/constants/phases';
 import { CurrentPhaseInfo } from '@/store/phase';
 import useProductsStore from '@/store/useProducts';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -12,15 +13,9 @@ export default function FocusOnCard() {
     ovulation: require('@/assets/images/icons/pi3.png'),
     luteal: require('@/assets/images/icons/pi4.png'),
   };
-  const phaseColor = {
-    menstrual: '#FFE5E5',
-    follicular: '#FFE5F5',
-    ovulation: '#FFF8E5',
-    luteal: '#E5FFF5',
-  };
 
   return (
-    <View style={[styles.card, { backgroundColor: phaseColor[phaseName as keyof typeof phaseColor] }]}>
+    <View style={[styles.card, { backgroundColor: PHASES[phaseName].colorLight }]}>
       <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', width: '100%', marginBottom: 12 }}>
         <View>
           <Text style={{ fontSize: 14, fontFamily: 'Poppins' }}>Focus for</Text>

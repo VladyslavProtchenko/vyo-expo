@@ -1,5 +1,5 @@
 import { colors } from '@/constants/typography';
-import { CurrentPhaseInfo } from '@/store/phase';
+import { CurrentPhaseInfo, PHASES } from '@/store/phase';
 import useUserStore from '@/store/useUserStore';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import Svg, { Circle } from 'react-native-svg';
@@ -10,20 +10,6 @@ const PHASE_COLORS = {
   follicular: colors.follicular,
   ovulation: colors.ovulation,
   luteal: colors.luteal,
-};
-
-const PHASE_LABELS = {
-  menstrual: 'Period',
-  follicular: 'Follicular',
-  ovulation: 'Ovulation',
-  luteal: 'Luteal',
-};
-
-const PHASE_ICONS = {
-  menstrual: require('@/assets/images/icons/pi1.png'),
-  follicular: require('@/assets/images/icons/pi2.png'),
-  ovulation: require('@/assets/images/icons/pi3.png'),
-  luteal: require('@/assets/images/icons/pi4.png'),
 };
 
 const SIZE = 160;
@@ -112,12 +98,12 @@ export default function PhaseCircleIndicator() {
       <View style={styles.centerContent}>
 
         <Text style={styles.phaseLabel}>
-          {PHASE_LABELS[phaseName]}
+          {PHASES[phaseName].label}
         </Text>
 
         <View style={styles.dayContainer}>
           <Image
-            source={PHASE_ICONS[phaseName]}
+            source={PHASES[phaseName].icon}
             style={styles.phaseIconSmall}
           />
           <Text style={styles.dayText}>

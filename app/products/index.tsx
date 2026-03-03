@@ -1,5 +1,5 @@
 import { useRouter } from 'expo-router';
-import { MoveLeft, Settings2 } from 'lucide-react-native';
+import { MoveLeft, Settings2, ShoppingCart } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -15,6 +15,7 @@ import { useDeletedProducts } from '@/hooks/useDeletedProducts';
 import { useProductSettings } from '@/hooks/useProductSettings';
 import { CurrentPhaseInfo } from '@/store/phase';
 import { Products as AllProducts, Product } from '@/store/products';
+import { useShoppingListStore } from '@/store/shoppingList';
 import useUserStore from '@/store/useUserStore';
 import { generateProductVariants } from '@/utils/openai';
 
@@ -52,6 +53,7 @@ export default function Products() {
   const [selectedProducts, setSelectedProducts] = useState<Product[]>(() => getRandomProducts());
   const [loading, setLoading] = useState(false);
   const [previousLists, setPreviousList] = useState<Record<number, string[]>>({});
+  const setProducts = useShoppingListStore((s) => s.setProducts);
   const { deletedProducts } = useDeletedProducts();
   const { isVegetarian, isVegan } = useProductSettings();
   const { isQuizSkipped } = useUserStore();
@@ -92,7 +94,6 @@ export default function Products() {
 
         if (foundProducts.length > 0) {
           setSelectedProducts(foundProducts);
-
           const listNumber = Object.keys(previousLists).length + 1;
           setPreviousList((prev) => ({
             ...prev,
@@ -122,15 +123,19 @@ export default function Products() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TouchableOpacity
-        onPress={() => router.back()}
-        style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}
-      >
-        <MoveLeft size={30} color="black" />
-        <TouchableOpacity onPress={() => router.push('/products/settings' as any)}>
-          <Settings2 size={24} color="black" />
+      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+        <TouchableOpacity onPress={() => router.back()}>
+          <MoveLeft size={30} color="black" />
         </TouchableOpacity>
-      </TouchableOpacity>
+        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
+          <TouchableOpacity onPress={() => router.push('/shopping-list')} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <ShoppingCart size={24} color="black" />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => router.push('/products/settings' as any)} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
+            <Settings2 size={24} color="black" />
+          </TouchableOpacity>
+        </View>
+      </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={{ fontFamily: 'ArchivoBlack-Regular', fontSize: 24, fontWeight: '600', marginBottom: 8, marginTop: 16 }}>
           Nutrients focus for today
@@ -193,7 +198,14 @@ export default function Products() {
         </View>
 
         <View style={{ width: '100%', marginTop: 16, gap: 8, marginBottom: 24 }}>
-          <ButtonGradient title="Add to shopping list" onPress={() => {}} className={{ width: '100%' }} />
+          <ButtonGradient
+            title="Add to shopping list"
+            onPress={() => {
+              setProducts('products', selectedProducts.map((p) => p.name));
+              router.push('/shopping-list/add');
+            }}
+            className={{ width: '100%' }}
+          />
           <ButtonRounded
             title={loading ? 'Generating...' : 'Generate new'}
             onPress={handleGenerateNew}
@@ -214,7 +226,7 @@ export default function Products() {
             </View>
           ))}
         </View>
-        <Text style={{ fontFamily: 'Poppins', fontSize: 18, fontWeight: '600', marginBottom: 8 }}>Recommended supplementss</Text>
+        <Text style={{ fontFamily: 'Poppins', fontSize: 18, fontWeight: '600', marginBottom: 8 }}>Recommended supplements</Text>
         <Text style={{ marginBottom: 16 }}>Use them if you couldn't fully rely on food today.</Text>
 
         <View style={{ padding: 16, borderRadius: 24, backgroundColor: '#F5F5F5', gap: 8, marginBottom: 24 }}>
@@ -248,7 +260,7 @@ export default function Products() {
 const stats = [
   { title: '<4', description: 'No worries! Supplements help fill the gaps.', color: '#C9DA5D' },
   { title: '5-7', description: 'On good track! Supplements can still support balance', color: '#99DA5D' },
-  { title: '>7', description: 'Well-done!You\'re likely covered for today', color: '#5DDA9D' },
+  { title: '>7', description: 'Well-done! You\'re likely covered for today', color: '#5DDA9D' },
 ];
 
 const supplements = [

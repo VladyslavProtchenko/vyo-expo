@@ -1,11 +1,12 @@
 import { TextStyle } from 'react-native';
+import { PHASES } from './phases';
 
 export const colors = {
   link: '#0020C399',
-  menstrual: '#FF5B5B',
-  follicular: '#795BFF',
-  ovulation: '#74FF5B',
-  luteal: '#D15BFF',
+  menstrual: PHASES.menstrual.color,
+  follicular: PHASES.follicular.color,
+  ovulation: PHASES.ovulation.color,
+  luteal: PHASES.luteal.color,
 };
 
 export const typography: Record<string, TextStyle> = {
