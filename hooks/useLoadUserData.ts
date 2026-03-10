@@ -60,7 +60,6 @@ export const useLoadUserData = () => {
           isPainChange: medical.is_pain_change,
           surgery: medical.surgery,
           surgeryDate: medical.surgery_date,
-          isDiagnosed: medical.is_diagnosed,
         });
       }
 

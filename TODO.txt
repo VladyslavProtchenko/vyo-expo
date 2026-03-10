@@ -1,0 +1,21 @@
+TODO
+
+
+Чего не хватает в квизе для кластеров эндометриоза:
+
+isGastrointestinalDominant:
+- Bloating (вздутие) — нет в симптомах
+- Vomiting (рвота) — нет в симптомах
+- Constipation (запор) — нет в симптомах
+- Abdominal discomfort (дискомфорт в животе) — нет в симптомах
+
+
+isSystemicInflammatory:
+- Generalized malaise (общее недомогание) — нет вообще в приложении, нужно добавить
+- Fever (температура) — нет вообще в приложении
+- Joint pain (боль в суставах) — нет вообще в приложении
+
+
+isSeparated:
+
+

@@ -2,6 +2,7 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
+import { useUpdateDiagnosis } from '@/hooks/useDiagnosisData';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
 import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { DIAGNOSIS_LABELS, DiagnosisType } from '@/types/diagnosis';
@@ -14,6 +15,7 @@ export default function Step3() {
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const { mutate: updateDiagnosis } = useUpdateDiagnosis();
   const [tags, setTags] = useState<DiagnosisType[]>([]);
 
   useEffect(() => {
@@ -22,24 +24,17 @@ export default function Step3() {
     }
   }, [data]);
 
-  const goBack = () => {
-    router.push('/onboarding/step-2' as any);
-  };
+  const goBack = () => router.push('/onboarding/step-2' as any);
 
   const next = () => {
-    if (tags.length === 0) {
-      return;
-    }
+    if (tags.length === 0) return;
     
     const isDiagnosed = tags.includes('Endometriosis') || tags.includes('Adenomyosis');
-    
     updateMedical(
-      {
-        diagnosed_conditions: tags,
-        is_diagnosed: isDiagnosed,
-      },
+      { diagnosed_conditions: tags },
       {
         onSuccess: () => {
+          if (isDiagnosed) updateDiagnosis({ diagnosis: 'endometriosis' });
           router.push('/onboarding/step-4' as any);
         },
       }
@@ -124,8 +119,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    paddingVertical: 12,
-    marginTop: 16,
   },
   tag: {
     paddingHorizontal: 16,

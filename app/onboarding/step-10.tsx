@@ -2,8 +2,12 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
+import { useGetDiagnosis, useUpdateDiagnosis } from '@/hooks/useDiagnosisData';
+import { getPCOS } from '@/hooks/getPCOS';
+import { getPrimaryDysmenorrhea } from '@/hooks/getPrimaryDysmenorrhea';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
 import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
+import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { PAIN_CHANGES, PainChangeType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -14,6 +18,9 @@ export default function Step10() {
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const { mutate: updateProfile } = useUpdateProfile();
+  const { mutate: updateDiagnosis } = useUpdateDiagnosis();
+  const { data: diagnosisData } = useGetDiagnosis();
   const [formData, setFormData] = useState({
     isPainChange: '' as PainChangeType | '',
   });
@@ -32,12 +39,34 @@ export default function Step10() {
 
   const next = () => {
     updateMedical(
-      {
-        is_pain_change: formData.isPainChange || undefined,
-      },
+      { is_pain_change: formData.isPainChange || undefined },
       {
         onSuccess: () => {
-          router.push('/onboarding/step-11' as any);
+          const mergedData = {
+            profile: data?.profile ?? null,
+            medical: { ...data?.medical, is_pain_change: formData.isPainChange } as any,
+          };
+          const diagnosis = getPrimaryDysmenorrhea(mergedData);
+          const alreadyEndo = diagnosisData?.diagnosis === 'endometriosis';
+
+          if (alreadyEndo || diagnosis === 'endometriosis') {
+            router.push('/onboarding/step-11' as any);
+            return;
+          }
+
+          const pcosResult = getPCOS(data);
+          const diagnosisPayload = pcosResult > 0
+            ? { diagnosis: 'pcos' as const, pcos_type: (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible' }
+            : { diagnosis: diagnosis as Exclude<typeof diagnosis, 'pcos'> };
+
+          updateDiagnosis(diagnosisPayload, {
+            onSuccess: () => {
+              updateProfile(
+                { onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 10 },
+                { onSuccess: () => router.push('/sync-data' as any) }
+              );
+            },
+          });
         },
       }
     );
@@ -116,9 +145,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    paddingVertical: 12,
     marginBottom: 32,
-    marginTop: 16,
   },
   tag: {
     paddingHorizontal: 16,

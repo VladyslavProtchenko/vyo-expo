@@ -3,9 +3,10 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Calendar from '@/components/ui/Calendar';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import { useDiagnosis } from '@/hooks/useDiagnosis';
+import { getEndoCluster } from '@/hooks/getEndo';
+import { getPCOS } from '@/hooks/getPCOS';
+import { useUpdateDiagnosis } from '@/hooks/useDiagnosisData';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
-import { useSaveDiagnosis } from '@/hooks/useProfileData';
 import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -35,18 +36,16 @@ export default function Step11() {
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
-  const { saveDiagnosisResults, loading: diagnosisLoading } = useSaveDiagnosis();
-  const diagnosisResult = useDiagnosis();
-  
-  const loading = isUpdatingMedical || isUpdatingProfile || diagnosisLoading;
-  
+  const { mutate: updateDiagnosis, isPending: isUpdatingDiagnosis } = useUpdateDiagnosis();
+  const loading = isUpdatingMedical || isUpdatingProfile || isUpdatingDiagnosis;
+
   const [formData, setFormData] = useState({
     surgery: '',
     surgeryDate: null as string | null,
     otherSymptoms: [] as string[],
   });
 
-  const isDiagnosed = data?.medical?.is_diagnosed || false;
+  const noSurgery = formData.surgery === 'None of these';
 
   useEffect(() => {
     if (data?.medical) {
@@ -68,54 +67,60 @@ export default function Step11() {
       : setFormData(prev => ({ ...prev, otherSymptoms: [...prev.otherSymptoms, tag] }));
   };
 
-  const next = async () => {
-    try {
-      const { primary, secondary, menstrualPain, diagnosis } = diagnosisResult;
-
-      updateMedical(
-        {
-          surgery: isDiagnosed ? formData.surgery || undefined : undefined,
-          surgery_date: isDiagnosed ? formData.surgeryDate || undefined : undefined,
-          other_symptoms: formData.otherSymptoms,
-        },
-        {
-          onSuccess: async () => {
-            const diagnosisResultSave = await saveDiagnosisResults(
-              primary,
-              secondary,
-              menstrualPain,
-              diagnosis
-            );
-            
-            if (!diagnosisResultSave.success) {
-              console.error('❌ Failed to save diagnosis results:', diagnosisResultSave.error);
-              alert('Failed to save diagnosis results. Please try again.');
-              return;
-            }
-
-            updateProfile(
-              { 
-                onboarding_completed: true,
-                is_quiz_skipped: false,
-                last_completed_quiz_step: 11,
-              },
-              {
-                onSuccess: () => {
-                  console.log('✅ Onboarding completed! All data saved successfully');
-                  router.push('/sync-data' as any);
-                },
-              }
-            );
-          },
-        }
-      );
-    } catch (error: any) {
-      console.error('❌ Error during onboarding completion:', error);
-      alert('An error occurred. Please try again.');
-    }
+  const completeOnboarding = (diagnosisPayload: Parameters<typeof updateDiagnosis>[0]) => {
+    updateDiagnosis(diagnosisPayload, {
+      onSuccess: () => {
+        updateProfile(
+          { onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 11 },
+          { onSuccess: () => router.push('/sync-data' as any) }
+        );
+      },
+    });
   };
 
-  const progressPercentage = 100; // Step 11 = 100% (11/11 * 100)
+  const next = () => {
+    updateMedical(
+      {
+        surgery: !noSurgery ? formData.surgery || undefined : undefined,
+        surgery_date: !noSurgery ? formData.surgeryDate || undefined : undefined,
+        other_symptoms: noSurgery ? formData.otherSymptoms : [],
+      },
+      {
+        onSuccess: () => {
+          const mergedData = {
+            profile: data?.profile ?? null,
+            medical: { ...data?.medical, other_symptoms: formData.otherSymptoms } as any,
+          };
+
+          if (!noSurgery) {
+            completeOnboarding({
+              diagnosis: 'endometriosis',
+              endo_type: getEndoCluster(mergedData),
+              is_endo_surgery: true,
+              is_endo_additional: false,
+            });
+          } else {
+            const pcosResult = getPCOS(data);
+            if (pcosResult > 0) {
+              const pcosType = (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible';
+              completeOnboarding({ diagnosis: 'pcos', pcos_type: pcosType });
+            } else {
+              completeOnboarding({
+                diagnosis: 'endometriosis',
+                endo_type: getEndoCluster(mergedData),
+                is_endo_surgery: false,
+                is_endo_additional: formData.otherSymptoms.length > 0,
+              });
+            }
+          }
+        },
+      }
+    );
+  };
+
+  const isDisabled = loading || formData.surgery === '' || (!noSurgery && (formData.surgeryDate === null || formData.surgeryDate === ''));
+
+  const progressPercentage = 100;
 
   return (
     <View style={styles.container}>
@@ -127,28 +132,28 @@ export default function Step11() {
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="11" />
-        {isDiagnosed ? (
+        <Text style={[typography.h1, styles.title]}>Did you have a surgery?</Text>
+        <Text style={typography.subtitle}>Select all relevant</Text>
+
+        <View style={styles.tagsContainer}>
+          {surgeries.map(item => {
+            const isActive = formData.surgery === item;
+            return (
+              <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, surgery: item }))}>
+                <Text
+                  style={[
+                    typography.p,
+                    styles.tag,
+                    isActive ? styles.tagActive : styles.tagInactive
+                  ]}
+                >{item}</Text>
+              </Pressable>
+            );
+          })}
+        </View>
+
+        {!noSurgery && formData.surgery !== '' && (
           <>
-            <Text style={[typography.h1, styles.title]}>Did you have a surgery?</Text>
-            <Text style={typography.subtitle}>Select all relevant</Text>
-
-            <View style={styles.tagsContainer}>
-              {surgeries.map(item => {
-                const isActive = formData.surgery === item;
-                return (
-                  <Pressable key={item} onPress={() => setFormData(prev => ({ ...prev, surgery: item }))}>
-                    <Text
-                      style={[
-                        typography.p,
-                        styles.tag,
-                        isActive ? styles.tagActive : styles.tagInactive
-                      ]}
-                    >{item}</Text>
-                  </Pressable>
-                );
-              })}
-            </View>
-
             <Text style={[typography.subtitle, styles.subtitleSpacing]}>When it happened?</Text>
             <View style={styles.calendarSpacing}>
               <Calendar
@@ -158,14 +163,14 @@ export default function Step11() {
               />
             </View>
           </>
-        ) : (
-          <>
-            <Text style={[typography.h1, styles.title]}>Other symptoms</Text>
-            <Text style={typography.subtitle}>Select all you're experiencing</Text>
+        )}
 
+        {noSurgery && (
+          <>
+            <Text style={[typography.subtitle, styles.subtitleSpacing]}>Any additional symptoms?</Text>
             <View style={styles.tagsContainer}>
               {otherSymptomsLabels.map(item => {
-                const isActive = formData.otherSymptoms.find(i => i === item) ? true : false;
+                const isActive = formData.otherSymptoms.includes(item);
                 return (
                   <Pressable key={item} onPress={() => selectTag(item, isActive)}>
                     <Text
@@ -185,27 +190,14 @@ export default function Step11() {
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
-          disabled={
-            loading ||
-            (isDiagnosed
-              ? formData.surgery === '' || formData.surgeryDate === null || formData.surgeryDate === ''
-              : formData.otherSymptoms.length === 0)
-          }
+          disabled={isDisabled}
           title={loading ? "Saving..." : "Get my care plan"}
           icon={
             loading ? (
               <ActivityIndicator color="#000000" />
             ) : (
               <MaterialIcons
-                color={
-                  isDiagnosed
-                    ? formData.surgery === '' || formData.surgeryDate === null || formData.surgeryDate === ''
-                      ? '#999999'
-                      : '#000000'
-                    : formData.otherSymptoms.length === 0
-                      ? '#999999'
-                      : '#000000'
-                }
+                color={isDisabled ? '#999999' : '#000000'}
                 name="trending-flat"
                 size={28}
               />
@@ -244,9 +236,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    paddingVertical: 12,
     marginBottom: 32,
-    marginTop: 16,
   },
   tag: {
     paddingHorizontal: 16,

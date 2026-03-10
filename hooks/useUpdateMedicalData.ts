@@ -22,7 +22,6 @@ export interface UpdateMedicalData {
   is_pain_change?: string | null;
   surgery?: string | null;
   surgery_date?: string | null;
-  is_diagnosed?: boolean | null;
 }
 
 export const useUpdateMedicalData = () => {

@@ -31,7 +31,6 @@ export interface OnboardingMedicalData {
   is_pain_change: string | null;
   surgery: string | null;
   surgery_date: string | null;
-  is_diagnosed: boolean | null;
 }
 
 export interface OnboardingData {
@@ -100,7 +99,6 @@ export const useOnboardingData = () => {
         is_pain_change: medicalRes.data.is_pain_change,
         surgery: medicalRes.data.surgery,
         surgery_date: medicalRes.data.surgery_date,
-        is_diagnosed: medicalRes.data.is_diagnosed,
       } : null;
 
       return { profile, medical };

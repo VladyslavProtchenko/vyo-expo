@@ -4,6 +4,8 @@ import Number from '@/components/ui/Number';
 import Slider from '@/components/ui/Slider';
 import { typography } from '@/constants/typography';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { useUpdateDiagnosis } from '@/hooks/useDiagnosisData';
+import { getPCOS } from '@/hooks/getPCOS';
 import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { PAIN_TYPES, PainType } from '@/types/diagnosis';
@@ -17,6 +19,7 @@ export default function Step7() {
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
+  const { mutate: updateDiagnosis } = useUpdateDiagnosis();
   const [formData, setFormData] = useState({
     isPain: null as boolean | null,
     painIntensity: 0,
@@ -25,8 +28,11 @@ export default function Step7() {
 
   useEffect(() => {
     if (data?.medical) {
+      const hasEndo = data.medical.diagnosed_conditions?.some(
+        c => c === 'Endometriosis' || c === 'Adenomyosis'
+      );
       setFormData({
-        isPain: data.medical.is_pain,
+        isPain: hasEndo ? true : data.medical.is_pain,
         painIntensity: data.medical.pain_intensity || 0,
         painType: (data.medical.pain_type as PainType) || '',
       });
@@ -60,18 +66,19 @@ export default function Step7() {
         },
         {
           onSuccess: () => {
-            updateProfile(
-              { 
-                onboarding_completed: true,
-                is_quiz_skipped: false,
-                last_completed_quiz_step: 7,
+            const pcosResult = getPCOS(data);
+            const diagnosisPayload = pcosResult > 0
+              ? { diagnosis: 'pcos' as const, pcos_type: (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible' }
+              : { diagnosis: 'normal' as const };
+
+            updateDiagnosis(diagnosisPayload, {
+              onSuccess: () => {
+                updateProfile(
+                  { onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 7 },
+                  { onSuccess: () => router.push('/sync-data' as any) }
+                );
               },
-              {
-                onSuccess: () => {
-                  router.push('/sync-data' as any);
-                },
-              }
-            );
+            });
           },
         }
       );
@@ -183,9 +190,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    paddingVertical: 12,
     marginBottom: 32,
-    marginTop: 16,
   },
   tag: {
     paddingHorizontal: 16,

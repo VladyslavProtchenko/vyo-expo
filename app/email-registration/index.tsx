@@ -7,13 +7,15 @@ import { RegistrationFormData, registrationSchema } from '@/types/validationSche
 import { MaterialIcons } from '@expo/vector-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Animated, Dimensions, ImageBackground, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function EmailRegistration() {
     const router = useRouter();
     const { signUp, loading: isPending } = useSignUp();
+    const [termsChecked, setTermsChecked] = useState(false);
+    const [privacyChecked, setPrivacyChecked] = useState(false);
     const screenHeight = Dimensions.get('window').height;
     const imageHeight = useRef(new Animated.Value(screenHeight * 0.25)).current;
     const overlayOpacity = useRef(new Animated.Value(0)).current;
@@ -66,17 +68,25 @@ export default function EmailRegistration() {
 
     const onSubmit = async (data: RegistrationFormData) => {
         const result = await signUp(data.email, data.password, data.name);
-        
+
         if (result.success) {
-            console.log('✅ Registration successful');
             await new Promise(resolve => setTimeout(resolve, 500));
-            
+
             const { data: { session } } = await supabase.auth.getSession();
-            console.log('📱 Session after signup:', session ? 'EXISTS' : 'NULL');
-            console.log('👤 User name:', data.name);
-            
-            // After registration, always go to onboarding
-            router.replace('/privacy' as any);
+
+            if (session?.user) {
+                const consentTimestamp = new Date().toISOString();
+                await supabase
+                    .from('profiles')
+                    .update({
+                        terms_accepted_at: consentTimestamp,
+                        privacy_accepted_at: consentTimestamp,
+                        consent_version: '2026-03-06',
+                    })
+                    .eq('id', session.user.id);
+            }
+
+            router.replace('/onboarding/step-1' as any);
         } else {
             console.error('❌ Registration failed:', result.error);
         }
@@ -162,29 +172,49 @@ export default function EmailRegistration() {
                 </Text>
                 
                 <View style={styles.bottomContainer}>
-                    <Text style={[typography.p, styles.termsText]}>
-                        By continuing, you agree for VYO
-                    </Text>
-                    <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
-                        <TouchableOpacity style={{ paddingRight: 4 }} onPress={() => router.push('/privacy' as any)}>
-                            <Text style={[globalStyles.textLink]}>Terms & Conditions</Text>
-                        </TouchableOpacity>
-                        <Text style={[typography.p, styles.termsText]}>and</Text>
-                        <TouchableOpacity style={{ paddingLeft: 4 }} onPress={() => router.push('/privacy' as any)}>
-                            <Text style={[globalStyles.textLink]}>Privacy Policy,</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <Text 
-                        style={[typography.p, styles.termsText, { marginBottom: 24, marginTop: 4 }]}
-                    >Ps, we'll never share your personal data</Text>
-                    
+                    <TouchableOpacity
+                        style={styles.consentRow}
+                        onPress={() => setTermsChecked(prev => !prev)}
+                        activeOpacity={0.7}
+                    >
+                        <View style={[styles.checkbox, termsChecked && styles.checkboxChecked]}>
+                            {termsChecked && <MaterialIcons name="check" size={14} color="white" />}
+                        </View>
+                        <View style={styles.consentTextContainer}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+                                <Text style={[typography.p, styles.termsText]}>I agree to VYO </Text>
+                                <TouchableOpacity onPress={() => router.push('/privacy' as any)}>
+                                    <Text style={[globalStyles.textLink, styles.termsText]}>Terms & Conditions</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.consentRow}
+                        onPress={() => setPrivacyChecked(prev => !prev)}
+                        activeOpacity={0.7}
+                    >
+                        <View style={[styles.checkbox, privacyChecked && styles.checkboxChecked]}>
+                            {privacyChecked && <MaterialIcons name="check" size={14} color="white" />}
+                        </View>
+                        <View style={styles.consentTextContainer}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap' }}>
+                                <Text style={[typography.p, styles.termsText]}>I consent to the collection and processing of my personal and health data as described in the </Text>
+                                <TouchableOpacity onPress={() => router.push('/privacy' as any)}>
+                                    <Text style={[globalStyles.textLink, styles.termsText]}>Privacy Policy</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </View>
+                    </TouchableOpacity>
+
                     <ButtonRounded
                         title='Create Account'
                         icon={(<MaterialIcons name="trending-flat" size={28} color="white" />)}
                         type='black'
                         onPress={handleSubmit(onSubmit)}
                         iconLeft={false}
-                        enabled={!isPending && isValid}
+                        enabled={!isPending && isValid && termsChecked && privacyChecked}
                     />
                 </View>
             </ScrollView>
@@ -236,6 +266,30 @@ const styles = StyleSheet.create({
     },
     bottomContainer: {
         marginTop: 24,
+    },
+    consentRow: {
+        flexDirection: 'row',
+        alignItems: 'flex-start',
+        gap: 12,
+        marginBottom: 24,
+    },
+    checkbox: {
+        width: 20,
+        height: 20,
+        borderRadius: 4,
+        borderWidth: 1.5,
+        borderColor: '#999',
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginTop: 2,
+        flexShrink: 0,
+    },
+    checkboxChecked: {
+        backgroundColor: '#000',
+        borderColor: '#000',
+    },
+    consentTextContainer: {
+        flex: 1,
     },
     termsText: {
         fontSize: 14,

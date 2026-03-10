@@ -142,17 +142,14 @@ const styles = StyleSheet.create({
   },
   subtitle: {
     width: '100%',
-    marginBottom: 16,
   },
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    paddingVertical: 12,
   },
   flowContainer: {
     marginBottom: 32,
-    marginTop: 16,
   },
   tag: {
     paddingHorizontal: 16,

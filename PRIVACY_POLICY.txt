@@ -1,0 +1,167 @@
+PRIVACY POLICY
+
+Last updated: March 6, 2026
+
+This Privacy Policy describes how we collect, use, store, and protect your personal data when you use our application. We comply with the EU General Data Protection Regulation (GDPR), the California Consumer Privacy Act (CCPA), and applicable data protection laws.
+
+1. DATA CONTROLLER
+
+[Your company/developer name]
+[Contact email for privacy inquiries]
+
+2. DATA WE COLLECT AND WHY
+
+2.1 Account and profile data
+- Name: to display in the app and personalize your experience. Source: your account (e.g. Google sign-in, Apple sign-in, or email registration).
+- Email address: to create and secure your account and communicate with you if needed.
+- Profile photo (avatar): to show in the app; may be provided by your sign-in provider (Google, Apple) or uploaded by you.
+
+Purpose: Account creation, authentication, and personalization. Legal basis (GDPR): contract performance, consent where applicable.
+
+Note on third-party sign-in: When you sign in with Google or Apple, we receive only the data those services share with us (typically name and email). We do not receive your Google or Apple passwords. Your use of Google or Apple sign-in is also subject to their respective privacy policies.
+
+2.2 Health and body metrics (optional)
+- Age, weight, height, waist, hips.
+- Unit system preference (metric/imperial).
+
+Purpose: To tailor health and nutrition content. You provide this voluntarily. Legal basis: explicit consent (Article 9 GDPR, as this may constitute health-related data).
+
+2.3 Menstrual and health questionnaire data (optional)
+- Menstrual cycle information: start date, duration, cycle length, flow, regularity.
+- Symptoms and conditions: selected options from our lists.
+- Pain-related information: type, intensity, timing, location, duration, and similar options you choose.
+- Information about surgery or other procedures, if you provide it.
+
+Purpose: To calculate an in-app assessment result (e.g. type of menstrual pain) and to personalize recommendations. All such data is voluntary. Legal basis: explicit consent (Article 9 GDPR — special category health data).
+
+2.4 Assessment results
+- Scores and diagnosis label (e.g. Primary dysmenorrhea, Secondary dysmenorrhea, Menstrual pain) derived from your questionnaire answers.
+
+Purpose: To show you your result and adapt in-app content. Legal basis: explicit consent (based on your use of the feature).
+
+2.5 Product and nutrition preferences
+- Deleted/hidden products: list of products you chose to remove from recommendations.
+- Vegetarian/vegan flags: to filter product suggestions.
+
+Purpose: To personalize nutrition and product recommendations. Legal basis: consent.
+
+2.6 Shopping lists
+- Dates of lists and lists of product names (recommended and custom) you save.
+
+Purpose: To provide and save your shopping lists in the app. Legal basis: contract performance / consent.
+
+2.7 App usage
+- Whether you completed onboarding and, if you skip the quiz, the last completed step (so you can resume later).
+
+Purpose: To improve usability and avoid repeating content. Legal basis: legitimate interest (minimal data).
+
+2.8 Push notifications
+- Notification preferences: your on/off settings for each notification type (e.g. period reminders, ovulation reminders, symptom logging reminders, special offers). These are stored on your device.
+
+Purpose: To send you relevant reminders and updates you have opted into. Legal basis: consent (you can disable any or all notifications at any time in the app under Profile → Notifications).
+
+3. HOW WE STORE AND PROTECT YOUR DATA
+
+3.1 Storage and location
+- Your data is stored in electronic form on secure servers (cloud infrastructure) used by our service providers.
+- We use Supabase for authentication, database, and file storage (avatars). Your data is stored in the European Economic Area (EEA): our primary database is located in West EU (Ireland), eu-west-1. When data may be processed outside the EEA, we use providers that offer adequate safeguards (e.g. standard contractual clauses, certifications).
+- Your data is stored in the following database tables: profiles (account and body metrics), medical_data (menstrual and health questionnaire), diagnosis_results (assessment scores), user_product_settings (deleted products, vegetarian/vegan preferences), shopping_lists (your saved lists and dates), auth.users (authentication). Avatar images are stored in our object storage (Supabase Storage).
+
+- On your device: Authentication tokens (session data) and minimal app state may be stored locally to keep you signed in and improve app performance. This data is stored in the app's local storage and is cleared when you sign out or delete the app.
+
+3.2 Security measures
+- Access to personal data is restricted to authorized personnel and systems that need it to operate the app.
+- We use industry-standard security practices: encryption in transit (e.g. TLS) and at rest where available, access controls, and secure authentication.
+- User data in the database is isolated per user (Row Level Security) so each user can only access their own data.
+
+3.3 Retention
+- We keep your data while your account is active and as needed to provide the service.
+- If your account is inactive for 3 years, we will delete or anonymize your personal data.
+- In any case, we do not keep your data longer than 5 years; all data older than 5 years is deleted.
+- You can request deletion of your data at any time (e.g. by deleting your account). We will delete or anonymize your data in line with this policy, except where we must retain it for legal reasons.
+
+3.4 How to delete your data / delete your account
+- In the app: Profile → Personal → tap "Delete account" → confirm in the dialog. This action is irreversible. We then call our account-deletion function, which removes your user from our authentication system (auth.users). Because your profile and all related tables are linked with "on delete cascade", the following are automatically and permanently deleted: your profile (name, email, avatar URL, body metrics, onboarding and consent fields), medical_data (menstrual and health questionnaire), diagnosis_results (assessment scores), user_product_settings (deleted products, vegetarian/vegan), shopping_lists (all lists and items), and any announcements-dismissed records. Avatar files in object storage become inaccessible after your account is deleted.
+- By email: You can also request account and data deletion by contacting us at the email in section 10. We will process the request within the timeframe required by applicable law (e.g. one month under GDPR).
+- Account deletion cannot be undone. All your personal data is removed from our systems as described above.
+
+4. LEGAL BASIS UNDER GDPR (EU/EEA users)
+
+We obtain your consent for the processing of your personal data as described in this policy. Consent is collected as follows:
+
+- Email registration: Before creating your account, you are presented with two separate checkboxes — one to agree to our Terms & Conditions, and one to explicitly consent to the collection and processing of your personal and health data as described in this Privacy Policy. The account cannot be created without ticking both.
+- Google or Apple sign-in: Before accessing the app for the first time, you are presented with the same two checkboxes on a dedicated consent screen. You cannot proceed to use the app without explicitly accepting both.
+
+We record the following consent data in your profile: the timestamp of your Terms & Conditions acceptance (terms_accepted_at), the timestamp of your Privacy Policy consent (privacy_accepted_at), and the version of the policy you accepted (consent_version). This record constitutes proof of consent under Article 7(1) GDPR.
+
+For health and menstrual data (special categories under Article 9 GDPR), we rely on your explicit consent, given via the Privacy Policy checkbox at registration or sign-in, and further confirmed when you voluntarily complete the relevant questionnaire or onboarding steps. You may skip any or all of these steps.
+
+- Contract: Providing the app, account, and core features (e.g. saving shopping lists).
+- Explicit consent (Article 9): Health and menstrual data, body metrics, assessment results, and any other special category data you provide.
+- Consent: Account data, product preferences, and other personal data you provide when using the app.
+- Legitimate interest: Minimal usage data (e.g. quiz progress) to run and improve the app, where this does not override your rights.
+
+You may withdraw consent at any time by stopping use of the relevant features, disabling notifications in the app, or deleting your account. Withdrawal does not affect the lawfulness of processing before withdrawal.
+
+5. YOUR RIGHTS (GDPR AND SIMILAR LAWS)
+
+You have the right to:
+- Access: Obtain a copy of your personal data we hold.
+- Rectification: Correct inaccurate or incomplete data.
+- Erasure: Request deletion of your data ("right to be forgotten"), subject to legal exceptions. You can delete your account and all associated data directly in the app (Profile → Personal → Delete account); see section 3.4.
+- Restriction: Request that we limit how we use your data in certain cases.
+- Portability: Receive your data in a structured, machine-readable format where applicable.
+- Object: Object to processing based on legitimate interest in certain circumstances.
+- Withdraw consent: Where we rely on consent, you may withdraw it at any time.
+- Complain: Lodge a complaint with a supervisory authority (e.g. in your country of residence).
+
+To exercise these rights, contact us at [your privacy/contact email]. We will respond within the time required by applicable law (e.g. one month under GDPR).
+
+6. CALIFORNIA RESIDENTS — YOUR CCPA RIGHTS
+
+If you are a California resident, the California Consumer Privacy Act (CCPA) gives you the following rights:
+
+- Right to Know: You may request that we disclose what personal information we have collected about you, the categories of sources, the purposes of collection, and whether we share it with third parties.
+- Right to Delete: You may request deletion of personal information we have collected from you, subject to certain exceptions. You can also delete your data directly by deleting your account in the app (see section 3.4).
+- Right to Opt-Out of Sale: We do not sell your personal information to third parties. No opt-out is needed, but you may contact us to confirm.
+- Right to Non-Discrimination: We will not discriminate against you for exercising your CCPA rights. You will not receive a different level of service or be charged different prices for exercising these rights.
+- Right to Correct: You may request correction of inaccurate personal information we hold about you.
+
+To exercise your CCPA rights, contact us at [your privacy/contact email]. We will verify your identity before processing your request and respond within 45 days as required by law.
+
+Categories of personal information we collect (CCPA categories): Identifiers (name, email, device token), health and medical information (menstrual and health questionnaire data, assessment results), commercial information (product preferences, shopping lists), and inferences drawn from this information to personalize the app.
+
+7. DATA SHARING AND RECIPIENTS
+
+- We do not sell your personal data.
+- We may share data with:
+  - Service providers that help us run the app (hosting, database, authentication, analytics if any). They act on our instructions and are bound by data processing agreements.
+  - Authorities when required by law or to protect our rights and safety.
+- Our primary data processor is Supabase (authentication, database, file storage). Supabase acts as a data processor under a Data Processing Agreement and is bound to process data only on our instructions.
+- If we use analytics or third-party SDKs (e.g. crash reporting), we will disclose them in the app or in an updated policy and, where needed, obtain consent.
+
+8. CHILDREN
+
+The app is not directed at children under 16. We do not knowingly collect data from users under 16. If you believe we have collected such data, please contact us and we will delete it.
+
+9. CHANGES TO THIS POLICY
+
+We may update this Privacy Policy from time to time. We will notify you of material changes (e.g. in the app or by email) and indicate the "Last updated" date. Continued use after changes constitutes acceptance of the updated policy where permitted by law.
+
+10. APPLE APP STORE AND GOOGLE PLAY
+
+- This policy applies to the app distributed via the Apple App Store and Google Play.
+- By downloading and using the app, you acknowledge that you have read and understood this Privacy Policy and agree to the collection, use, and storage of your data as described.
+- Data collection is limited to what is necessary for the purposes stated above. Health and sensitive data are collected only with your explicit input and consent.
+- The app may collect data as described in the Apple App Store and Google Play Data Safety disclosures, which are consistent with this policy.
+
+11. CONTACT
+
+For privacy-related questions, requests, or complaints:
+Email: [your privacy contact email]
+
+---
+
+Summary for app store listings (short version you can use in store description or in-app):
+
+We collect: account data (name, email, avatar), optional body and health questionnaire data (cycle, symptoms, pain-related choices), assessment results, product preferences, shopping lists, and notification preferences. We use this to run your account, personalize health and nutrition content, send you reminders you opt into, and save your lists. Data is stored securely on Supabase servers in the EU (Ireland) with access controls and encryption. We do not sell your data. You can delete your account and all your data at any time from Profile → Personal → Delete account. We comply with GDPR and CCPA and give you rights to access, correct, delete, and port your data. Contact: [your privacy contact email].

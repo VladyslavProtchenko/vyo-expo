@@ -1,0 +1,95 @@
+TERMS AND CONDITIONS
+
+Last updated: March 6, 2026
+
+These Terms and Conditions ("Terms") govern your use of the VYO mobile application ("App") and related services provided by [Your company/developer name] ("we", "us", "our"). By downloading, installing, or using the App, or by ticking the acceptance checkbox at registration or sign-in, you agree to be bound by these Terms. If you do not agree, do not use the App.
+
+1. DESCRIPTION OF THE SERVICE
+
+VYO is a health and wellness application that provides:
+- Personalized content and recommendations based on optional health and body information you provide (e.g. menstrual cycle, symptoms, nutrition preferences).
+- In-app assessment tools (e.g. menstrual pain type) based on questionnaire answers; results are for informational purposes only.
+- Shopping lists and product suggestions tailored to your preferences (including vegetarian/vegan options).
+- Reminders and notifications you can enable (e.g. period reminders, symptom logging) via Profile → Notifications.
+
+We may update or discontinue features at any time. Your use of the App after such changes constitutes acceptance of the updated service.
+
+2. ELIGIBILITY
+
+You must be at least 16 years old to use the App. By using the App, you represent that you meet this age requirement. The App is not intended for children under 16. We do not knowingly allow users under 16 to create an account or use the App.
+
+3. ACCOUNT AND REGISTRATION
+
+- You may create an account via email registration or by signing in with Google or Apple. You are responsible for keeping your login credentials secure and for all activity under your account.
+- You agree to provide accurate and complete information and to update it if it changes. You must not create an account for someone else without their permission or misrepresent your identity.
+- We may suspend or terminate your account if you breach these Terms or for other reasons we deem necessary to protect the service or other users.
+
+4. NOT MEDICAL ADVICE
+
+- The App and all content, features, and in-app assessments (including any diagnosis labels or scores) are for informational and educational purposes only. They do not constitute medical advice, diagnosis, or treatment.
+- Nothing in the App replaces consultation with a qualified healthcare provider. Always seek the advice of your doctor or other qualified health professional with any questions regarding a medical condition. Do not disregard professional medical advice or delay seeking it because of something you read or see in the App.
+- We do not guarantee the accuracy, completeness, or suitability of any content or assessment results for your individual situation.
+
+5. ACCEPTABLE USE
+
+You agree not to:
+- Use the App for any illegal purpose or in violation of any applicable laws.
+- Attempt to gain unauthorized access to the App, our systems, or other users' accounts or data.
+- Use the App to harass, abuse, or harm others, or to transmit harmful or offensive content.
+- Use automated means (e.g. bots, scrapers) to access or collect data from the App without our permission.
+- Copy, modify, distribute, or reverse-engineer the App or its content except as permitted by law.
+
+We may suspend or terminate your access if we reasonably believe you have violated these rules.
+
+6. INTELLECTUAL PROPERTY
+
+The App, including its design, text, graphics, logos, and software, is owned by us or our licensors and is protected by intellectual property laws. We grant you a limited, non-exclusive, non-transferable license to use the App for your personal, non-commercial use in accordance with these Terms. You do not acquire any ownership or rights to the App or our brand.
+
+7. PRIVACY AND DATA
+
+Your use of the App is also governed by our Privacy Policy. By accepting these Terms, you confirm that you have read and understood our Privacy Policy and consent to the collection, use, and storage of your data as described there. We process personal and health data as set out in the Privacy Policy, including storage in the EEA (e.g. Ireland) and deletion when you delete your account (Profile → Personal → Delete account).
+
+8. LIMITATION OF LIABILITY
+
+- To the fullest extent permitted by applicable law, we and our affiliates, directors, employees, and agents shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits, data, or goodwill, arising from your use of or inability to use the App.
+- Our total liability for any claims arising from or related to the App or these Terms shall not exceed the amount you have paid us in the twelve (12) months preceding the claim, or, if you have paid nothing, one hundred euros (€100) or the equivalent in your local currency.
+- Some jurisdictions do not allow the exclusion or limitation of certain damages; in such jurisdictions, our liability will be limited to the maximum extent permitted by law.
+
+9. DISCLAIMER OF WARRANTIES
+
+The App is provided "as is" and "as available" without warranties of any kind, either express or implied, including but not limited to implied warranties of merchantability, fitness for a particular purpose, or non-infringement. We do not warrant that the App will be uninterrupted, error-free, or free of harmful components.
+
+10. INDEMNIFICATION
+
+You agree to indemnify, defend, and hold harmless us and our affiliates, officers, directors, employees, and agents from and against any claims, damages, losses, liabilities, and expenses (including reasonable legal fees) arising from your use of the App, your violation of these Terms, or your violation of any third-party rights.
+
+11. TERMINATION
+
+- You may stop using the App at any time and delete your account via Profile → Personal → Delete account. Account deletion is permanent and will remove your data as described in our Privacy Policy.
+- We may suspend or terminate your access to the App, with or without notice, for any reason, including breach of these Terms. Upon termination, your right to use the App ceases immediately.
+- Sections that by their nature should survive (including Privacy and data, Intellectual property, Limitation of liability, Indemnification, Governing law, and this sentence) will survive termination.
+
+12. CHANGES TO THESE TERMS
+
+We may update these Terms from time to time. We will notify you of material changes (e.g. in the App or by email) and indicate the "Last updated" date. Your continued use of the App after the changes take effect constitutes acceptance of the updated Terms where permitted by law. If you do not agree, you must stop using the App and may delete your account.
+
+13. GOVERNING LAW AND DISPUTES
+
+These Terms are governed by the laws of [Your jurisdiction, e.g. Ukraine or the country where your company is registered], without regard to conflict of law principles. Any dispute arising from these Terms or the App shall be resolved in the courts of [same jurisdiction]. If you are a consumer in the European Union, you may also have the right to bring claims under the laws of your country of residence.
+
+14. SEVERABILITY
+
+If any provision of these Terms is held to be invalid or unenforceable, the remaining provisions will remain in full force and effect.
+
+15. THIRD-PARTY SERVICES
+
+The App may allow you to sign in with Google or Apple. Your use of those services is subject to their respective terms and privacy policies. We are not responsible for their services or policies.
+
+16. CONTACT
+
+For questions about these Terms:
+Email: [your contact email]
+
+---
+
+By using VYO, you acknowledge that you have read, understood, and agree to these Terms and Conditions and to our Privacy Policy.

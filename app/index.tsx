@@ -37,7 +37,7 @@ export default function Login() {
             
             const { data: profile, error } = await supabase
                 .from('profiles')
-                .select('onboarding_completed')
+                .select('onboarding_completed, privacy_accepted_at')
                 .eq('id', session.user.id)
                 .single();
 
@@ -49,11 +49,11 @@ export default function Login() {
 
             if (!profile) {
                 console.log('📝 Profile not found - creating profile...');
-                const fullName = session.user.user_metadata?.full_name || 
-                               session.user.user_metadata?.name || 
+                const fullName = session.user.user_metadata?.full_name ||
+                               session.user.user_metadata?.name ||
                                session.user.email?.split('@')[0] || '';
                 const firstName = fullName.split(' ')[0];
-                
+
                 const { error: createError } = await supabase
                     .from('profiles')
                     .insert({
@@ -61,15 +61,21 @@ export default function Login() {
                         email: session.user.email || '',
                         name: firstName,
                     });
-                
+
                 if (createError) {
                     console.error('❌ Error creating profile:', createError);
                     setChecking(false);
                     return;
                 }
-                
-                console.log('✅ Profile created - redirecting to onboarding');
-                router.replace('/onboarding/step-1' as any);
+
+                console.log('✅ Profile created - redirecting to consent screen');
+                router.replace('/privacy' as any);
+                return;
+            }
+
+            if (!profile.privacy_accepted_at) {
+                console.log('📋 Consent not given - redirecting to privacy screen');
+                router.replace('/privacy' as any);
                 return;
             }
 

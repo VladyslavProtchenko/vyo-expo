@@ -9,7 +9,7 @@ export default function NotificationSettings() {
     'Period in a couple days': true,
     'Ovulation': true,
     'Log symptoms': true,
-    'Special offers': true,
+    'Special offers': false,
   });
 
   const notificationItems = [

@@ -34,7 +34,6 @@ interface UserStore {
   
   surgery: string;
   surgeryDate: string;
-  isDiagnosed: boolean;
   
   diagnosis: string | null;
   primaryScore: number;
@@ -78,7 +77,6 @@ const initialState = {
   isPainChange: '',
   surgery: '',
   surgeryDate: '',
-  isDiagnosed: false,
   diagnosis: null,
   primaryScore: 0,
   secondaryScore: 0,
