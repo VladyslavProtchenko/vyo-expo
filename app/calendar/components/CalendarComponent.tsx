@@ -14,17 +14,37 @@ dayjs.extend(isSameOrAfter);
 export default function CalendarComponent() {
   const { startMenstruation, cycleDuration, menstruationDuration } = useUserStore();
   const [currentMonth, setCurrentMonth] = useState(dayjs());
-  const [calendarWidth, setCalendarWidth] = useState(0);
-  const today = dayjs().format('YYYY-MM-DD');
+  const today = dayjs();
+  const todayStr = today.format('YYYY-MM-DD');
 
-  // Вычисляем отмеченные даты на основе фаз цикла
   const markedDates = useMemo(() => {
     const marked: any = {};
     const start = dayjs(startMenstruation);
     const ovulationDay = cycleDuration - 14;
-    const todayDate = dayjs();
 
-    // Генерируем даты для нескольких циклов (прошлые и будущие)
+    // Find current cycle and current phase boundaries
+    const daysSinceStart = today.diff(start, 'day');
+    const currentCycleIndex = Math.floor(daysSinceStart / cycleDuration);
+    const currentCycleStart = start.add(currentCycleIndex * cycleDuration, 'day');
+    const dayInCycle = today.diff(currentCycleStart, 'day');
+
+    // Determine current phase start day (within cycle)
+    let currentPhaseStart: number;
+    if (dayInCycle < menstruationDuration) {
+      currentPhaseStart = 0; // menstrual
+    } else if (dayInCycle < ovulationDay) {
+      currentPhaseStart = menstruationDuration; // follicular
+    } else if (dayInCycle === ovulationDay) {
+      currentPhaseStart = ovulationDay; // ovulation
+    } else {
+      currentPhaseStart = ovulationDay + 1; // luteal
+    }
+
+    const activePhaseStartDate = currentCycleStart.add(currentPhaseStart, 'day');
+
+    const isActivePeriod = (dateObj: dayjs.Dayjs) =>
+      dateObj.isSameOrAfter(activePhaseStartDate, 'day') && dateObj.isSameOrBefore(today, 'day');
+
     for (let cycleOffset = -6; cycleOffset <= 6; cycleOffset++) {
       const cycleStart = start.add(cycleOffset * cycleDuration, 'day');
 
@@ -33,7 +53,7 @@ export default function CalendarComponent() {
         const dateObj = cycleStart.add(i, 'day');
         const date = dateObj.format('YYYY-MM-DD');
         marked[date] = {
-          color: PHASES.menstrual.colorLight,
+          color: isActivePeriod(dateObj) ? PHASES.menstrual.color : PHASES.menstrual.colorLight,
           startingDay: i === 0,
           endingDay: i === menstruationDuration - 1,
         };
@@ -44,7 +64,7 @@ export default function CalendarComponent() {
         const dateObj = cycleStart.add(i, 'day');
         const date = dateObj.format('YYYY-MM-DD');
         marked[date] = {
-          color: PHASES.follicular.colorLight,
+          color: isActivePeriod(dateObj) ? PHASES.follicular.color : PHASES.follicular.colorLight,
           startingDay: i === menstruationDuration,
           endingDay: i === ovulationDay - 1,
         };
@@ -54,7 +74,7 @@ export default function CalendarComponent() {
       const ovulationDateObj = cycleStart.add(ovulationDay, 'day');
       const ovulationDate = ovulationDateObj.format('YYYY-MM-DD');
       marked[ovulationDate] = {
-        color: PHASES.ovulation.colorLight,
+        color: isActivePeriod(ovulationDateObj) ? PHASES.ovulation.color : PHASES.ovulation.colorLight,
         startingDay: true,
         endingDay: true,
       };
@@ -64,29 +84,24 @@ export default function CalendarComponent() {
         const dateObj = cycleStart.add(i, 'day');
         const date = dateObj.format('YYYY-MM-DD');
         marked[date] = {
-          color: PHASES.luteal.colorLight,
+          color: isActivePeriod(dateObj) ? PHASES.luteal.color : PHASES.luteal.colorLight,
           startingDay: i === ovulationDay + 1,
           endingDay: i === cycleDuration - 1,
         };
       }
     }
 
-    // Отмечаем сегодняшний день кругом с бордером
-    if (marked[today]) {
-      marked[today] = {
-        ...marked[today],
-        selected: true,
-        textColor: '#000',
-      };
-    } else {
-      marked[today] = {
-        selected: true,
-        textColor: '#000',
-      };
+    // Round the right edge on today and left edge on tomorrow
+    if (marked[todayStr]) {
+      marked[todayStr] = { ...marked[todayStr], endingDay: true };
+    }
+    const tomorrowStr = today.add(1, 'day').format('YYYY-MM-DD');
+    if (marked[tomorrowStr]) {
+      marked[tomorrowStr] = { ...marked[tomorrowStr], startingDay: true };
     }
 
     return marked;
-  }, [startMenstruation, cycleDuration, menstruationDuration, today]);
+  }, [startMenstruation, cycleDuration, menstruationDuration, todayStr]);
 
   if (!startMenstruation || !cycleDuration) {
     return (
@@ -98,130 +113,55 @@ export default function CalendarComponent() {
     );
   }
 
-  const todayOverlay = useMemo(() => {
-    if (!calendarWidth) return null;
-    if (!currentMonth.isSame(dayjs(), 'month')) return null;
-
-    const monthStart = currentMonth.startOf('month');
-    const startWeekday = monthStart.day(); // 0 Sunday ... 6 Saturday
-    const dayOfMonth = dayjs().date();
-    const flatIndex = startWeekday + dayOfMonth - 1;
-    const row = Math.floor(flatIndex / 7);
-    const col = flatIndex % 7;
-
-    const calendarPadding = 8;
-    const availableWidth = calendarWidth - (calendarPadding * 2);
-    const cellWidth = availableWidth / 7;
-    const ringSize = 44;
-
-    // Calibrated for react-native-calendars layout to keep the ring center-aligned
-    // with the day number cell across rows.
-    const topOffset = 90;
-    const rowHeight = 64;
-    const overlayShiftX = 0;
-    const overlayShiftY = 1;
-
-    const todayColor = markedDates?.[today]?.color;
-    let borderColor = PHASES.menstrual.color;
-
-    if (todayColor === PHASES.menstrual.colorLight) {
-      borderColor = PHASES.menstrual.color;
-    } else if (todayColor === PHASES.follicular.colorLight) {
-      borderColor = PHASES.follicular.color;
-    } else if (todayColor === PHASES.ovulation.colorLight) {
-      borderColor = PHASES.ovulation.color;
-    } else if (todayColor === PHASES.luteal.colorLight) {
-      borderColor = PHASES.luteal.color;
-    }
-
-    return {
-      left: calendarPadding + col * cellWidth + (cellWidth - ringSize) / 2 + overlayShiftX,
-      top: topOffset + row * rowHeight + overlayShiftY,
-      borderColor,
-    };
-  }, [calendarWidth, currentMonth, markedDates, today]);
-
   return (
     <View style={styles.container}>
-      <View style={styles.calendarWrap} onLayout={(e) => setCalendarWidth(e.nativeEvent.layout.width)}>
-        <Calendar
-          markingType={'period'}
-          markedDates={markedDates}
-          onDayPress={(day: any) => {}}
-          // Custom header
-          renderHeader={(date: any) => {
-            const month = dayjs(date).format('MMMM');
-            return (
-              <View style={styles.header}>
-                <TouchableOpacity onPress={() => setCurrentMonth((prev) => prev.subtract(1, 'month'))}>
-                  <MaterialIcons name="chevron-left" size={28} color="#000" />
-                </TouchableOpacity>
-
-                <Text style={styles.monthText}>{month}</Text>
-
-                <TouchableOpacity onPress={() => setCurrentMonth((prev) => prev.add(1, 'month'))}>
-                  <MaterialIcons name="chevron-right" size={28} color="#000" />
-                </TouchableOpacity>
-              </View>
-            );
-          }}
-          key={currentMonth.format('YYYY-MM')}
-          current={currentMonth.format('YYYY-MM-DD')}
-          hideArrows={true}
-          theme={{
-            textDayFontFamily: 'Poppins',
-            textDayFontSize: 18,
-            selectedDayTextColor: '#000',
-            // @ts-ignore
-            'stylesheet.calendar.header': {
-              dayHeader: {
-                marginVertical: 16,
-              },
+      <Calendar
+        markingType={'period'}
+        markedDates={markedDates}
+        onDayPress={() => {}}
+        renderHeader={(date: any) => {
+          const month = dayjs(date).format('MMMM');
+          return (
+            <View style={styles.header}>
+              <TouchableOpacity onPress={() => setCurrentMonth((prev) => prev.subtract(1, 'month'))}>
+                <MaterialIcons name="chevron-left" size={28} color="#000" />
+              </TouchableOpacity>
+              <Text style={styles.monthText}>{month}</Text>
+              <TouchableOpacity onPress={() => setCurrentMonth((prev) => prev.add(1, 'month'))}>
+                <MaterialIcons name="chevron-right" size={28} color="#000" />
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+        key={currentMonth.format('YYYY-MM')}
+        current={currentMonth.format('YYYY-MM-DD')}
+        hideArrows={true}
+        theme={{
+          textDayFontFamily: 'Poppins',
+          textDayFontSize: 18,
+          // @ts-ignore
+          'stylesheet.calendar.header': {
+            dayHeader: {
+              marginVertical: 16,
             },
-            // @ts-ignore
-            'stylesheet.calendar.main': {
-              week: {
-                marginBottom: 32,
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-              },
+          },
+          // @ts-ignore
+          'stylesheet.calendar.main': {
+            week: {
+              marginBottom: 32,
+              flexDirection: 'row',
+              justifyContent: 'space-around',
             },
-            // @ts-ignore
-            'stylesheet.day.period': {
-              text: {
-                color: '#000',
-                fontSize: 18,
-              },
-              today: {
-                borderRadius: 32,
-                overflow: 'hidden',
-              },
-              todayText: {
-                color: '#000',
-              },
-              selected: {
-                backgroundColor: 'transparent',
-              },
-              selectedText: {
-                color: '#000',
-              },
+          },
+          // @ts-ignore
+          'stylesheet.day.period': {
+            text: {
+              color: '#000',
+              fontSize: 18,
             },
-          }}
-        />
-        {todayOverlay && (
-          <View
-            pointerEvents="none"
-            style={[
-              styles.todayAbsoluteOverlay,
-              {
-                left: todayOverlay.left,
-                top: todayOverlay.top,
-                borderColor: todayOverlay.borderColor,
-              },
-            ]}
-          />
-        )}
-      </View>
+          },
+        }}
+      />
       <View style={styles.labels}>
         <View style={styles.label}>
           <View style={{ width: 12, height: 12, backgroundColor: PHASES.menstrual.color, borderRadius: 10 }} />
@@ -278,18 +218,5 @@ const styles = StyleSheet.create({
   labelText: {
     fontFamily: 'Poppins',
     fontSize: 16,
-  },
-  calendarWrap: {
-    position: 'relative',
-  },
-  todayAbsoluteOverlay: {
-    position: 'absolute',
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    borderWidth: 2,
-    backgroundColor: 'transparent',
-    transform: [{ scale: 1.2 }],
-    zIndex: 20,
   },
 });
