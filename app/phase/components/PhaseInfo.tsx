@@ -3,6 +3,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import ChartsBackground from '@/components/ChartsBackground';
 import { PHASES } from '@/constants/phases';
 import { CurrentPhaseInfo } from '@/store/phase';
+import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'expo-router';
 import { StyleSheet, Text, View } from 'react-native';
 import { phaseData, PhaseName } from '../phaseData';
@@ -18,6 +19,7 @@ const hexToRgba = (hex: string, alpha: number) => {
 export default function PhaseInfo() {
   const router = useRouter();
   const { phaseName } = CurrentPhaseInfo();
+  const { isQuizSkipped } = useUserStore();
   const data = phaseData[phaseName as PhaseName];
 
   const backgroundColor = hexToRgba(PHASES[phaseName].color, 0.1);
@@ -52,7 +54,7 @@ export default function PhaseInfo() {
         <View style={[styles.hormonesBox, { marginBottom: 16 }]}>
           <Text style={styles.description}>Listening to your body isn't a weakness — it's a precise response to the physiology of this phase.</Text>
         </View>
-        <SkipPoster />
+        {isQuizSkipped && <SkipPoster />}
         <References />
 
         <View style={styles.buttonContainer}>

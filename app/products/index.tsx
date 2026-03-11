@@ -1,6 +1,5 @@
 import { useRouter } from 'expo-router';
 import { MoveLeft, Settings2, ShoppingCart } from 'lucide-react-native';
-import { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -11,120 +10,20 @@ import References from '@/app/products/components/References';
 import B from '@/components/B';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import ButtonRounded from '@/components/ui/ButtonRounded';
-import { useDeletedProducts } from '@/hooks/useDeletedProducts';
-import { useProductSettings } from '@/hooks/useProductSettings';
-import { CurrentPhaseInfo } from '@/store/phase';
-import { Products as AllProducts, Product } from '@/store/products';
+import { useProductVariants } from '@/hooks/useProductVariants';
 import { useShoppingListStore } from '@/store/shoppingList';
 import useUserStore from '@/store/useUserStore';
-import { generateProductVariants } from '@/utils/openai';
 
 export default function Products() {
   const router = useRouter();
-
-  const getRandomProducts = (): Product[] => {
-    const shuffled = [...AllProducts].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, 9);
-  };
-
-  const normalizeProductName = (name: string): string => {
-    return name.toLowerCase().trim().replace(/\s*\([^)]*\)\s*/g, '');
-  };
-
-  const findProductsByNames = (names: string[]): Product[] => {
-    return names
-      .map((name) => {
-        const normalized = name.toLowerCase().trim();
-        const normalizedWithoutParens = normalizeProductName(name);
-        
-        return AllProducts.find((p) => {
-          const productName = p.name.toLowerCase();
-          const productNameNormalized = normalizeProductName(p.name);
-          
-          return productName === normalized || 
-                 productNameNormalized === normalizedWithoutParens ||
-                 productName.includes(normalized) || 
-                 normalized.includes(productName);
-        });
-      })
-      .filter((p): p is Product => p !== undefined);
-  };
-
-  const [selectedProducts, setSelectedProducts] = useState<Product[]>(() => getRandomProducts());
-  const [loading, setLoading] = useState(false);
-  const [previousLists, setPreviousList] = useState<Record<number, string[]>>({});
+  const { products, isLoading, refresh } = useProductVariants();
   const setProducts = useShoppingListStore((s) => s.setProducts);
-  const { deletedProducts } = useDeletedProducts();
-  const { isVegetarian, isVegan } = useProductSettings();
   const { isQuizSkipped } = useUserStore();
-
-  const loadProducts = async () => {
-    try {
-      setLoading(true);
-      const currentPhase = CurrentPhaseInfo().phaseName;
-      console.log('🔵 Generating products for phase:', currentPhase);
-
-      const productNames = await generateProductVariants(currentPhase, previousLists, deletedProducts, isVegetarian, isVegan);
-      console.log('✅ Received product names:', JSON.stringify(productNames, null, 2));
-
-      if (productNames && productNames.length === 9) {
-        const foundProducts = findProductsByNames(productNames);
-        console.log('✅ Found products:', foundProducts.length);
-        
-        // Логируем какие продукты не найдены
-        const normalizeForComparison = (str: string) => {
-          return str.replace(/\s*\([^)]*\)\s*/g, '').trim();
-        };
-        
-        const missingProducts = productNames.filter((name) => {
-          const normalized = name.toLowerCase().trim();
-          const normalizedWithoutParens = normalizeForComparison(normalized);
-          return !AllProducts.some((p) => {
-            const productName = p.name.toLowerCase();
-            const productNameNormalized = normalizeForComparison(productName);
-            return productName === normalized 
-              || productNameNormalized === normalizedWithoutParens
-              || productName.includes(normalized) 
-              || normalized.includes(productName);
-          });
-        });
-        if (missingProducts.length > 0) {
-          console.warn('⚠️ Missing products:', missingProducts);
-        }
-
-        if (foundProducts.length > 0) {
-          setSelectedProducts(foundProducts);
-          const listNumber = Object.keys(previousLists).length + 1;
-          setPreviousList((prev) => ({
-            ...prev,
-            [listNumber]: productNames,
-          }));
-          console.log(`📝 Saved list #${listNumber} to history`);
-        } else {
-          console.warn('⚠️ No products found, using random');
-          setSelectedProducts(getRandomProducts());
-        }
-      }
-    } catch (err: any) {
-      console.error('❌ Error:', err.message);
-      setSelectedProducts(getRandomProducts());
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    loadProducts();
-  }, []);
-
-  const handleGenerateNew = () => {
-    loadProducts();
-  };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-        <TouchableOpacity onPress={() => router.back()}>
+        <TouchableOpacity onPress={() => router.push('/(tabs)/home' as any)}>
           <MoveLeft size={30} color="black" />
         </TouchableOpacity>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
@@ -161,7 +60,7 @@ export default function Products() {
           <Text style={{ marginBottom: 12, fontFamily: 'Poppins', fontSize: 14 }}>
             Adding these products to your shopping list helps you stay on track with nutrients during this phase.
           </Text>
-          {selectedProducts.map((product, index) => (
+          {products.map((product, index) => (
             <View key={`${product.name}-${index}`} style={{ alignItems: 'center', gap: 8, width: 100 }}>
               {product.imageUrl ? (
                 <Image
@@ -201,14 +100,14 @@ export default function Products() {
           <ButtonGradient
             title="Add to shopping list"
             onPress={() => {
-              setProducts('products', selectedProducts.map((p) => p.name));
+              setProducts('products', products.map((p) => p.name));
               router.push('/shopping-list/add');
             }}
             className={{ width: '100%' }}
           />
           <ButtonRounded
-            title={loading ? 'Generating...' : 'Generate new'}
-            onPress={handleGenerateNew}
+            title={isLoading ? 'Generating...' : 'Generate new'}
+            onPress={refresh}
             className={{ width: '100%' }}
           />
         </View>

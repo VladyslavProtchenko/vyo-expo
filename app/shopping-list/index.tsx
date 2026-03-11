@@ -47,6 +47,13 @@ export default function ShoppingList() {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.scrollContent}
           >
+            {lists.length === 0 && (
+              <View style={styles.emptyContainer}>
+                <Text style={styles.emptyEmoji}>🛒</Text>
+                <Text style={styles.emptyTitle}>No lists yet</Text>
+                <Text style={styles.emptyText}>Go to your daily nutrition plan and tap "Add to shopping list"</Text>
+              </View>
+            )}
             {lists.map((list) => {
               const totalItems =
                 (list.products?.length ?? 0) + (list.custom_products?.length ?? 0);
@@ -116,6 +123,31 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 24,
     gap: 12,
+  },
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 32,
+    marginTop: '50%',
+  },
+  emptyEmoji: {
+    fontSize: 48,
+    marginBottom: 16,
+  },
+  emptyTitle: {
+    fontFamily: 'Poppins',
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#000',
+    marginBottom: 8,
+  },
+  emptyText: {
+    fontFamily: 'Poppins',
+    fontSize: 14,
+    color: '#6B7280',
+    textAlign: 'center',
+    lineHeight: 20,
   },
   card: {
     flexDirection: 'row',

@@ -1,7 +1,22 @@
 import CustomCheckbox from '@/components/ui/CustomCheckbox';
+import useProductsStore from '@/store/useProducts';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
+
+const NUTRIENT_LABELS: Record<string, string> = {
+  'iron': 'Iron',
+  'magnesium': 'Magnesium',
+  'potassium': 'Potassium',
+  'omega-3': 'Omega-3',
+  'vitamin-b': 'B Vitamins',
+  'vitamin-b6': 'Vitamin B6',
+  'vitamin-e': 'Vitamin E',
+  'choline': 'Choline',
+  'fiber': 'Fiber',
+  'antioxidants': 'Antioxidants',
+  'methionine-cysteine': 'Methionine',
+};
 
 export default function NutritionCard({
   checked,
@@ -11,7 +26,10 @@ export default function NutritionCard({
   onPress: () => void;
 }) {
   const router = useRouter();
-  
+  const { getInfo } = useProductsStore();
+  const { nutrients } = getInfo();
+  const nutrientLabels = nutrients.map((n) => NUTRIENT_LABELS[n] ?? n);
+
   return (
     <View style={{ flexDirection: 'row' }}>
       <CustomCheckbox 
@@ -26,7 +44,7 @@ export default function NutritionCard({
         <View style={{ flex: 1, marginRight: 6 }}>
           <Text style={{ fontSize: 16, fontFamily: "ArchivoBlack-Regular", fontWeight: "400", marginBottom: 8 }}>Nutrition & Supplements</Text>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap' }}>
-            {['Iron', 'Omega-3', 'Potassium', 'B vitamins', 'Magnesium'].map((item) => (
+            {nutrientLabels.map((item) => (
               <View key={item} style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: 16, backgroundColor: 'white', marginRight: 4, marginBottom: 4 }}>
                 <Text style={{ fontSize: 12, fontFamily: "Poppins", color: '#404040' }}>{item}</Text>
               </View>

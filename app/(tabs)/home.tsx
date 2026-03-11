@@ -10,19 +10,47 @@ import { useGlobalAnnouncement } from '@/hooks/useGlobalAnnouncement';
 import { useLoadUserData } from '@/hooks/useLoadUserData';
 import useStates from '@/store/useStates';
 import useUserStore from '@/store/useUserStore';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
 
+const CYCLE_KEY = 'last_seen_cycle';
+
+function getCurrentCycleStart(
+  startMenstruation: string | null,
+  cycleDuration: number,
+): string | null {
+  if (!startMenstruation) return null;
+  const today = dayjs();
+  const start = dayjs(startMenstruation);
+  const currentCycleIndex = Math.floor(today.diff(start, 'day') / cycleDuration);
+  return start.add(currentCycleIndex * cycleDuration, 'day').format('YYYY-MM-DD');
+}
+
 export default function HomePage() {
-  const { isDayCardOpen } = useStates();
+  const { isDayCardOpen, setIsDayCardOpen } = useStates();
   const { refetch: loadUserData } = useLoadUserData();
-  const { isQuizSkipped } = useUserStore();
+  const { isQuizSkipped, startMenstruation, cycleDuration } = useUserStore();
   const { data: announcement } = useGlobalAnnouncement();
   const dismissAnnouncement = useDismissAnnouncement();
 
   useEffect(() => {
     loadUserData();
   }, [loadUserData]);
+
+  useEffect(() => {
+    const checkCycle = async () => {
+      const currentKey = getCurrentCycleStart(startMenstruation, cycleDuration);
+      if (!currentKey) return;
+      const lastKey = await AsyncStorage.getItem(CYCLE_KEY);
+      if (lastKey !== currentKey) {
+        setIsDayCardOpen(true);
+        await AsyncStorage.setItem(CYCLE_KEY, currentKey);
+      }
+    };
+    checkCycle();
+  }, [startMenstruation, cycleDuration]);
 
   const handleDismissAnnouncement = () => {
     if (announcement?.id) {

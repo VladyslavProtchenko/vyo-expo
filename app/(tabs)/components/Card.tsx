@@ -1,7 +1,20 @@
 import { typography } from '@/constants/typography';
+import { useGetDiagnosis } from '@/hooks/useDiagnosisData';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
+const diagnosisSubtitle: Record<string, string> = {
+  normal: 'Balancing',
+  dysmenorrhea: 'Primary dysmenorrhea',
+  endometriosis: 'Possible endometriosis',
+  pcos: 'Possible PCOS',
+};
+
 export default function CarePlanCard() {
+  const { data: diagnosisData } = useGetDiagnosis();
+  const subtitle = diagnosisData?.diagnosis
+    ? (diagnosisSubtitle[diagnosisData.diagnosis] ?? 'Balancing')
+    : 'Balancing';
+
   return (
     <View style={styles.card}>
       <View style={styles.cardHeader}>
@@ -17,7 +30,7 @@ export default function CarePlanCard() {
       </View>
       <View style={styles.cardContent}>
         <View style={styles.progressContainer}>
-          <Text style={typography.p}>Possible endometriosis</Text>
+          <Text style={typography.p}>{subtitle}</Text>
         </View>
       </View>
       <Image source={require('@/assets/images/corner.png')} style={styles.corner} />

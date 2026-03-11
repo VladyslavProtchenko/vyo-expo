@@ -173,9 +173,5 @@ const items = [
     description:
       'Gentle exercises to strengthen your pelvic floor, improve stability, and reduce pain — easy to follow with guided videos.',
   },
-  {
-    title: '🌿 Lifestyle',
-    description:
-      'Gentle exercises to strengthen your pelvic floor, improve stability, and reduce pain — easy to follow with guided videos.',
-  },
+
 ];
