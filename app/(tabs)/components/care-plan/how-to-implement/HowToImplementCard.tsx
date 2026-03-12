@@ -1,13 +1,18 @@
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import StoriesModal, { Story } from './StoriesModal';
+import StoriesModal, { Story } from '../../StoriesModal';
+import Slide1 from './slides/Slide1';
+import Slide2 from './slides/Slide2';
+import Slide3 from './slides/Slide3';
+import Slide4 from './slides/Slide4';
+import Slide5 from './slides/Slide5';
 
 const STORIES: Story[] = [
-  { id: 1, render: () => <Text style={styles.slideText}>Slide 1</Text> },
-  { id: 2, render: () => <Text style={styles.slideText}>Slide 2</Text> },
-  { id: 3, render: () => <Text style={styles.slideText}>Slide 3</Text> },
-  { id: 4, render: () => <Text style={styles.slideText}>Slide 4</Text> },
-  { id: 5, render: () => <Text style={styles.slideText}>Slide 5</Text> },
+  { id: 1, render: () => <Slide1 /> },
+  { id: 2, render: () => <Slide2 /> },
+  { id: 3, render: () => <Slide3 /> },
+  { id: 4, render: () => <Slide4 /> },
+  { id: 5, render: () => <Slide5 /> },
 ];
 
 export default function HowToImplementCard({ isGray }: { isGray?: boolean }) {

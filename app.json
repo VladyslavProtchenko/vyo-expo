@@ -17,7 +17,9 @@
         "NSPhotoLibraryAddUsageDescription": "We need access to save photos to your library.",
         "CFBundleURLTypes": [
           {
-            "CFBundleURLSchemes": ["com.vyo"]
+            "CFBundleURLSchemes": [
+              "com.vyo"
+            ]
           }
         ]
       }
@@ -57,7 +59,8 @@
           "photosPermission": "We need access to your photo library so you can choose a profile picture.",
           "cameraPermission": "We need access to your camera so you can take a profile picture."
         }
-      ]
+      ],
+      "expo-localization"
     ],
     "experiments": {
       "typedRoutes": true,

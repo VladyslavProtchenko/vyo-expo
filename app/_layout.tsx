@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import 'react-native-reanimated';
 import Toast, { ErrorToast, ToastConfig } from 'react-native-toast-message';
 
+import '@/config/i18n';
 import { supabase } from '@/config/supabase';
 import { SessionProvider, useSession } from '@/contexts/session';
 import { useColorScheme } from '@/hooks/use-color-scheme';

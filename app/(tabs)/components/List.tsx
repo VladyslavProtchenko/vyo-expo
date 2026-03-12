@@ -1,7 +1,7 @@
 import { useGetDiagnosis } from '@/hooks/useDiagnosisData';
 import React from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import HowToImplementCard from './HowToImplementCard';
+import HowToImplementCard from './care-plan/how-to-implement/HowToImplementCard';
 import WhatDoesItMeanCard from './WhatDoesItMeanCard';
 
 export default function CarePlanList({ isGray }: { isGray?: boolean }) {

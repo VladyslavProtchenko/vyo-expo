@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import Animated, { cancelAnimation, useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 const SLIDE_DURATION = 5000;
 
@@ -13,17 +13,38 @@ export type Story = {
   };
 };
 
-function ProgressBar({ active, passed }: { active: boolean; passed: boolean }) {
+function ProgressBar({ active, passed, paused }: { active: boolean; passed: boolean; paused: boolean }) {
   const progress = useSharedValue(passed ? 1 : 0);
+  const remainingRef = useRef(SLIDE_DURATION);
+  const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (active) {
       progress.value = 0;
+      remainingRef.current = SLIDE_DURATION;
+      startTimeRef.current = Date.now();
       progress.value = withTiming(1, { duration: SLIDE_DURATION });
     } else {
+      cancelAnimation(progress);
       progress.value = passed ? 1 : 0;
+      remainingRef.current = SLIDE_DURATION;
     }
   }, [active, passed]);
+
+  useEffect(() => {
+    if (!active) return;
+    if (paused) {
+      cancelAnimation(progress);
+      if (startTimeRef.current !== null) {
+        const elapsed = Date.now() - startTimeRef.current;
+        remainingRef.current = Math.max(0, remainingRef.current - elapsed);
+        startTimeRef.current = null;
+      }
+    } else {
+      startTimeRef.current = Date.now();
+      progress.value = withTiming(1, { duration: remainingRef.current });
+    }
+  }, [paused, active]);
 
   const animStyle = useAnimatedStyle(() => ({
     width: `${progress.value * 100}%`,
@@ -46,7 +67,11 @@ export default function StoriesModal({
   onClose: () => void;
 }) {
   const [index, setIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const remainingRef = useRef(SLIDE_DURATION);
+  const startTimeRef = useRef<number | null>(null);
+  const pausedRef = useRef(false);
 
   const next = useCallback(() => {
     if (index < stories.length - 1) setIndex((i) => i + 1);
@@ -57,14 +82,64 @@ export default function StoriesModal({
     if (index > 0) setIndex((i) => i - 1);
   };
 
+  const isLongPressRef = useRef(false);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const pauseSlide = () => {
+    pausedRef.current = true;
+    setPaused(true);
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (startTimeRef.current !== null) {
+      const elapsed = Date.now() - startTimeRef.current;
+      remainingRef.current = Math.max(0, remainingRef.current - elapsed);
+      startTimeRef.current = null;
+    }
+  };
+
+  const resumeSlide = () => {
+    pausedRef.current = false;
+    setPaused(false);
+    startTimeRef.current = Date.now();
+    timerRef.current = setTimeout(next, remainingRef.current);
+  };
+
+  const handlePressIn = () => {
+    isLongPressRef.current = false;
+    longPressTimerRef.current = setTimeout(() => {
+      isLongPressRef.current = true;
+      pauseSlide();
+    }, 200);
+  };
+
+  const handleLeftPressOut = () => {
+    if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+    if (isLongPressRef.current) {
+      resumeSlide();
+    } else {
+      prev();
+    }
+  };
+
+  const handleRightPressOut = () => {
+    if (longPressTimerRef.current) clearTimeout(longPressTimerRef.current);
+    if (isLongPressRef.current) {
+      resumeSlide();
+    } else {
+      next();
+    }
+  };
+
   useEffect(() => {
     if (!visible) return;
+    pausedRef.current = false;
+    remainingRef.current = SLIDE_DURATION;
+    startTimeRef.current = Date.now();
     timerRef.current = setTimeout(next, SLIDE_DURATION);
     return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, [index, visible, next]);
 
   useEffect(() => {
-    if (visible) setIndex(0);
+    if (visible) { setIndex(0); setPaused(false); }
   }, [visible]);
 
   const current = stories[index];
@@ -73,10 +148,29 @@ export default function StoriesModal({
     <Modal visible={visible} animationType="fade" statusBarTranslucent>
       <View style={styles.container}>
 
-        {/* Progress bars */}
-        <View style={styles.progressContainer}>
+        {/* Content — fills full screen */}
+        <View style={styles.content}>
+          {current.render()}
+        </View>
+
+        {/* Tap areas */}
+        <View style={styles.tapAreas} pointerEvents="box-none">
+          <Pressable
+            style={styles.tapArea}
+            onPressIn={handlePressIn}
+            onPressOut={handleLeftPressOut}
+          />
+          <Pressable
+            style={styles.tapArea}
+            onPressIn={handlePressIn}
+            onPressOut={handleRightPressOut}
+          />
+        </View>
+
+        {/* Progress bars — overlaid on top */}
+        <View style={styles.progressContainer} pointerEvents="none">
           {stories.map((s, i) => (
-            <ProgressBar key={s.id} active={i === index} passed={i < index} />
+            <ProgressBar key={s.id} active={i === index} passed={i < index} paused={paused} />
           ))}
         </View>
 
@@ -84,11 +178,6 @@ export default function StoriesModal({
         <TouchableOpacity style={styles.closeButton} onPress={onClose} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
           <Text style={styles.closeText}>✕</Text>
         </TouchableOpacity>
-
-        {/* Content */}
-        <View style={styles.content}>
-          {current.render()}
-        </View>
 
         {/* Optional button */}
         {current.button && (
@@ -98,12 +187,6 @@ export default function StoriesModal({
             </TouchableOpacity>
           </View>
         )}
-
-        {/* Tap areas — behind button */}
-        <View style={styles.tapAreas} pointerEvents="box-none">
-          <Pressable style={styles.tapArea} onPress={prev} />
-          <Pressable style={styles.tapArea} onPress={next} />
-        </View>
 
       </View>
     </Modal>
@@ -116,6 +199,10 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   progressContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
     flexDirection: 'row',
     gap: 4,
     paddingHorizontal: 16,
@@ -144,13 +231,10 @@ const styles = StyleSheet.create({
   },
   closeText: {
     fontSize: 24,
-    color: '#000',
+    color: '#fff',
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 32,
   },
   buttonContainer: {
     paddingHorizontal: 24,

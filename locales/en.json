@@ -1,0 +1,64 @@
+{
+  "common": {
+    "user": "User",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "back": "Back",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "done": "Done"
+  },
+  "shopping_list": {
+    "title": "Shopping lists",
+    "empty_title": "No lists yet",
+    "empty_description": "Go to your daily nutrition plan and tap \"Add to shopping list\"",
+    "today": "Today",
+    "yesterday": "Yesterday",
+    "items_one": "{{count}} item",
+    "items_other": "{{count}} items",
+    "add_custom": "Add custom product!",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete_confirm": "Delete list?"
+  },
+  "products": {
+    "title": "Nutrients focus for today",
+    "todays_list": "Todays list",
+    "todays_list_description": "Adding these products to your shopping list helps you stay on track with nutrients during this phase.",
+    "add_to_list": "Add to shopping list",
+    "generate_new": "Generate new",
+    "generating": "Generating...",
+    "superfood_title": "🌿 Superfood of the week",
+    "supplements_title": "Recommended supplements",
+    "supplements_description": "Use them if you couldn't fully rely on food today.",
+    "dosages_note": "Dosages are based on evidence-based protocols. Learn more",
+    "food_varies_title": "If your food intake varies",
+    "food_varies_description": "No tracking required — use this as a flexible guideline based on how many recommended products you eat.",
+    "disclaimer": "This app is not a medical device and does not provide diagnoses. These recommendations are based on published research and general wellness practices. Always consult your healthcare provider before starting new supplements or making significant lifestyle changes."
+  },
+  "care_plan": {
+    "what_does_it_mean": "What does it mean?",
+    "how_to_implement": "How to implement?",
+    "how_to_implement_description": "Step-by-step implementation of your plan",
+    "my_care_plan": "My Care Plan",
+    "backed_by_science": "Backed by science",
+    "see_all": "See all",
+    "pelvic_floor_exercises": "Pelvic floor exercises",
+    "menu_nutrition": "🥦 Nutrition & Supplements",
+    "menu_physiotherapy": "🫶 Physiotherapy",
+    "menu_stress": "🧘 Stress Management",
+    "menu_description": "Gentle exercises to strengthen your pelvic floor, improve stability, and reduce pain — easy to follow with guided videos.",
+    "skip_title": "Make your care truly yours.",
+    "skip_subtitle": "Complete the questionnaire and unlock your personalized Care Plan.",
+    "complete_now": "Complete now",
+    "todays_greeting": "Today's your day",
+    "default_name": "Sonya"
+  },
+  "diagnosis": {
+    "dysmenorrhea": "Primary dysmenorrhea",
+    "endometriosis": "Possible endometriosis",
+    "pcos": "Possible PCOS",
+    "normal": "Balancing"
+  }
+}
