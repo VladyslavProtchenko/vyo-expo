@@ -55,6 +55,488 @@
     "todays_greeting": "Today's your day",
     "default_name": "Sonya"
   },
+  "nutrition_stories": {
+    "luteal": {
+      "slide1": {
+        "title": "Why this matters?",
+        "para1_pre": "In the luteal phase, appetite often increases \u2014 ",
+        "para1_hl": "this is normal",
+        "para1_post": ".",
+        "para2": "You may crave sweets or snacks (studies show intake can rise slightly)",
+        "para3_pre": "Eat ",
+        "para3_hl1": "regularly",
+        "para3_mid": " (every 3\u20134 hours), stay ",
+        "para3_hl2": "hydrated",
+        "para3_post": ", and keep nourishing options nearby.",
+        "para4": "This isn\u2019t about fighting hunger \u2014 it\u2019s about supporting your body."
+      },
+      "slide2": {
+        "nutrient1_name": "Omega-3",
+        "nutrient1_pre": "are powerful agents for ",
+        "nutrient1_hl1": "reducing",
+        "nutrient1_mid": " background inflammation and help keep your ",
+        "nutrient1_hl2": "mood steady",
+        "nutrient2_name": "Vitamin E",
+        "nutrient2_pre": "helps ",
+        "nutrient2_hl": "reduce bloating",
+        "nutrient2_post": ", which often occurs before menstruation.",
+        "nutrient3_name": "Fiber",
+        "nutrient3_pre": "supports ",
+        "nutrient3_hl1": "regular digestion",
+        "nutrient3_mid": ", helps regulate appetite, and stabilizes ",
+        "nutrient3_hl2": "blood sugar",
+        "nutrient3_post": " levels"
+      },
+      "slide3": {
+        "nutrient1_name": "Vitamin B",
+        "nutrient1_pre": "is ",
+        "nutrient1_hl1": "essential",
+        "nutrient1_mid": " for serotonin regulation and helps ease ",
+        "nutrient1_hl2": "emotional",
+        "nutrient1_post": " fluctuations bind",
+        "nutrient2_name": "Magnesium",
+        "nutrient2_hl1": "reduces",
+        "nutrient2_mid": " water retention, ",
+        "nutrient2_hl2": "calming",
+        "nutrient2_post": " the nervous system",
+        "button": "See products for today"
+      }
+    },
+    "ovulation": {
+      "slide1": {
+        "title": "Why this matters?",
+        "para1_pre": "Appetite may ",
+        "para1_hl": "naturally dip",
+        "para1_post": " during ovulation compared to the second half of the cycle \u2014 this is a normal response to hormonal shifts, not a sign of imbalance.",
+        "para2_pre": "Estrogen peaks now, boosting energy \u2014 but ovulation is also a mild inflammatory process, so focus on ",
+        "para2_hl": "antioxidant support",
+        "para2_post": " and helping your body metabolize estrogen efficiently."
+      },
+      "slide2": {
+        "nutrient1_name": "Choline",
+        "nutrient1_pre": "and sulfur-containing amino acids for speeding up ",
+        "nutrient1_hl": "estrogen elimination",
+        "nutrient1_post": " and support hormonal balance.",
+        "nutrient2_name": "Antioxidants",
+        "nutrient2_hl": "internal protection",
+        "nutrient2_post": " neutralizing damaging factors and helping the body recover quickly."
+      },
+      "slide3": {
+        "nutrient1_name": "Fiber",
+        "nutrient1_pre": "helps bind and ",
+        "nutrient1_hl": "eliminate used estrogen",
+        "nutrient1_post": ", preventing it from being reabsorbed into the bloodstream",
+        "nutrient2_name": "Magnesium",
+        "nutrient2_pre": "regulates ",
+        "nutrient2_hl": "nervous system",
+        "nutrient2_post": " during peak hormonal pressure.",
+        "button": "See products for today"
+      }
+    },
+    "follicular": {
+      "slide1": {
+        "title": "Why this matters?",
+        "para1_hl": "Balanced nutrition",
+        "para1_post": " matters all cycle long \u2014 but in the follicular phase, your body uses nutrients especially efficiently.",
+        "para2_pre": "Rising estrogen ",
+        "para2_hl": "improves insulin",
+        "para2_post": " sensitivity and energy use, and appetite may naturally decrease before ovulation.",
+        "para3": "Follow your hunger cues \u2014 no need to force or restrict."
+      },
+      "slide2": {
+        "nutrient1_name": "Choline",
+        "nutrient1_pre": "for optimal ",
+        "nutrient1_hl": "liver function",
+        "nutrient1_post": ", which plays a central role in metabolizing and detoxifying excess estrogen",
+        "nutrient2_name": "Magnesium",
+        "nutrient2_pre": "for ",
+        "nutrient2_hl1": "efficient energy utilization",
+        "nutrient2_mid": " and ",
+        "nutrient2_hl2": "emotional resilience",
+        "nutrient3_name": "B vitamins",
+        "nutrient3_pre": "crucial for ",
+        "nutrient3_hl1": "effective recovery",
+        "nutrient3_mid1": " after menstruation, ",
+        "nutrient3_hl2": "mood stability",
+        "nutrient3_mid2": ", and supporting ",
+        "nutrient3_hl3": "regenerative processes",
+        "nutrient3_post": ".",
+        "button": "See products for today"
+      }
+    },
+    "menstrual": {
+      "slide5": {
+        "title": "Nutrition tips",
+        "tip1": "For omega-3, choose baked fish or supplements with active forms, instead of fried fish",
+        "tip2": "Choose whole foods - meat instead of deli, yogurt instead of \u201cfitness\u201d snacks.",
+        "article_title": "The menstrual phase: What your body needs",
+        "article_time": "8 min reading",
+        "button": "See products for today"
+      },
+      "slide4": {
+        "title": "Nutrition tips",
+        "tip1": "Choose warm, cooked foods for better digestion",
+        "tip2": "Pair iron with vitamin C to improve absorption",
+        "note": "\u26A1 Avoid taking nutrients on an empty stomach to reduce discomfort"
+      },
+      "slide3": {
+        "nutrient1_name": "B vitamins",
+        "nutrient1_hl": "help with energy and focus,",
+        "nutrient1_body": "as fatigue and mental fog are common.",
+        "nutrient2_name": "Omega-3",
+        "nutrient2_hl": "anti-inflammatory support"
+      },
+      "slide2": {
+        "nutrient1_name": "Iron",
+        "nutrient1_hl": "replenishes blood loss,",
+        "nutrient1_body": "and maintain hemoglobin level, preventing anemia.",
+        "nutrient2_name": "Magnesium",
+        "nutrient2_hl": "reduces cramps, eases pain",
+        "nutrient2_body": "and supports emotional stability.",
+        "nutrient3_name": "Potassium",
+        "nutrient3_pre": "regulates ",
+        "nutrient3_hl1": "fluid balance",
+        "nutrient3_mid": " and ",
+        "nutrient3_hl2": "reduces bloating",
+        "nutrient3_post": "."
+      },
+      "slide1": {
+        "title": "Why this matters?",
+        "para1_pre": "During ",
+        "para1_hl": "menstruation,",
+        "para1_post": " the body loses important resources.",
+        "para2_pre": "In this phase, the goal is to ",
+        "para2_hl1": "gently restore energy",
+        "para2_mid": ", reduce discomfort, and ",
+        "para2_hl2": "support emotional balance",
+        "para2_post": ", without putting extra stress on digestion."
+      }
+    }
+  },
+  "exercise_stories": {
+    "luteal": {
+      "slide2": {
+        "subtitle": "This is a perfect time for",
+        "practice1": "Stretching",
+        "practice2": "Pilates",
+        "practice3": "Yoga",
+        "practice4": "Barre"
+      },
+      "slide1": {
+        "title": "Enhanced endurance",
+        "para1_pre": "You might feel ",
+        "para1_hl": "less stamina",
+        "para1_post": " for intense workouts.",
+        "para2_pre": "Choose ",
+        "para2_hl": "gentle movement",
+        "para2_post": " \u2014 yoga, pilates, walks, breathwork \u2014 to support circulation, ease bloating, and boost mood.",
+        "para3_pre": "If you feel good, ",
+        "para3_hl": "keep moving",
+        "para3_post": " \u2014 let comfort guide you."
+      }
+    },
+    "ovulation": {
+      "slide1": {
+        "title": "Enhanced endurance",
+        "para1_pre": "Estrogen and testosterone levels peak, potentially enhancing ",
+        "para1_hl1": "endurance",
+        "para1_mid1": ", ",
+        "para1_hl2": "strength",
+        "para1_mid2": ", and ",
+        "para1_hl3": "recovery",
+        "para1_post": ".",
+        "para2": "For some, this is an ideal time to pursue workouts or physical challenges. If you feel energised, go for more intensive sessions. If not, prioritise a comfortable pace that suits your body"
+      }
+    },
+    "follicular": {
+      "slide1": {
+        "title": "Endurance and recovery may feel easier",
+        "para1_pre": "Some women find ",
+        "para1_hl1": "cardio",
+        "para1_mid": " or ",
+        "para1_hl2": "moderate strength",
+        "para1_post": " workouts more enjoyable during this time \u2014 but that\u2019s not a universal rule.",
+        "para2": "Tune in to how you feel: if energy is high, go for it. If not, give your body space to adjust."
+      },
+      "slide2": {
+        "subtitle": "This is a perfect time for",
+        "practice1": "Strength workout",
+        "practice2": "Pilates",
+        "practice3": "Cardio",
+        "practice4": "Barre"
+      },
+      "slide3": {
+        "title": "Why it helps?",
+        "item1": "ease cramps",
+        "item2": "improve circulation",
+        "item3": "reduce prostaglandins",
+        "para_pre": "Feeling ",
+        "para_hl": "good",
+        "para_post": "?\nYou don\u2019t have to limit yourself!",
+        "button": "Practice now"
+      }
+    },
+    "menstrual": {
+      "slide1": {
+        "title": "Feeling more tired or less motivated to work out?",
+        "para1_pre": "That\u2019s completely ",
+        "para1_hl": "normal",
+        "para1_post": " during your period 🤍"
+      },
+      "slide2": {
+        "subtitle": "This is a perfect time for",
+        "practice1": "Breathing",
+        "practice2": "Walking",
+        "practice3": "Yoga",
+        "practice4": "Stretching"
+      },
+      "slide3": {
+        "title": "Why it helps?",
+        "item1": "ease cramps",
+        "item2": "improve circulation",
+        "item3": "reduce prostaglandins",
+        "para_pre": "Feeling ",
+        "para_hl": "good",
+        "para_post": "?\nYou don\u2019t have to limit yourself!",
+        "button": "Practice now"
+      }
+    }
+  },
+  "stories": {
+    "menstrual": {
+      "slide1": {
+        "title": "Why this matters?",
+        "para1_pre": "You may feel more tired during this phase due to ",
+        "para1_hl": "the drop in estradiol and progesterone",
+        "para2": "Lower estradiol may also impact serotonin levels, which is associated with mood swings, irritability, or anxiety.",
+        "para3_pre": "Adjust your daily rhythm to ",
+        "para3_hl1": "match",
+        "para3_mid": " your actual ",
+        "para3_hl2": "needs"
+      },
+      "slide2": {
+        "para1": "These states are common for some but not universal.",
+        "para2_pre": "If your mood feels unstable, ",
+        "para2_hl": "slow your pace",
+        "para2_post": ", avoid overload, and make room for calming, restorative practices like meditation or nurturing routines."
+      },
+      "slide3": {
+        "title": "Proved practices",
+        "subtitle": "for menstrual phase",
+        "practice1": "Breathing",
+        "practice2": "Walking\nmeditation",
+        "practice3": "Slowliness",
+        "button": "Practice now"
+      }
+    },
+    "luteal": {
+      "slide1": {
+        "title": "Progesterone time",
+        "para1_pre": "Progesterone rises now \u2014 you might feel ",
+        "para1_hl1": "more sensitive",
+        "para1_mid1": ", ",
+        "para1_hl2": "calmer",
+        "para1_mid2": ", or a little ",
+        "para1_hl3": "sleepy",
+        "para1_post": " (though not everyone does).",
+        "para2": "If your energy dips, slow down and build in rest.\nIf you feel steady and productive \u2014 lean into it."
+      },
+      "slide2": {
+        "subtitle": "for luteal phase"
+      }
+    },
+    "ovulation": {
+      "slide1": {
+        "title": "Social spark time \u2728",
+        "para1_pre": "Hormonal fluctuations may enhance social engagement, ",
+        "para1_hl1": "creativity",
+        "para1_mid": ", and emotional ",
+        "para1_hl2": "openness",
+        "para1_post": ".",
+        "para2_pre": "It could be a good time for presentations, negotiations, or ",
+        "para2_hl": "fresh ideas",
+        "para2_post": "."
+      },
+      "slide2": {
+        "para1_pre": "Still, not everyone feels a \u201csocial lift\u201d \u2014 ",
+        "para1_hl": "trust your instincts",
+        "para1_post": ". If you prefer solitude, that\u2019s just as valid.",
+        "para2": "Sleep is usually stable in this phase, though individual hormonal profiles may influence it."
+      },
+      "slide3": {
+        "subtitle": "for ovulation"
+      }
+    },
+    "follicular": {
+      "slide1": {
+        "title": "Why this matters?",
+        "para1_pre": "Estrogen is linked to ",
+        "para1_hl": "improved mood",
+        "para1_post": ", sharper thinking, and increased motivation.",
+        "para2": "Although there\u2019s limited empirical evidence for a clear \"cognitive peak\" in this phase."
+      },
+      "slide2": {
+        "para1": "Still, if you feel mentally clear or drawn to complex tasks, use that boost — but",
+        "para2_hl": "skip the pressure",
+        "para2_post": " to perform \u201con schedule.\u201d"
+      },
+      "slide3": {
+        "title": "Proved practices",
+        "subtitle": "for follicular phase",
+        "practice1": "Breathing",
+        "practice2": "Walking\nmeditation",
+        "practice3": "Slowliness",
+        "button": "Practice now"
+      }
+    }
+  },
+  "nutrition_stories_endo": {
+    "luteal": {
+      "slide1": {
+        "title": "Why this matters?",
+        "para1_pre": "In the luteal phase, appetite often increases \u2014 ",
+        "para1_hl": "this is normal",
+        "para1_post": ".",
+        "para2": "You may crave sweets or snacks (studies show intake can rise slightly)",
+        "para3_pre": "Eat ",
+        "para3_hl1": "regularly",
+        "para3_mid": " (every 3\u20134 hours), stay ",
+        "para3_hl2": "hydrated",
+        "para3_post": ", and keep nourishing options nearby.",
+        "para4": "This isn\u2019t about fighting hunger \u2014 it\u2019s about supporting your body."
+      },
+      "slide2": {
+        "nutrient1_name": "Omega-3",
+        "nutrient1_pre": "are powerful agents for ",
+        "nutrient1_hl1": "reducing",
+        "nutrient1_mid1": " background inflammation, ",
+        "nutrient1_hl2": "reduces pain",
+        "nutrient1_mid2": ", and help keep your ",
+        "nutrient1_hl3": "mood steady",
+        "nutrient2_name": "Vitamin E",
+        "nutrient2_pre": "helps ",
+        "nutrient2_hl": "reduce bloating",
+        "nutrient2_post": ", which often occurs before menstruation.",
+        "nutrient3_name": "Fiber",
+        "nutrient3_pre": "supports ",
+        "nutrient3_hl1": "regular digestion",
+        "nutrient3_mid": ", helps regulate appetite, and stabilizes ",
+        "nutrient3_hl2": "blood sugar",
+        "nutrient3_post": " levels"
+      },
+      "slide3": {
+        "nutrient1_name": "Vitamin B",
+        "nutrient1_pre": "is ",
+        "nutrient1_hl1": "essential",
+        "nutrient1_mid": " for serotonin regulation and helps ease ",
+        "nutrient1_hl2": "emotional",
+        "nutrient1_post": " fluctuations bind",
+        "nutrient2_name": "Magnesium",
+        "nutrient2_hl1": "reduces",
+        "nutrient2_mid": " water retention, ",
+        "nutrient2_hl2": "calming",
+        "nutrient2_post": " the nervous system",
+        "button": "See products for today"
+      },
+      "slide4": {
+        "title": "Nutrition tips",
+        "tip1": "Choose warm, cooked foods for better digestion",
+        "tip2": "For omega-3, choose baked fish, small portions of nuts, seeds, cold-pressed oils.",
+        "button": "See products for today"
+      }
+    },
+    "ovulation": {
+      "slide1": {
+        "title": "Why this matters?",
+        "para1_pre": "You\u2019re experiencing a ",
+        "para1_hl": "peak in energy",
+        "para1_post": " thanks to high estrogen levels.",
+        "para2_pre": "Because endometriosis is an estrogen-dependent and inflammatory condition, this hormonal peak calls for ",
+        "para2_hl": "special attention",
+        "para2_post": " without irritating the gut."
+      },
+      "slide2": {
+        "note": "\u26a1 It\u2019s important to choose sources that don\u2019t trigger histamine responses or irritate the gut."
+      },
+      "slide3": {
+        "nutrient1_name": "Fiber",
+        "nutrient1_pre": "helps bind and ",
+        "nutrient1_hl": "eliminate used estrogen",
+        "nutrient1_post": ", preventing it from being reabsorbed into the bloodstream",
+        "nutrient2_name": "Magnesium",
+        "nutrient2_hl1": "anti-inflammatory",
+        "nutrient2_mid1": " support, ",
+        "nutrient2_hl2": "energy",
+        "nutrient2_mid2": " production, ",
+        "nutrient2_hl3": "relaxing",
+        "nutrient2_post": " effect on muscles and blood vessels.",
+        "note": "\u26a1 Prioritize cooked options: steamed broccoli, roasted bell pepper, pumpkin porridge, braised carrots \u2013 to reduce the risk of bloating and pain."
+      },
+      "slide4": {
+        "title": "Histamine sensitivity",
+        "para1": "Estrogen can increase histamine and slow its breakdown \u2014 which may worsen pain, bloating, headaches, or nausea",
+        "tip1": "Around these days, consider limiting aged cheese, fermented foods, smoked meats, alcohol",
+        "note": "\u26a1 If symptoms feel intense or hard to manage, it\u2019s important to talk to a healthcare professional.",
+        "button": "See products for today"
+      }
+    },
+    "follicular": {
+      "slide1": {
+        "title": "Why this matters?",
+        "para1_hl": "Balanced nutrition",
+        "para1_post": " matters all cycle long \u2014 but in the follicular phase, your body uses nutrients especially efficiently.",
+        "para2_pre": "Estrogen stimulates the growth of endometriotic lesions, so a targeted nutrient strategy should support ",
+        "para2_hl1": "healthy estrogen metabolism",
+        "para2_mid1": " and ",
+        "para2_hl2": "reduce",
+        "para2_mid2": " underlying ",
+        "para2_hl3": "inflammation",
+        "para2_post": "."
+      }
+    },
+    "menstrual": {
+      "slide1": {
+        "title": "Recovery mode: ON",
+        "para1_pre": "During ",
+        "para1_hl": "menstruation,",
+        "para1_post": " the body loses important resources and experience elevated levels of inflammation.",
+        "para2_pre": "In this phase, the goal is to give your body the ",
+        "para2_hl": "key elements it needs",
+        "para2_post": " to bounce back faster and feel better"
+      },
+      "slide2": {
+        "nutrient1_name": "Iron",
+        "nutrient1_hl": "replenishes blood loss,",
+        "nutrient1_body": "happening after heavy periods.",
+        "nutrient2_name": "Magnesium",
+        "nutrient2_hl": "reduces cramps, eases pain",
+        "nutrient2_body": "and supports emotional stability.",
+        "nutrient3_name": "Potassium",
+        "nutrient3_hl": "reduces water retention."
+      },
+      "slide3": {
+        "nutrient1_name": "B vitamins",
+        "nutrient1_hl": "helps with energy and focus,",
+        "nutrient1_body": "as fatigue and mental fog are common.",
+        "nutrient2_name": "omega-3",
+        "nutrient2_hl": "anti-inflammatory support"
+      },
+      "slide5": {
+        "title": "Nutrition tips",
+        "tip1": "For omega-3, choose baked fish or supplements with active forms, instead of fried fish",
+        "tip2": "Get potassium from baked vegetables, zucchini, and bananas, avoid citrus juices",
+        "tip3": "Choose whole foods – meat instead of deli, yogurt instead of \u201cfitness\u201d snacks.",
+        "button": "See products for today"
+      },
+      "slide6": {
+        "title": "Nutrition tips",
+        "tip1": "Choose full-fat yogurt, eggs, avocado \u2013 they provide A,D,E, and K vitamins",
+        "article_title": "The menstrual phase: What your body needs",
+        "article_time": "8 min reading",
+        "button": "See products for today"
+      }
+    }
+  },
   "diagnosis": {
     "dysmenorrhea": "Primary dysmenorrhea",
     "endometriosis": "Possible endometriosis",

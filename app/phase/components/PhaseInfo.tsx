@@ -1,4 +1,5 @@
 import References from '@/app/products/components/References';
+import StoriesList from './StoriesList';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import ChartsBackground from '@/components/ChartsBackground';
 import { PHASES } from '@/constants/phases';
@@ -55,6 +56,11 @@ export default function PhaseInfo() {
           <Text style={styles.description}>Listening to your body isn't a weakness — it's a precise response to the physiology of this phase.</Text>
         </View>
         {isQuizSkipped && <SkipPoster />}
+      </View>
+
+      <StoriesList />
+
+      <View style={styles.wrapper}>
         <References />
 
         <View style={styles.buttonContainer}>
