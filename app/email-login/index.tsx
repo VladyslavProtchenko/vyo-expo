@@ -1,110 +1,67 @@
 import ButtonRounded from '@/components/ui/ButtonRounded';
 import Input from '@/components/ui/Input';
 import { supabase } from '@/config/supabase';
+import { AppColors } from '@/constants/theme';
 import { globalStyles, typography } from '@/constants/typography';
 import { useLoadUserData } from '@/hooks/useLoadUserData';
 import { useSignIn } from '@/hooks/useSupabaseAuth';
 import { LoginFormData, loginSchema } from '@/types/validationSchemas';
-import { MaterialIcons } from '@expo/vector-icons';
+import { ArrowRight } from 'lucide-react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Animated, Dimensions, ImageBackground, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+
+const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 export default function EmailLogin() {
     const router = useRouter();
     const { signIn, loading: isPending } = useSignIn();
     const { refetch: loadUserData } = useLoadUserData();
-    const overlayOpacity = useRef(new Animated.Value(0)).current; 
-    const [keyboardOffset, setKeyboardOffset] = useState(Dimensions.get('window').height * 0.25);
     const [errorMessage, setErrorMessage] = useState('');
-    
+
     const { control, handleSubmit, formState: { errors, isValid } } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
         mode: 'onChange',
-        defaultValues: { email: '', password: '' }
+        defaultValues: { email: '', password: '' },
     });
-
-    useEffect(() => {
-        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => 
-            Animated.timing(overlayOpacity, { 
-                toValue: 1,  
-                duration: 100, 
-                useNativeDriver: true,  
-            }).start()
-        );
-        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => 
-            Animated.timing(overlayOpacity, { 
-                toValue: 0, 
-                duration: 100, 
-                useNativeDriver: true, 
-            }).start()
-        );
-
-        return () => {
-            keyboardDidShowListener?.remove();
-            keyboardDidHideListener?.remove();
-        };
-    }, [overlayOpacity]);
 
     const onSubmit = async (data: LoginFormData) => {
         setErrorMessage('');
         const result = await signIn(data.email, data.password);
-        
+
         if (result.success) {
-            console.log('✅ Login successful, checking onboarding status...');
-            
             await loadUserData();
-            
+
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) return;
-            
+
             const { data: profile } = await supabase
                 .from('profiles')
                 .select('onboarding_completed')
                 .eq('id', session.user.id)
                 .single();
-            
-            if (profile?.onboarding_completed) {
-                console.log('🏠 Onboarding completed - redirecting to home');
-                router.replace('/(tabs)/home' as any);
-            } else {
-                console.log('📝 Onboarding not completed - redirecting to onboarding');
-                router.replace('/onboarding/step-1' as any);
-            }
+
+            router.replace(profile?.onboarding_completed ? '/(tabs)/home' as any : '/onboarding/step-1' as any);
         } else {
-            console.error('❌ Login error:', result.error || 'Failed to login');
             setErrorMessage(result.error || 'Failed to login');
         }
     };
 
-  return (
-        <KeyboardAvoidingView 
+    return (
+        <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={keyboardOffset}
         >
-            <View style={styles.imageContainer}>
-                <ImageBackground 
-                    source={require('@/assets/images/login.png')} 
-                    resizeMode="cover" 
-                    style={styles.backgroundImage}
-                />
-                <Animated.View 
-                    style={[
-                        styles.overlay,
-                        { opacity: overlayOpacity }
-                    ]}
-                />
-            </View>
-            
-            <ScrollView 
-                style={styles.content}
-                contentContainerStyle={styles.contentContainer}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-            >
+            <ImageBackground
+                source={require('@/assets/images/login.png')}
+                resizeMode="cover"
+                style={styles.image}
+            />
+
+            <View style={[styles.form, styles.formContent]}>
                 <Text style={[typography.h1, styles.title]}>Welcome back, dear</Text>
 
                 {errorMessage ? (
@@ -113,150 +70,127 @@ export default function EmailLogin() {
                     </View>
                 ) : null}
 
-                <View>
-                    <View style={[styles.inputBox, { marginBottom: 24 }]}> 
-                        <Controller
-                            control={control}
-                            name="email"
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <Input
-                                    type='email-address'
-                                    placeholder='Email'
-                                    value={value}
-                                    onChange={onChange}
-                                    onBlur={onBlur}
-                                />
-                            )}
-                        />
-                        {errors.email && (
-                            <Text style={styles.errorText}>{errors.email.message}</Text>
+                <View style={styles.inputBox}>
+                    <Controller
+                        control={control}
+                        name="email"
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <Input
+                                type='email-address'
+                                placeholder='Email'
+                                value={value}
+                                onChange={onChange}
+                                onBlur={onBlur}
+                            />
                         )}
-                    </View> 
-                    
-                    <View style={styles.inputBox}> 
-                        <Controller
-                            control={control}
-                            name="password"
-                            render={({ field: { onChange, onBlur, value } }) => (
-                                <Input
-                                    type='password'
-                                    placeholder='Password'
-                                    value={value}
-                                    onChange={onChange}
-                                    onBlur={onBlur}
-                                    isPassword={true}
-                                />
-                            )}
-                        />
-                    </View>
+                    />
+                    {errors.email && (
+                        <Text style={styles.errorText}>{errors.email.message}</Text>
+                    )}
+                </View>
+
+                <View style={styles.inputBox}>
+                    <Controller
+                        control={control}
+                        name="password"
+                        render={({ field: { onChange, onBlur, value } }) => (
+                            <Input
+                                type='password'
+                                placeholder='Password'
+                                value={value}
+                                onChange={onChange}
+                                onBlur={onBlur}
+                                isPassword={true}
+                            />
+                        )}
+                    />
                     {errors.password && (
                         <Text style={styles.errorTextPassword}>{errors.password.message}</Text>
                     )}
-
                 </View>
 
-                <TouchableOpacity 
-                    style={styles.forgotPassword} 
+                <TouchableOpacity
+                    style={styles.forgotPassword}
                     onPress={() => router.push('/email-reset-password' as any)}
                 >
-                    <Text style={[typography.p, globalStyles.textLink, styles.forgotPasswordText]}>
+                    <Text style={[typography.p, globalStyles.textLink]}>
                         Forgot password?
                     </Text>
                 </TouchableOpacity>
 
                 <ButtonRounded
                     title='Login'
-                    icon={(<MaterialIcons name="trending-flat" size={28} color="white" />)}
+                    icon={<ArrowRight size={28} color="white" />}
                     type='black'
                     onPress={handleSubmit(onSubmit)}
                     iconLeft={false}
                     enabled={!isPending && isValid}
                 />
 
-                <TouchableOpacity 
-                    style={styles.signUpContainer} 
+                <TouchableOpacity
+                    style={styles.signUpContainer}
                     onPress={() => router.push('/email-registration' as any)}
                 >
-                    <Text style={[typography.p, styles.signUpText]}>Don't have an account?</Text>
+                    <Text style={typography.p}>Don't have an account?</Text>
                     <Text style={[typography.p, globalStyles.textLink, styles.signUpLink]}>Sign up</Text>
                 </TouchableOpacity>
-            </ScrollView>
+            </View>
         </KeyboardAvoidingView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-        backgroundColor: 'white',
-        width: '100%',
-    },
-    imageContainer: {
-        flex: 0.4,
-        width: '100%',
-        position: 'relative',
-    },
-    backgroundImage: {
-        width: '100%',
+    container: {
         flex: 1,
-    alignItems: 'center',
-        paddingTop: 80,
+        backgroundColor: AppColors.white,
     },
-    overlay: {
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        height: 100,
-        backgroundColor: 'white',
-    },
-    content: {
+    image: {
         flex: 1,
+        maxHeight: SCREEN_HEIGHT / 3,
     },
-    contentContainer: {
+    form: {
+        flex: 2,
+    },
+    formContent: {
         paddingTop: 40,
         paddingHorizontal: 16,
         paddingBottom: 40,
-  },
-  title: {
+    },
+    title: {
         marginBottom: 16,
     },
     errorContainer: {
-        backgroundColor: '#FEE2E2',
+        backgroundColor: AppColors.errorBackground,
         borderRadius: 8,
         padding: 12,
         marginBottom: 16,
     },
     errorMessage: {
-        color: '#DC2626',
+        color: AppColors.errorDark,
         fontSize: 14,
         fontFamily: 'Poppins',
         textAlign: 'center',
     },
-
     inputBox: {
         position: 'relative',
+        marginBottom: 24,
     },
     errorText: {
         position: 'absolute',
-        bottom: -24,
-        color: '#EF4444',
-        fontSize: 14,
-        marginTop: 4,
+        bottom: -20,
+        color: AppColors.error,
+        fontSize: 12,
         fontFamily: 'Poppins',
     },
     errorTextPassword: {
         marginTop: 4,
-        color: '#EF4444',
-        fontSize: 14,
+        color: AppColors.error,
+        fontSize: 12,
         fontFamily: 'Poppins',
     },
     forgotPassword: {
         marginTop: 4,
         marginBottom: 24,
-    },
-    forgotPasswordText: {
-        fontWeight: '500',
     },
     signUpContainer: {
         flexDirection: 'row',
@@ -264,10 +198,8 @@ const styles = StyleSheet.create({
         gap: 4,
         justifyContent: 'center',
     },
-    signUpText: {
-    },
     signUpLink: {
         textDecorationLine: 'underline',
         fontWeight: '500',
-  },
+    },
 });

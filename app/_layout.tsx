@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { KeyboardProvider } from 'react-native-keyboard-controller';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -50,12 +51,12 @@ const publicScreens = [
   'email-login',
   'email-registration',
   'email-reset-password',
-  'new-password',
 ] as const;
 
 const protectedScreens = [
   '(tabs)',
   'modal',
+  'new-password',
   'symptoms',
   'symptoms-success',
   'calendar',
@@ -94,15 +95,17 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <QueryClientProvider client={queryClient}>
-        <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-          <SessionProvider>
-            <RootNavigator fontsLoaded={fontsLoaded} fontError={fontError} />
-          </SessionProvider>
-          <StatusBar style="auto" />
-          <Toast config={toastConfig} topOffset={64} />
-        </ThemeProvider>
-      </QueryClientProvider>
+      <KeyboardProvider>
+        <QueryClientProvider client={queryClient}>
+          <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+            <SessionProvider>
+              <RootNavigator fontsLoaded={fontsLoaded} fontError={fontError} />
+            </SessionProvider>
+            <StatusBar style="auto" />
+            <Toast config={toastConfig} topOffset={64} />
+          </ThemeProvider>
+        </QueryClientProvider>
+      </KeyboardProvider>
     </GestureHandlerRootView>
   );
 }
@@ -139,8 +142,9 @@ function RootNavigator({ fontsLoaded, fontError }: RootNavigatorProps) {
 
       const inOnboarding = segments[0] === 'onboarding';
       const inPublicScreen = publicScreens.includes(segments[0] as any);
+      const inPasswordReset = segments[0] === 'new-password';
 
-      if (!completed && !inOnboarding && !inPublicScreen) {
+      if (!completed && !inOnboarding && !inPublicScreen && !inPasswordReset) {
         router.replace('/onboarding/step-1' as any);
       }
     };
