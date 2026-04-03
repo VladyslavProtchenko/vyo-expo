@@ -24,6 +24,13 @@ export default ({
   );
 
   const onChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === 'android') {
+      setShow(false);
+      if (event.type === 'set' && selectedDate) {
+        setValue(dayjs(selectedDate).format('YYYY-MM-DD'));
+      }
+      return;
+    }
     if (selectedDate) {
       setTempDate(selectedDate);
     }

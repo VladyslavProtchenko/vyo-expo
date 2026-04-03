@@ -29,7 +29,7 @@ export default function Step6() {
   }, [data]);
 
   const goBack = () => {
-    router.push('/onboarding/step-5' as any);
+    router.back();
   };
 
   const selectRegularPeriod = (period: RegularPeriodType, isActive: boolean) => {

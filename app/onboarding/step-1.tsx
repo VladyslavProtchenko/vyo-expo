@@ -11,28 +11,33 @@ import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { MaterialIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { StyleSheet, Text, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 export default function Step1() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const initialized = useRef(false);
   const [formData, setFormData] = useState({
-    age: 0,
+    age: 18,
     menstruationDate: null as string | null,
     menstrDuration: 5,
-    cycle: 0,
+    cycle: 28,
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && !initialized.current) {
+      initialized.current = true;
       setFormData({
-        age: data.profile?.age && data.profile.age > 0 ? data.profile.age : 0,
+        age: data.profile?.age && data.profile.age > 0 ? data.profile.age : 18,
         menstruationDate: data.medical?.start_menstruation || null,
         menstrDuration: data.medical?.menstruation_duration || 5,
-        cycle: data.medical?.cycle_duration && data.medical.cycle_duration > 0 ? data.medical.cycle_duration : 0,
+        cycle: data.medical?.cycle_duration && data.medical.cycle_duration > 0 ? data.medical.cycle_duration : 28,
       });
     }
   }, [data]);
@@ -64,19 +69,22 @@ export default function Step1() {
   };
 
   const progressPercentage = 9.09; // Step 1 = 9.09% (1/11 * 100)
+  const isFormInvalid = !formData.menstruationDate || formData.age <= 0 || formData.menstrDuration <= 0 || formData.cycle <= 0;
 
   return (
     <View style={styles.container}>
-      <Progress 
-        percentage={progressPercentage} 
-        isSkip={false} 
+      <Progress
+        percentage={progressPercentage}
+        isSkip={false}
         goBack={goBack}
+        showBack={false}
       />
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
+      <KeyboardAwareScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer} bottomOffset={120}>
+        <View style={styles.content}>
         <Number number="1" />
-        <Text style={[typography.h1, styles.title]}>Share for better care</Text>
-        <Text style={typography.subtitle}>How old are you?</Text>
-        <Text style={typography.p}>no matter your age, we know you're always fantastic ;)</Text>
+        <Text style={[typography.h1, styles.title]}>{t('onboarding.step1.title')}</Text>
+        <Text style={typography.subtitle}>{t('onboarding.step1.age_subtitle')}</Text>
+        <Text style={typography.p}>{t('onboarding.step1.age_description')}</Text>
 
         <View style={styles.calendarSpacing}>
           <Input
@@ -86,23 +94,23 @@ export default function Step1() {
               const numericValue = value.replace(/[^0-9]/g, '');
               setFormData(prev => ({ ...prev, age: numericValue ? parseInt(numericValue, 10) : 0 }));
             }}
-            placeholder="Your Age"
+            placeholder={t('onboarding.step1.age_placeholder')}
           />
         </View>
 
-        <Text style={typography.subtitle}>Your cycle - we'll keep a calendar for you</Text>
+        <Text style={typography.subtitle}>{t('onboarding.step1.cycle_subtitle')}</Text>
 
         <View style={styles.calendarSpacing}>
           <Calendar
             value={formData.menstruationDate}
             setValue={(value) => setFormData(prev => ({ ...prev, menstruationDate: value }))}
-            title="Start of last menstruation"
+            title={t('onboarding.step1.menstruation_start')}
           />
         </View>
 
         <View style={styles.selectSpacing}>
           <Select
-            title="Menstruation duration"
+            title={t('onboarding.step1.menstruation_duration')}
             value={formData.menstrDuration}
             setValue={(value) => setFormData(prev => ({ ...prev, menstrDuration: value }))}
             values={Array.from({ length: 16 }, (_, i) => i + 1)}
@@ -117,25 +125,26 @@ export default function Step1() {
               const numericValue = value.replace(/[^0-9]/g, '');
               setFormData(prev => ({ ...prev, cycle: numericValue ? parseInt(numericValue, 10) : 0 }));
             }}
-            placeholder="Cycle duration, ie 28 or 28-32"
+            placeholder={t('onboarding.step1.cycle_duration_placeholder')}
           />
         </View>
-      </ScrollView>
+        </View>
 
-      <View style={styles.buttonContainer}>
-        <ButtonGradient
-          disabled={!formData.age || !formData.menstruationDate || !formData.menstrDuration || !formData.cycle || isUpdatingProfile || isUpdatingMedical}
-          title={isUpdatingProfile || isUpdatingMedical ? "Saving..." : "Next"}
-          icon={(
-            <MaterialIcons
-              color={!formData.age || !formData.menstruationDate || !formData.menstrDuration || !formData.cycle ? '#999999' : '#000000'}
-              name="arrow-forward"
-              size={26}
-            />
-          )}
-          onPress={next}
-        />
-      </View>
+        <View style={styles.buttonContainer}>
+          <ButtonGradient
+            disabled={isFormInvalid || isUpdatingProfile || isUpdatingMedical}
+            title={isUpdatingProfile || isUpdatingMedical ? t('onboarding.step1.saving') : t('onboarding.step1.next')}
+            icon={(
+              <MaterialIcons
+                color={isFormInvalid ? '#999999' : '#000000'}
+                name="arrow-forward"
+                size={26}
+              />
+            )}
+            onPress={next}
+          />
+        </View>
+      </KeyboardAwareScrollView>
     </View>
   );
 }
@@ -151,7 +160,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   contentContainer: {
-    paddingBottom: 120,
+    flexGrow: 1,
+    paddingBottom: 16,
+  },
+  content: {
+    flex: 1,
   },
   title: {
     width: '100%',
@@ -166,11 +179,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 16,
+    paddingTop: 16,
     paddingBottom: 36,
   },
 });

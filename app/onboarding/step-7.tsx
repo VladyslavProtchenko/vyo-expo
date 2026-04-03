@@ -40,7 +40,7 @@ export default function Step7() {
   }, [data]);
 
   const goBack = () => {
-    router.push('/onboarding/step-6' as any);
+    router.back();
   };
 
   const next = () => {

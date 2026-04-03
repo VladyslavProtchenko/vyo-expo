@@ -8,13 +8,17 @@ import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { MaterialIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 export default function Step2() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
+  const initialized = useRef(false);
   const [formData, setFormData] = useState({
     weight: '',
     height: '',
@@ -24,7 +28,8 @@ export default function Step2() {
   });
 
   useEffect(() => {
-    if (data) {
+    if (data && !initialized.current) {
+      initialized.current = true;
       setFormData({
         weight: data.profile?.weight && data.profile.weight > 0 ? String(data.profile.weight) : '',
         height: data.profile?.height && data.profile.height > 0 ? String(data.profile.height) : '',
@@ -41,7 +46,7 @@ export default function Step2() {
   };
 
   const goBack = () => {
-    router.push('/onboarding/step-1' as any);
+    router.back();
   };
 
   const next = () => {
@@ -62,92 +67,93 @@ export default function Step2() {
   };
 
   const progressPercentage = 18.18; // Step 2 = 18.18% (2/11 * 100)
-  
+  const isFormInvalid = !formData.weight || !formData.height || !formData.waist || !formData.hips;
+
   return (
     <View style={styles.container}>
-      <Progress 
-        percentage={progressPercentage} 
-        isSkip={true} 
+      <Progress
+        percentage={progressPercentage}
+        isSkip={true}
         goBack={goBack}
         currentStep={2}
       />
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
-        <Number number="2" />
-        <Text style={[typography.h1, styles.title]}>Share for better care</Text>
-        <Text style={typography.p}>We use this data to tailor your care plan and provide personalized nutrition and health insights.</Text>
+      <KeyboardAwareScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer} bottomOffset={120}>
+        <View style={styles.content}>
+          <Number number="2" />
+          <Text style={[typography.h1, styles.title]}>{t('onboarding.step2.title')}</Text>
+          <Text style={typography.p}>{t('onboarding.step2.description')}</Text>
 
-        <View style={styles.unitSystemContainer}>
-          <Text style={styles.unitSystemLabel}>Select measurement system</Text>
-          <View style={styles.segmentedControl}>
-            <Pressable
-              style={[styles.segment, formData.unitSystem === 'metric' && styles.segmentActive]}
-              onPress={() => setFormData(prev => ({ ...prev, unitSystem: 'metric' }))}
-            >
-              <Text style={[styles.segmentText, formData.unitSystem === 'metric' && styles.segmentTextActive]}>
-                kg/cm
-              </Text>
-            </Pressable>
-            <Pressable
-              style={[styles.segment, formData.unitSystem === 'imperial' && styles.segmentActive]}
-              onPress={() => setFormData(prev => ({ ...prev, unitSystem: 'imperial' }))}
-            >
-              <Text style={[styles.segmentText, formData.unitSystem === 'imperial' && styles.segmentTextActive]}>
-                lb/ft
-              </Text>
-            </Pressable>
+          <View style={styles.unitSystemContainer}>
+            <Text style={styles.unitSystemLabel}>{t('onboarding.step2.unit_system_label')}</Text>
+            <View style={styles.segmentedControl}>
+              <Pressable
+                style={[styles.segment, formData.unitSystem === 'metric' && styles.segmentActive]}
+                onPress={() => setFormData(prev => ({ ...prev, unitSystem: 'metric' }))}
+              >
+                <Text style={[styles.segmentText, formData.unitSystem === 'metric' && styles.segmentTextActive]}>
+                  {t('onboarding.step2.unit_metric')}
+                </Text>
+              </Pressable>
+              <Pressable
+                style={[styles.segment, formData.unitSystem === 'imperial' && styles.segmentActive]}
+                onPress={() => setFormData(prev => ({ ...prev, unitSystem: 'imperial' }))}
+              >
+                <Text style={[styles.segmentText, formData.unitSystem === 'imperial' && styles.segmentTextActive]}>
+                  {t('onboarding.step2.unit_imperial')}
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+
+          <View style={styles.fieldSpacing}>
+            <Input
+              type="numeric"
+              value={formData.weight}
+              onChange={(value: string) => handleNumericChange(value, 'weight')}
+              placeholder={t(formData.unitSystem === 'metric' ? 'onboarding.step2.weight_metric' : 'onboarding.step2.weight_imperial')}
+            />
+          </View>
+          <View style={styles.fieldSpacing}>
+            <Input
+              type="numeric"
+              value={formData.height}
+              onChange={(value: string) => handleNumericChange(value, 'height')}
+              placeholder={t(formData.unitSystem === 'metric' ? 'onboarding.step2.height_metric' : 'onboarding.step2.height_imperial')}
+            />
+          </View>
+          <View style={styles.fieldSpacing}>
+            <Input
+              type="numeric"
+              value={formData.waist}
+              onChange={(value: string) => handleNumericChange(value, 'waist')}
+              placeholder={t(formData.unitSystem === 'metric' ? 'onboarding.step2.waist_metric' : 'onboarding.step2.waist_imperial')}
+            />
+          </View>
+          <View style={styles.fieldSpacing}>
+            <Input
+              type="numeric"
+              value={formData.hips}
+              onChange={(value: string) => handleNumericChange(value, 'hips')}
+              placeholder={t(formData.unitSystem === 'metric' ? 'onboarding.step2.hips_metric' : 'onboarding.step2.hips_imperial')}
+            />
           </View>
         </View>
 
-        <View style={styles.calendarSpacing}>
-          <Input
-            type="numeric"
-            value={formData.weight}
-            onChange={(value: string) => handleNumericChange(value, 'weight')}
-            placeholder={formData.unitSystem === 'metric' ? 'Weight (kg)' : 'Weight (lbs)'}
+        <View style={styles.buttonContainer}>
+          <ButtonGradient
+            disabled={isFormInvalid || isUpdatingProfile}
+            title={isUpdatingProfile ? t('onboarding.step2.saving') : t('onboarding.step2.next')}
+            icon={(
+              <MaterialIcons
+                color={isFormInvalid ? '#999999' : '#000000'}
+                name="arrow-forward"
+                size={26}
+              />
+            )}
+            onPress={next}
           />
         </View>
-        <View style={styles.calendarSpacing}>
-          <Input
-            type="numeric"
-            value={formData.height}
-            onChange={(value: string) => handleNumericChange(value, 'height')}
-            placeholder={formData.unitSystem === 'metric' ? 'Height (cm)' : 'Height (in)'}
-          />
-        </View>
-        
-        <View style={styles.selectSpacing}>
-          <Input
-            type="numeric"
-            value={formData.waist}
-            onChange={(value: string) => handleNumericChange(value, 'waist')}
-            placeholder={formData.unitSystem === 'metric' ? 'Waist (cm)' : 'Waist (in)'}
-          />
-        </View>
-        
-        <View style={styles.selectSpacing}>
-          <Input
-            type="numeric"
-            value={formData.hips}
-            onChange={(value: string) => handleNumericChange(value, 'hips')}
-            placeholder={formData.unitSystem === 'metric' ? 'Hips (cm)' : 'Hips (in)'}
-          />
-        </View>
-      </ScrollView>
-
-      <View style={styles.buttonContainer}>
-        <ButtonGradient
-          disabled={!formData.weight || !formData.height || !formData.waist || !formData.hips || isUpdatingProfile}
-          title={isUpdatingProfile ? "Saving..." : "Next"}
-          icon={(
-            <MaterialIcons
-              color={!formData.weight || !formData.height || !formData.waist || !formData.hips || isUpdatingProfile ? '#999999' : '#000000'}
-              name="arrow-forward"
-              size={26}
-            />
-          )}
-          onPress={next}
-        />
-      </View>
+      </KeyboardAwareScrollView>
     </View>
   );
 }
@@ -163,18 +169,18 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   contentContainer: {
-    paddingBottom: 120,
+    flexGrow: 1,
+    paddingBottom: 16,
+  },
+  content: {
+    flex: 1,
   },
   title: {
     width: '100%',
     marginBottom: 24,
     marginTop: 12,
   },
-  calendarSpacing: {
-    marginTop: 16,
-    marginBottom: 24,
-  },
-  selectSpacing: {
+  fieldSpacing: {
     marginBottom: 24,
   },
   unitSystemContainer: {
@@ -215,11 +221,7 @@ const styles = StyleSheet.create({
     color: '#1E3A8A',
   },
   buttonContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 16,
+    paddingTop: 16,
     paddingBottom: 36,
   },
 });

@@ -29,7 +29,7 @@ export default function Step9() {
   }, [data]);
 
   const goBack = () => {
-    router.push('/onboarding/step-8' as any);
+    router.back();
   };
 
   const next = () => {

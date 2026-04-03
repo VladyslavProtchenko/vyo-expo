@@ -14,7 +14,7 @@ export interface UpdateMedicalData {
   is_pain?: boolean | null;
   pain_type?: string | null;
   pain_intensity?: number | null;
-  pain_period?: string | null;
+  pain_period?: string[] | null;
   pain_location?: string[] | null;
   pain_duration?: string | null;
   pain_case?: string | null;

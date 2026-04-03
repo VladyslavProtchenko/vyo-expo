@@ -58,7 +58,7 @@ export default function Step11() {
   }, [data]);
 
   const goBack = () => {
-    router.push('/onboarding/step-10' as any);
+    router.back();
   };
 
   const selectTag = (tag: string, isActive: boolean) => {

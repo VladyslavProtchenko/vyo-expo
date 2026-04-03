@@ -24,7 +24,7 @@ export default function Step3() {
     }
   }, [data]);
 
-  const goBack = () => router.push('/onboarding/step-2' as any);
+  const goBack = () => router.back();
 
   const next = () => {
     if (tags.length === 0) return;

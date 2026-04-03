@@ -537,6 +537,57 @@
       }
     }
   },
+  "onboarding": {
+    "step8": {
+      "title": "Your pain details",
+      "when_subtitle": "When do you feel the pain?",
+      "where_subtitle": "Where do you feel the pain?",
+      "duration_subtitle": "How long does the pain last?",
+      "next": "Next",
+      "saving": "Saving..."
+    },
+    "step4": {
+      "title": "Additional symptoms",
+      "subtitle": "Select all relevant",
+      "next": "Next",
+      "saving": "Saving...",
+      "note_hirsutism_term": "*Hirsutism",
+      "note_hirsutism_def": " - excessive growth of dark, coarse hair on the face, chest, or back;\n",
+      "note_alopecia_term": "Androgenic alopecia",
+      "note_alopecia_def": " - female pattern hair loss, thinning of hair on the top and crown of the head;\n",
+      "note_acanthosis_term": "Acanthosis nigricans",
+      "note_acanthosis_def": " - darkened, velvety patches of skin in folds like neck or armpits."
+    },
+    "step2": {
+      "title": "Share for better care",
+      "description": "We use this data to tailor your care plan and provide personalized nutrition and health insights.",
+      "unit_system_label": "Select measurement system",
+      "unit_metric": "kg/cm",
+      "unit_imperial": "lb/ft",
+      "weight_metric": "Weight (kg)",
+      "weight_imperial": "Weight (lbs)",
+      "height_metric": "Height (cm)",
+      "height_imperial": "Height (in)",
+      "waist_metric": "Waist (cm)",
+      "waist_imperial": "Waist (in)",
+      "hips_metric": "Hips (cm)",
+      "hips_imperial": "Hips (in)",
+      "next": "Next",
+      "saving": "Saving..."
+    },
+    "step1": {
+      "title": "Share for better care",
+      "age_subtitle": "How old are you?",
+      "age_description": "no matter your age, we know you're always fantastic ;)",
+      "age_placeholder": "Your Age",
+      "cycle_subtitle": "Your cycle - we'll keep a calendar for you",
+      "menstruation_start": "Start of last menstruation",
+      "menstruation_duration": "Menstruation duration",
+      "cycle_duration_placeholder": "Cycle duration, ie 28 or 28-32",
+      "next": "Next",
+      "saving": "Saving..."
+    }
+  },
   "diagnosis": {
     "dysmenorrhea": "Primary dysmenorrhea",
     "endometriosis": "Possible endometriosis",

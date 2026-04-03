@@ -8,9 +8,11 @@ import { ADDITIONAL_SYMPTOM_LABELS, AdditionalSymptomType } from '@/types/diagno
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step4() {
+  const { t } = useTranslation();
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
@@ -23,7 +25,7 @@ export default function Step4() {
   }, [data]);
 
   const goBack = () => {
-    router.push('/onboarding/step-3' as any);
+    router.back();
   };
 
   const next = () => {
@@ -56,8 +58,8 @@ export default function Step4() {
       />
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer}>
         <Number number="4" />
-        <Text style={[typography.h1, styles.title]}>Additional symptoms</Text>
-        <Text style={[typography.subtitle, styles.subtitle]}>Select all relevant</Text>
+        <Text style={[typography.h1, styles.title]}>{t('onboarding.step4.title')}</Text>
+        <Text style={[typography.subtitle, styles.subtitle]}>{t('onboarding.step4.subtitle')}</Text>
         <View style={styles.tagsContainer}>
           {ADDITIONAL_SYMPTOM_LABELS.map(item => {
             const isActive = tags.find(i => i === item) ? true : false;
@@ -74,13 +76,20 @@ export default function Step4() {
             );
           })}
         </View>
-        <Text style={[typography.p, styles.note]}>*Hirsutism - excessive growth of dark, coarse hair on the face, chest, or back;Androgenic alopecia - female pattern hair loss, thinning of hair on the top and crown of the head;Acanthosis nigricans - darkened, velvety patches of skin in folds like neck or armpits.</Text>
+        <Text style={[typography.p, styles.note]}>
+          <Text style={styles.noteBold}>{t('onboarding.step4.note_hirsutism_term')}</Text>
+          {t('onboarding.step4.note_hirsutism_def')}
+          <Text style={styles.noteBold}>{t('onboarding.step4.note_alopecia_term')}</Text>
+          {t('onboarding.step4.note_alopecia_def')}
+          <Text style={styles.noteBold}>{t('onboarding.step4.note_acanthosis_term')}</Text>
+          {t('onboarding.step4.note_acanthosis_def')}
+        </Text>
       </ScrollView>
 
       <View style={styles.buttonContainer}>
         <ButtonGradient
           disabled={isUpdatingMedical}
-          title={isUpdatingMedical ? "Saving..." : "Next"}
+          title={isUpdatingMedical ? t('onboarding.step4.saving') : t('onboarding.step4.next')}
           icon={(
             <MaterialIcons
               color={isUpdatingMedical ? '#999999' : '#000000'}
@@ -143,6 +152,10 @@ const styles = StyleSheet.create({
     right: 0,
     paddingHorizontal: 16,
     paddingBottom: 36,
+  },
+  noteBold: {
+    fontFamily: 'Poppins-SemiBold',
+    fontWeight: '600',
   },
   note: {
     marginTop: 'auto',

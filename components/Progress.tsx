@@ -6,22 +6,28 @@ interface ProgressProps {
   percentage: number; // 0-100
   isSkip: boolean;
   goBack: () => void;
-  currentStep?: number; // Номер текущего шага
+  showBack?: boolean;
+  currentStep?: number;
 }
 
-export default function Progress({ 
-  percentage, 
+export default function Progress({
+  percentage,
   isSkip,
   goBack,
+  showBack = true,
   currentStep = 1,
 }: ProgressProps) {
   const clampedPercentage = Math.max(0, Math.min(100, percentage));
-  
+
   return (
     <View style={styles.container}>
-      <Pressable onPress={goBack}>
-        <FontAwesome6 name="arrow-left-long" size={24} color="black" />
-      </Pressable>   
+      {showBack ? (
+        <Pressable onPress={goBack}>
+          <FontAwesome6 name="arrow-left-long" size={24} color="black" />
+        </Pressable>
+      ) : (
+        <View style={{ width: 24 }} />
+      )}   
       <View style={styles.progressContainer}>
         <View style={styles.progressTrack}>
           <View 
