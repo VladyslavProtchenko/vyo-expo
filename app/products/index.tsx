@@ -56,7 +56,7 @@ export default function Products() {
             marginVertical: 16,
           }}
         >
-          <Text style={{ marginBottom: 4, fontFamily: 'Poppins', fontSize: 16, fontWeight: '600' }}>Todays list</Text>
+          <Text style={{ marginBottom: 4, fontFamily: 'Poppins', fontSize: 16, fontWeight: '600' }}>Today's list</Text>
           <Text style={{ marginBottom: 12, fontFamily: 'Poppins', fontSize: 14 }}>
             Adding these products to your shopping list helps you stay on track with nutrients during this phase.
           </Text>
