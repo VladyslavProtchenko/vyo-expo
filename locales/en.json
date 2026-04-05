@@ -23,6 +23,12 @@
     "delete_confirm": "Delete list?"
   },
   "products": {
+    "settings": {
+      "title": "Customize your products",
+      "description": "Remove products you don't like to personalize your plan. We'll ask you to review this each phase in your first cycle. You can edit the list in Settings.",
+      "vegetarian": "I am vegetarian",
+      "vegan": "I am vegan"
+    },
     "title": "Nutrients focus for today",
     "todays_list": "Todays list",
     "todays_list_description": "Adding these products to your shopping list helps you stay on track with nutrients during this phase.",

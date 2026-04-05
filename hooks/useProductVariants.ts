@@ -12,8 +12,14 @@ import { AppState } from 'react-native';
 const normalize = (str: string) =>
   str.toLowerCase().trim().replace(/\s*\([^)]*\)\s*/g, '');
 
-const getRandomProducts = (): Product[] =>
-  [...AllProducts].sort(() => Math.random() - 0.5).slice(0, 9);
+const getRandomProducts = (isVegan: boolean, isVegetarian: boolean): Product[] => {
+  const pool = AllProducts.filter((p) => {
+    if (isVegan) return p.dietary === 'vegan';
+    if (isVegetarian) return p.dietary === 'vegan' || p.dietary === 'vegetarian';
+    return true;
+  });
+  return [...pool].sort(() => Math.random() - 0.5).slice(0, 9);
+};
 
 const findProductsByNames = (names: string[]): Product[] =>
   names
@@ -53,7 +59,7 @@ export function useProductVariants() {
     return () => sub.remove();
   }, [checkDate]);
 
-  const { data: products = getRandomProducts(), isFetching, refetch } = useQuery({
+  const { data: products = getRandomProducts(isVegan, isVegetarian), isFetching, refetch } = useQuery({
     queryKey: ['products', todayStr, isVegetarian, isVegan],
     queryFn: async () => {
       const phase = CurrentPhaseInfo().phaseName;
@@ -65,10 +71,10 @@ export function useProductVariants() {
         isVegan,
       );
 
-      if (!names || names.length !== 9) return getRandomProducts();
+      if (!names || names.length !== 9) return getRandomProducts(isVegan, isVegetarian);
 
       const found = findProductsByNames(names);
-      if (found.length === 0) return getRandomProducts();
+      if (found.length === 0) return getRandomProducts(isVegan, isVegetarian);
 
       const listNumber = Object.keys(previousListsRef.current).length + 1;
       previousListsRef.current[listNumber] = names;

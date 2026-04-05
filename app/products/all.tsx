@@ -4,35 +4,15 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useDeletedProducts } from '@/hooks/useDeletedProducts';
-import { Product, Products } from '@/store/products';
-
-const getNutrientsForCategory = (category: string): string[] => {
-  const mapping: Record<string, string[]> = {
-    'Iron': ['iron'],
-    'Omega-3': ['omega-3'],
-    'Potassium': ['potassium'],
-    'B vitamins': ['vitamin-b1', 'vitamin-b2', 'vitamin-b6', 'vitamin-b9', 'vitamin-b12'],
-    'Magnesium': ['magnesium'],
-  };
-  return mapping[category] || [];
-};
-
-// Функция фильтрации продуктов по питательным веществам
-const filterProductsByNutrients = (category: string, deletedProducts: string[] = []): Product[] => {
-  const nutrients = getNutrientsForCategory(category);
-  if (nutrients.length === 0) return [];
-
-  return Products.filter((product) => {
-    return !deletedProducts.includes(product.name) && 
-           nutrients.some((nutrient) => product.nutrients.includes(nutrient));
-  });
-};
+import { useProductSettings } from '@/hooks/useProductSettings';
+import { filterAllProducts, filterProductsByNutrients } from './utils';
 
 export default function ProductsAll() {
   const router = useRouter();
   const { categoryName } = useLocalSearchParams<{ categoryName?: string }>();
   const displayCategoryName = categoryName || 'Products';
   const { deletedProducts, updateDeletedProducts } = useDeletedProducts();
+  const { isVegan, isVegetarian } = useProductSettings();
 
   const handleDelete = (productName: string) => {
     if (!deletedProducts.includes(productName)) {
@@ -40,10 +20,9 @@ export default function ProductsAll() {
     }
   };
 
-  // Фильтруем продукты по категории и исключаем удаленные
-  const filteredProducts = categoryName 
-    ? filterProductsByNutrients(categoryName, deletedProducts)
-    : Products.filter((product) => !deletedProducts.includes(product.name));
+  const filteredProducts = categoryName
+    ? filterProductsByNutrients(categoryName, deletedProducts, { isVegan, isVegetarian })
+    : filterAllProducts(deletedProducts, { isVegan, isVegetarian });
 
   return (
     <SafeAreaView style={styles.container}>

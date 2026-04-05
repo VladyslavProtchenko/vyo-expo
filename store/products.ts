@@ -62,17 +62,21 @@ export type ProductComposition = {
   'omega-3'?: Omega3Amount;
 } & Partial<Record<Exclude<CompositionNutrientKey, 'omega-3'>, NutrientAmount>>;
 
+export type DietaryTag = 'vegan' | 'vegetarian';
+
 export interface Product {
   name: string;
   imageUrl: any | null;
   nutrients: Nutrient[];
   composition?: ProductComposition;
+  dietary?: DietaryTag;
 }
 
 export const Products: Product[] = [
   {
     name: 'Acerola cherry',
     imageUrl: require('@/assets/images/products/acerola-cherry.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '20g',
@@ -82,6 +86,7 @@ export const Products: Product[] = [
   {
     name: 'Almonds',
     imageUrl: require('@/assets/images/products/almonds.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'choline', 'methionine-cysteine', 'fiber'],
     composition: {
       portion: '30g',
@@ -100,6 +105,7 @@ export const Products: Product[] = [
   {
     name: 'Apple with skin',
     imageUrl: require('@/assets/images/products/apple-with-skin.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c', 'fiber'],
     composition: {
       portion: '180g',
@@ -110,6 +116,7 @@ export const Products: Product[] = [
   {
     name: 'Avocado',
     imageUrl: require('@/assets/images/products/avocado.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'omega-3', 'choline', 'methionine-cysteine', 'fiber'],
     composition: {
       portion: '150g',
@@ -142,6 +149,7 @@ export const Products: Product[] = [
   {
     name: 'Baked sweet potato',
     imageUrl: require('@/assets/images/products/baked-sweet-potato.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b6', 'potassium'],
     composition: {
       portion: '150g',
@@ -161,6 +169,7 @@ export const Products: Product[] = [
   {
     name: 'Banana',
     imageUrl: require('@/assets/images/products/banana.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'choline', 'vitamin-c'],
     composition: {
       portion: '120g',
@@ -181,6 +190,7 @@ export const Products: Product[] = [
   {
     name: 'Black currant',
     imageUrl: require('@/assets/images/products/black-currant.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '50g',
@@ -203,6 +213,7 @@ export const Products: Product[] = [
   {
     name: 'Boiled egg',
     imageUrl: require('@/assets/images/products/chicken-egg.webp'),
+    dietary: 'vegetarian',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'vitamin-b12', 'vitamin-b2', 'vitamin-e', 'omega-3', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '100g',
@@ -222,6 +233,7 @@ export const Products: Product[] = [
   {
     name: 'Boiled potato',
     imageUrl: require('@/assets/images/products/boiled-potato.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'potassium', 'choline', 'vitamin-c'],
     composition: {
       portion: '200g',
@@ -236,6 +248,7 @@ export const Products: Product[] = [
   {
     name: 'Brie cheese',
     imageUrl: require('@/assets/images/products/brie-cheese.webp'),
+    dietary: 'vegetarian',
     nutrients: ['vitamin-b12'],
     composition: {
       portion: '30g',
@@ -269,6 +282,7 @@ export const Products: Product[] = [
   {
     name: 'Canola oil',
     imageUrl: require('@/assets/images/products/canola-oil.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-e', 'omega-3'],
     composition: {
       portion: '10ml',
@@ -279,6 +293,7 @@ export const Products: Product[] = [
   {
     name: 'Cashews',
     imageUrl: require('@/assets/images/products/cashews.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'magnesium', 'potassium'],
     composition: {
       portion: '30g',
@@ -291,6 +306,7 @@ export const Products: Product[] = [
   {
     name: 'Cheddar cheese',
     imageUrl: require('@/assets/images/products/cheddar-cheese.webp'),
+    dietary: 'vegetarian',
     nutrients: ['vitamin-b12', 'vitamin-b2'],
     composition: {
       portion: '30g',
@@ -301,6 +317,7 @@ export const Products: Product[] = [
   {
     name: 'Chia seeds',
     imageUrl: require('@/assets/images/products/chia-seeds.webp'),
+    dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
       portion: '15g',
@@ -310,6 +327,7 @@ export const Products: Product[] = [
   {
     name: 'Chicken egg',
     imageUrl: require('@/assets/images/products/chicken-egg.webp'),
+    dietary: 'vegetarian',
     nutrients: ['iron', 'magnesium'],
     composition: {
       portion: '100g',
@@ -351,6 +369,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked Brussels sprouts',
     imageUrl: require('@/assets/images/products/cooked-brussels-sprouts.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b9'],
     composition: {
       portion: '150g',
@@ -360,6 +379,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked asparagus',
     imageUrl: require('@/assets/images/products/cooked-asparagus.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b9'],
     composition: {
       portion: '120g',
@@ -378,6 +398,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked broccoli',
     imageUrl: require('@/assets/images/products/cooked-broccoli.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b9', 'magnesium', 'potassium', 'vitamin-e', 'choline', 'methionine-cysteine', 'vitamin-c', 'fiber'],
     composition: {
       portion: '100g',
@@ -395,6 +416,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked brown rice',
     imageUrl: require('@/assets/images/products/cooked-brown-rice.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '200g',
@@ -409,6 +431,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked buckwheat',
     imageUrl: require('@/assets/images/products/cooked-buckwheat.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'magnesium', 'potassium', 'methionine-cysteine'],
     composition: {
       portion: '200g',
@@ -423,6 +446,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked chickpeas',
     imageUrl: require('@/assets/images/products/cooked-chickpeas.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '150g',
@@ -438,6 +462,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked green peas',
     imageUrl: require('@/assets/images/products/cooked-green-peas.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9'],
     composition: {
       portion: '150g',
@@ -450,6 +475,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked kidney beans',
     imageUrl: require('@/assets/images/products/cooked-kidney-beans.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'potassium'],
     composition: {
       portion: '150g',
@@ -461,6 +487,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked lentils',
     imageUrl: require('@/assets/images/products/cooked-lentils.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'choline', 'methionine-cysteine', 'fiber'],
     composition: {
       portion: '150g',
@@ -479,6 +506,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked millet',
     imageUrl: require('@/assets/images/products/cooked-millet.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium'],
     composition: {
       portion: '200g',
@@ -492,6 +520,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked mushrooms',
     imageUrl: require('@/assets/images/products/cooked-mushrooms.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b2'],
     composition: {
       portion: '100g',
@@ -510,6 +539,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked oats',
     imageUrl: require('@/assets/images/products/cooked-oats.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'choline', 'methionine-cysteine', 'fiber'],
     composition: {
       portion: '200g',
@@ -528,6 +558,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked pearl barley',
     imageUrl: require('@/assets/images/products/cooked-pearl-barley.webp'),
+    dietary: 'vegan',
     nutrients: ['iron'],
     composition: { portion: '200g', iron: { per100g: 1.2, inPortion: 2.4 } },
   },
@@ -540,6 +571,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked spinach',
     imageUrl: require('@/assets/images/products/cooked-spinach.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'omega-3', 'methionine-cysteine'],
     composition: {
       portion: '100g',
@@ -557,6 +589,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked white beans',
     imageUrl: require('@/assets/images/products/cooked-white-beans.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '150g',
@@ -573,6 +606,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked beans',
     imageUrl: require('@/assets/images/products/cooked-white-beans.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b2', 'fiber'],
     composition: {
       portion: '150g',
@@ -583,6 +617,7 @@ export const Products: Product[] = [
   {
     name: 'Cottage cheese',
     imageUrl: require('@/assets/images/products/cottage-cheese.webp'),
+    dietary: 'vegetarian',
     nutrients: ['vitamin-b12', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '100g',
@@ -594,6 +629,7 @@ export const Products: Product[] = [
   {
     name: 'Dark chocolate (70%)',
     imageUrl: require('@/assets/images/products/dark-chocolate-70.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'magnesium'],
     composition: {
       portion: '30g',
@@ -604,6 +640,7 @@ export const Products: Product[] = [
   {
     name: 'Dates',
     imageUrl: require('@/assets/images/products/dates.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium'],
     composition: {
       portion: '60g',
@@ -617,6 +654,7 @@ export const Products: Product[] = [
   {
     name: 'Dried apricots',
     imageUrl: require('@/assets/images/products/dried-apricots.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium'],
     composition: {
       portion: '40g',
@@ -630,6 +668,7 @@ export const Products: Product[] = [
   {
     name: 'Dried figs',
     imageUrl: require('@/assets/images/products/dried-figs.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'fiber'],
     composition: {
       portion: '40g',
@@ -644,6 +683,7 @@ export const Products: Product[] = [
   {
     name: 'Dry oats',
     imageUrl: require('@/assets/images/products/dry-oats.webp'),
+    dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
       portion: '40g',
@@ -653,6 +693,7 @@ export const Products: Product[] = [
   {
     name: 'Durum wheat pasta',
     imageUrl: require('@/assets/images/products/durum-wheat-pasta.webp'),
+    dietary: 'vegan',
     nutrients: ['magnesium', 'potassium'],
     composition: {
       portion: '200g',
@@ -663,6 +704,7 @@ export const Products: Product[] = [
   {
     name: 'Flaxseed oil',
     imageUrl: require('@/assets/images/products/flaxseed-oil.webp'),
+    dietary: 'vegan',
     nutrients: ['omega-3'],
     composition: {
       portion: '13.6g',
@@ -672,6 +714,7 @@ export const Products: Product[] = [
   {
     name: 'Flaxseed',
     imageUrl: require('@/assets/images/products/flaxseed.webp'),
+    dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
       portion: '15g',
@@ -681,6 +724,7 @@ export const Products: Product[] = [
   {
     name: 'Fortified cereal',
     imageUrl: require('@/assets/images/products/fortified-cereal.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-e', 'choline'],
     composition: {
       portion: '30g',
@@ -691,6 +735,7 @@ export const Products: Product[] = [
   {
     name: 'Fortified nutritional yeast',
     imageUrl: require('@/assets/images/products/fortified-nutritional-yeast.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b12'],
     composition: {
       portion: '5g',
@@ -700,6 +745,7 @@ export const Products: Product[] = [
   {
     name: 'Fortified plant milk',
     imageUrl: require('@/assets/images/products/fortified-plant-milk.webp'),
+    dietary: 'vegan',
     nutrients: ['choline'],
     composition: {
       portion: '200ml',
@@ -709,6 +755,7 @@ export const Products: Product[] = [
   {
     name: 'Fresh parsley',
     imageUrl: require('@/assets/images/products/fresh-parsley.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '10g',
@@ -718,6 +765,7 @@ export const Products: Product[] = [
   {
     name: 'Fresh strawberries',
     imageUrl: require('@/assets/images/products/fresh-strawberries.webp'),
+    dietary: 'vegan',
     nutrients: ['magnesium', 'potassium', 'vitamin-c'],
     composition: {
       portion: '150g',
@@ -729,6 +777,7 @@ export const Products: Product[] = [
   {
     name: 'Grapefruit',
     imageUrl: require('@/assets/images/products/grapefruit.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '150g',
@@ -738,6 +787,7 @@ export const Products: Product[] = [
   {
     name: 'Ground flaxseed',
     imageUrl: require('@/assets/images/products/ground-flaxseed.webp'),
+    dietary: 'vegan',
     nutrients: ['omega-3'],
     composition: {
       portion: '7g',
@@ -747,6 +797,7 @@ export const Products: Product[] = [
   {
     name: 'Hazelnuts',
     imageUrl: require('@/assets/images/products/hazelnuts.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-e', 'methionine-cysteine'],
     composition: {
       portion: '30g',
@@ -757,6 +808,7 @@ export const Products: Product[] = [
   {
     name: 'Kiwifruit',
     imageUrl: require('@/assets/images/products/kiwifruit.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-e', 'vitamin-c'],
     composition: {
       portion: '100g',
@@ -767,6 +819,7 @@ export const Products: Product[] = [
   {
     name: 'Orange',
     imageUrl: require('@/assets/images/products/orange.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b9', 'magnesium', 'potassium', 'choline', 'vitamin-c'],
     composition: {
       portion: '130g',
@@ -780,6 +833,7 @@ export const Products: Product[] = [
   {
     name: 'Orange juice',
     imageUrl: require('@/assets/images/products/orange.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b9', 'potassium'],
     composition: {
       portion: '240ml',
@@ -799,6 +853,7 @@ export const Products: Product[] = [
   {
     name: 'Peanuts',
     imageUrl: require('@/assets/images/products/peanuts.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b1', 'magnesium', 'vitamin-e'],
     composition: {
       portion: '30g',
@@ -810,6 +865,7 @@ export const Products: Product[] = [
   {
     name: 'Pear with skin',
     imageUrl: require('@/assets/images/products/pear-with-skin.webp'),
+    dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
       portion: '180g',
@@ -819,6 +875,7 @@ export const Products: Product[] = [
   {
     name: 'Pistachios',
     imageUrl: require('@/assets/images/products/pistachios.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'magnesium', 'vitamin-e', 'fiber'],
     composition: {
       portion: '30g',
@@ -832,6 +889,7 @@ export const Products: Product[] = [
   {
     name: 'Plain yogurt',
     imageUrl: require('@/assets/images/products/plain-yogurt.webp'),
+    dietary: 'vegetarian',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'vitamin-b12', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'omega-3', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '150g',
@@ -850,6 +908,7 @@ export const Products: Product[] = [
   {
     name: 'Prunes',
     imageUrl: require('@/assets/images/products/prunes.webp'),
+    dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
       portion: '50g',
@@ -859,6 +918,7 @@ export const Products: Product[] = [
   {
     name: 'Pumpkin seeds',
     imageUrl: require('@/assets/images/products/pumpkin-seeds.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'methionine-cysteine'],
     composition: {
       portion: '20g',
@@ -873,6 +933,7 @@ export const Products: Product[] = [
   {
     name: 'Raisins',
     imageUrl: require('@/assets/images/products/raisins.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'potassium'],
     composition: {
       portion: '40g',
@@ -883,6 +944,7 @@ export const Products: Product[] = [
   {
     name: 'Raspberries',
     imageUrl: require('@/assets/images/products/raspberries.webp'),
+    dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
       portion: '100g',
@@ -901,6 +963,7 @@ export const Products: Product[] = [
   {
     name: 'Raw cabbage',
     imageUrl: require('@/assets/images/products/raw-cabbage.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '100g',
@@ -910,6 +973,7 @@ export const Products: Product[] = [
   {
     name: 'Raw carrot',
     imageUrl: require('@/assets/images/products/raw-carrot.webp'),
+    dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
       portion: '100g',
@@ -919,6 +983,7 @@ export const Products: Product[] = [
   {
     name: 'Raw spinach',
     imageUrl: require('@/assets/images/products/raw-spinach.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '50g',
@@ -928,6 +993,7 @@ export const Products: Product[] = [
   {
     name: 'Red bell pepper, raw',
     imageUrl: require('@/assets/images/products/red-bell-pepper-raw.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '100g',
@@ -949,6 +1015,7 @@ export const Products: Product[] = [
   {
     name: 'Rose hips, raw',
     imageUrl: require('@/assets/images/products/rose-hips-raw.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '30g',
@@ -967,6 +1034,7 @@ export const Products: Product[] = [
   {
     name: 'Sesame seeds',
     imageUrl: require('@/assets/images/products/sesame-seeds.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'magnesium'],
     composition: {
       portion: '15g',
@@ -977,6 +1045,7 @@ export const Products: Product[] = [
   {
     name: 'Soybean oil',
     imageUrl: require('@/assets/images/products/soybean-oil.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-e', 'omega-3'],
     composition: {
       portion: '10ml',
@@ -1000,6 +1069,7 @@ export const Products: Product[] = [
   {
     name: 'Sunflower seeds',
     imageUrl: require('@/assets/images/products/sunflower-seeds.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'vitamin-e', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '20g',
@@ -1017,6 +1087,7 @@ export const Products: Product[] = [
   {
     name: 'Tangerine',
     imageUrl: require('@/assets/images/products/tangerine.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '120g',
@@ -1026,6 +1097,7 @@ export const Products: Product[] = [
   {
     name: 'Tofu',
     imageUrl: require('@/assets/images/products/tofu.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'magnesium'],
     composition: {
       portion: '100g',
@@ -1036,12 +1108,14 @@ export const Products: Product[] = [
   {
     name: 'Tomato juice',
     imageUrl: require('@/assets/images/products/tomato-juice.webp'),
+    dietary: 'vegan',
     nutrients: ['potassium'],
     composition: { portion: '240ml', potassium: { per100g: 217, inPortion: 520 } },
   },
   {
     name: 'Tomato',
     imageUrl: require('@/assets/images/products/tomato.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
       portion: '120g',
@@ -1051,6 +1125,7 @@ export const Products: Product[] = [
   {
     name: 'Walnuts',
     imageUrl: require('@/assets/images/products/walnuts.webp'),
+    dietary: 'vegan',
     nutrients: ['omega-3', 'choline'],
     composition: {
       portion: '30g',
@@ -1061,6 +1136,7 @@ export const Products: Product[] = [
   {
     name: 'White cabbage',
     imageUrl: require('@/assets/images/products/white-cabbage.webp'),
+    dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
       portion: '100g',
@@ -1070,6 +1146,7 @@ export const Products: Product[] = [
   {
     name: 'Whole grain bread',
     imageUrl: require('@/assets/images/products/whole-grain-bread.webp'),
+    dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'fiber'],
     composition: {
       portion: '60g',
@@ -1085,6 +1162,7 @@ export const Products: Product[] = [
   {
     name: 'Wheat bread',
     imageUrl: require('@/assets/images/products/whole-grain-bread.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-b2'],
     composition: {
       portion: '40g',
@@ -1094,6 +1172,7 @@ export const Products: Product[] = [
   {
     name: 'Whole milk',
     imageUrl: require('@/assets/images/products/whole-milk.webp'),
+    dietary: 'vegetarian',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'vitamin-b12', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'omega-3', 'choline', 'methionine-cysteine', 'vitamin-c'],
     composition: {
       portion: '200ml',
@@ -1113,6 +1192,7 @@ export const Products: Product[] = [
   {
     name: 'Wheat germ oil',
     imageUrl: require('@/assets/images/products/wheat-germ-oil.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-e'],
     composition: {
       portion: '5ml',
@@ -1122,6 +1202,7 @@ export const Products: Product[] = [
   {
     name: 'Sunflower oil',
     imageUrl: require('@/assets/images/products/sunflower-oil.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-e'],
     composition: {
       portion: '10ml',
@@ -1131,6 +1212,7 @@ export const Products: Product[] = [
   {
     name: 'Corn oil',
     imageUrl: require('@/assets/images/products/corn-oil.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-e'],
     composition: {
       portion: '10ml',
@@ -1140,6 +1222,7 @@ export const Products: Product[] = [
   {
     name: 'Mango',
     imageUrl: require('@/assets/images/products/mango.webp'),
+    dietary: 'vegan',
     nutrients: ['vitamin-e'],
     composition: {
       portion: '200g',
@@ -1149,6 +1232,7 @@ export const Products: Product[] = [
   {
     name: 'Cooked cauliflower',
     imageUrl: require('@/assets/images/products/cooked-cauliflower.webp'),
+    dietary: 'vegan',
     nutrients: ['choline', 'vitamin-c', 'fiber'],
     composition: {
       portion: '150g',

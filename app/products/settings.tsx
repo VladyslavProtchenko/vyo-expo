@@ -4,12 +4,12 @@ import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'rea
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import FocusOnCard from '@/app/products/components/FocusOnCard';
+import IsVeganCard from '@/app/products/components/IsVeganCard';
 import ButtonRounded from '@/components/ui/ButtonRounded';
-import CustomSwitch from '@/components/ui/CustomSwitch';
 import { useDeletedProducts } from '@/hooks/useDeletedProducts';
-import { useProductSettings } from '@/hooks/useProductSettings';
+
 import { CurrentPhaseInfo } from '@/store/phase';
-import { Product, Products } from '@/store/products';
+
 import useProductsStore from '@/store/useProducts';
 
 const nutrientToCategoryMap: Record<string, string> = {
@@ -28,7 +28,7 @@ const nutrientToCategoryMap: Record<string, string> = {
 
 export default function ProductsSettings() {
   const router = useRouter();
-  const { isVegetarian, isVegan, updateSettings } = useProductSettings();
+
   const { phaseName } = CurrentPhaseInfo();
   const phaseNutrients = useProductsStore((state) => state.productsInfo[phaseName as keyof typeof state.productsInfo].nutrients);
   
@@ -43,21 +43,7 @@ export default function ProductsSettings() {
         <MoveLeft size={30} color="black" />
       </TouchableOpacity>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.infoCard}>
-          <Text style={styles.infoTitle}>Customize your products</Text>
-          <Text style={styles.infoDescription}>
-            Remove products you don't like to personalize your plan. We'll ask you to review this each phase in your first
-            cycle. You can edit the list in Settings.
-          </Text>
-          <View style={styles.switchRow}>
-            <Text style={styles.switchLabel}>I am vegetarian</Text>
-            <CustomSwitch value={isVegetarian} onValueChange={(value) => updateSettings({ is_vegetarian: value })} />
-          </View>
-          <View style={styles.switchRow}>
-            <Text style={styles.switchLabel}>I am vegan</Text>
-            <CustomSwitch value={isVegan} onValueChange={(value) => updateSettings({ is_vegan: value })} />
-          </View>
-        </View>
+        <IsVeganCard />
         <FocusOnCard />
 
         <View style={styles.spacer}></View>
@@ -83,39 +69,15 @@ export default function ProductsSettings() {
   );
 }
 
-// Маппинг названий категорий на питательные вещества
-const getNutrientsForCategory = (category: string): string[] => {
-  const mapping: Record<string, string[]> = {
-    'Iron': ['iron'],
-    'Omega-3': ['omega-3'],
-    'Potassium': ['potassium'],
-    'B vitamins': ['vitamin-b1', 'vitamin-b2', 'vitamin-b6', 'vitamin-b9', 'vitamin-b12'],
-    'Magnesium': ['magnesium'],
-    'Choline': ['choline'],
-    'Antioxidants': ['antioxidants'],
-    'Fiber': ['fiber'],
-    'Methionine-Cysteine': ['methionine-cysteine'],
-    'Vitamin E': ['vitamin-e'],
-  };
-  return mapping[category] || [];
-};
-
-// Функция фильтрации продуктов по питательным веществам
-const filterProductsByNutrients = (category: string, deletedProducts: string[] = []): Product[] => {
-  const nutrients = getNutrientsForCategory(category);
-  if (nutrients.length === 0) return [];
-
-  return Products.filter((product) => {
-    return !deletedProducts.includes(product.name) && 
-           nutrients.some((nutrient) => product.nutrients.includes(nutrient));
-  });
-};
+import { filterProductsByNutrients } from './utils';
+import { useProductSettings } from '@/hooks/useProductSettings';
 
 const CategoryList = ({ title }: { title: string }) => {
   const router = useRouter();
   const { deletedProducts, updateDeletedProducts } = useDeletedProducts();
-  
-  const filteredProducts = filterProductsByNutrients(title, deletedProducts);
+  const { isVegan, isVegetarian } = useProductSettings();
+
+  const filteredProducts = filterProductsByNutrients(title, deletedProducts, { isVegan, isVegetarian });
   const topProducts = filteredProducts.slice(0, 10);
 
   const handleDelete = (productName: string) => {

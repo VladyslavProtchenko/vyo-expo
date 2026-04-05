@@ -9,84 +9,48 @@ export const generateProductVariants = async (
   isVegetarian: boolean = false,
   isVegan: boolean = false
 ): Promise<string[]> => {
-  // TEMPORARY: Return mock data for development
-  const mockProducts = [
-    "Baked salmon",
-    "Cooked chickpeas",
-    "Cooked spinach",
-    "Baked sweet potato",
-    "Pumpkin seeds",
-    "Boiled egg",
-    "Whole milk",
-    "Banana",
-    "Dark chocolate (70%)"
-  ];
-  
-  console.log('🔵 [OpenAI] Using mock data for development');
-  console.log('✅ [OpenAI] Mock products:', mockProducts.length);
-  return mockProducts;
-
-  // COMMENTED OUT: OpenAI API call
-  /*
   const prompt = createPrompt(phase, previousLists, deletedProducts, isVegetarian, isVegan);
 
-  console.log('🔵 [OpenAI] Starting request for phase:', phase);
-  if (previousLists && Object.keys(previousLists).length > 0) {
-    console.log(`📚 [OpenAI] Using ${Object.keys(previousLists).length} previous lists for context`);
-  }
   const startTime = Date.now();
 
-  try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an expert nutritionist specializing in endometriosis and menstrual cycle nutrition. Generate product combinations (9 products each) based on phase-specific nutritional needs. Focus on balanced macros, nutrient synergy, and variety. Return ONLY valid JSON with no additional text or explanations.',
-          },
-          {
-            role: 'user',
-            content: prompt,
-          },
-        ],
-        temperature: 1.0,
-        max_completion_tokens: 250,
-      }),
-    });
+  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${OPENAI_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: 'gpt-4o-mini',
+      messages: [
+        {
+          role: 'system',
+          content: 'You are an expert nutritionist specializing in endometriosis and menstrual cycle nutrition. Generate product combinations (9 products each) based on phase-specific nutritional needs. Focus on balanced macros, nutrient synergy, and variety. Return ONLY valid JSON with no additional text or explanations.',
+        },
+        {
+          role: 'user',
+          content: prompt,
+        },
+      ],
+      temperature: 1.0,
+      max_completion_tokens: 250,
+    }),
+  });
 
-    const duration = Date.now() - startTime;
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('❌ [OpenAI] API error:', response.status, errorData);
-      throw new Error(`OpenAI API error: ${response.status} - ${JSON.stringify(errorData)}`);
-    }
-
-    console.log(`✅ [OpenAI] Request completed in ${duration}ms`);
-
-    const data: any = await response.json();
-    const content = data.choices[0]?.message?.content;
-
-    if (!content) {
-      throw new Error('No content in OpenAI response');
-    }
-
-    const products: string[] = JSON.parse(content);
-    console.log('✅ [OpenAI] Parsed products:', products.length);
-    return products;
-  } catch (error: any) {
-    const duration = Date.now() - startTime;
-    console.error(`❌ [OpenAI] Request failed after ${duration}ms`);
-    console.error('❌ [OpenAI] Error:', error.message);
-    throw error;
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(`OpenAI API error: ${response.status} - ${JSON.stringify(errorData)}`);
   }
-  */
+
+  const data = await response.json() as { choices: { message: { content: string } }[] };
+  const content = data.choices[0]?.message?.content;
+
+  if (!content) {
+    throw new Error('No content in OpenAI response');
+  }
+
+  console.log(`[OpenAI] Request completed in ${Date.now() - startTime}ms`);
+
+  return JSON.parse(content) as string[];
 };
 
 export const createPrompt = (
