@@ -7,7 +7,7 @@ import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { ADDITIONAL_SYMPTOM_LABELS, AdditionalSymptomType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -16,11 +16,14 @@ export default function Step4() {
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const initialTags = useRef<AdditionalSymptomType[]>([]);
   const [tags, setTags] = useState<AdditionalSymptomType[]>([]);
 
   useEffect(() => {
     if (data?.medical?.additional_symptoms && data.medical.additional_symptoms.length > 0) {
-      setTags(data.medical.additional_symptoms as AdditionalSymptomType[]);
+      const loaded = data.medical.additional_symptoms as AdditionalSymptomType[];
+      initialTags.current = loaded;
+      setTags(loaded);
     }
   }, [data]);
 
@@ -29,15 +32,16 @@ export default function Step4() {
   };
 
   const next = () => {
+    const hasChanges = JSON.stringify([...tags].sort()) !== JSON.stringify([...initialTags.current].sort());
+
+    if (!hasChanges) {
+      router.push('/onboarding/step-5' as any);
+      return;
+    }
+
     updateMedical(
-      {
-        additional_symptoms: tags,
-      },
-      {
-        onSuccess: () => {
-          router.push('/onboarding/step-5' as any);
-        },
-      }
+      { additional_symptoms: tags },
+      { onSuccess: () => router.push('/onboarding/step-5' as any) }
     );
   };
   const selectTag = (tag: AdditionalSymptomType, isActive: boolean) => {

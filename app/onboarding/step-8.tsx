@@ -18,20 +18,23 @@ export default function Step8() {
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const initialized = useRef(false);
-  const [formData, setFormData] = useState({
+  const initialData = useRef({
     painPeriod: [] as PainPeriodType[],
     painLocation: [] as PainLocationType[],
     painDuration: '' as PainDurationType | '',
   });
+  const [formData, setFormData] = useState(initialData.current);
 
   useEffect(() => {
     if (data?.medical && !initialized.current) {
       initialized.current = true;
-      setFormData({
-        painPeriod: (data.medical.pain_period as PainPeriodType[]) || [],
-        painLocation: (data.medical.pain_location as PainLocationType[]) || [],
-        painDuration: (data.medical.pain_duration as PainDurationType) || '',
-      });
+      const loaded = {
+        painPeriod: (data.medical.pain_period || []) as PainPeriodType[],
+        painLocation: (data.medical.pain_location || []) as PainLocationType[],
+        painDuration: (data.medical.pain_duration as PainDurationType) || '' as PainDurationType | '',
+      };
+      initialData.current = loaded;
+      setFormData(loaded);
     }
   }, [data]);
 
@@ -52,17 +55,24 @@ export default function Step8() {
   };
 
   const next = () => {
+    const init = initialData.current;
+    const hasChanges =
+      formData.painDuration !== init.painDuration ||
+      JSON.stringify([...formData.painPeriod].sort()) !== JSON.stringify([...init.painPeriod].sort()) ||
+      JSON.stringify([...formData.painLocation].sort()) !== JSON.stringify([...init.painLocation].sort());
+
+    if (!hasChanges) {
+      router.push('/onboarding/step-9' as any);
+      return;
+    }
+
     updateMedical(
       {
         pain_period: formData.painPeriod.length > 0 ? formData.painPeriod : null,
         pain_location: formData.painLocation,
         pain_duration: formData.painDuration || undefined,
       },
-      {
-        onSuccess: () => {
-          router.push('/onboarding/step-9' as any);
-        },
-      }
+      { onSuccess: () => router.push('/onboarding/step-9' as any) }
     );
   };
 

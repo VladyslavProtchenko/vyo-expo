@@ -538,6 +538,17 @@
     }
   },
   "onboarding": {
+    "step7": {
+      "title": "Your period",
+      "pain_subtitle": "Are your periods painful?",
+      "yes": "Yes",
+      "no": "No",
+      "intensity_subtitle": "What's its intensity from 1 to 10?",
+      "type_subtitle": "What type of pain do you feel?",
+      "next": "Next",
+      "get_care_plan": "Get my care plan?",
+      "saving": "Saving..."
+    },
     "step8": {
       "title": "Your pain details",
       "when_subtitle": "When do you feel the pain?",

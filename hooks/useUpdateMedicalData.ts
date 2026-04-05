@@ -12,7 +12,7 @@ export interface UpdateMedicalData {
   additional_symptoms?: string[];
   other_symptoms?: string[];
   is_pain?: boolean | null;
-  pain_type?: string | null;
+  pain_type?: string[] | null;
   pain_intensity?: number | null;
   pain_period?: string[] | null;
   pain_location?: string[] | null;

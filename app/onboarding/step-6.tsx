@@ -7,24 +7,27 @@ import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { FLOW_LABELS, FlowType, REGULAR_PERIOD_LABELS, RegularPeriodType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step6() {
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
-  const [formData, setFormData] = useState({
+  const initialData = useRef({
     flow: '' as FlowType | '',
     isRegular: [] as RegularPeriodType[],
   });
+  const [formData, setFormData] = useState(initialData.current);
 
   useEffect(() => {
     if (data?.medical) {
-      setFormData({
-        flow: (data.medical.flow as FlowType) || '',
+      const loaded = {
+        flow: (data.medical.flow as FlowType) || '' as FlowType | '',
         isRegular: (data.medical.is_regular_period as RegularPeriodType[]) || [],
-      });
+      };
+      initialData.current = loaded;
+      setFormData(loaded);
     }
   }, [data]);
 
@@ -32,23 +35,24 @@ export default function Step6() {
     router.back();
   };
 
-  const selectRegularPeriod = (period: RegularPeriodType, isActive: boolean) => {
-    isActive
-      ? setFormData(prev => ({ ...prev, isRegular: prev.isRegular.filter(item => item !== period) }))
-      : setFormData(prev => ({ ...prev, isRegular: [...prev.isRegular, period] }));
+  const selectRegularPeriod = (period: RegularPeriodType) => {
+    setFormData(prev => ({ ...prev, isRegular: [period] }));
   };
 
   const next = () => {
+    const init = initialData.current;
+    const hasChanges =
+      formData.flow !== init.flow ||
+      formData.isRegular[0] !== init.isRegular[0];
+
+    if (!hasChanges) {
+      router.push('/onboarding/step-7' as any);
+      return;
+    }
+
     updateMedical(
-      {
-        flow: formData.flow || undefined,
-        is_regular_period: formData.isRegular,
-      },
-      {
-        onSuccess: () => {
-          router.push('/onboarding/step-7' as any);
-        },
-      }
+      { flow: formData.flow || undefined, is_regular_period: formData.isRegular },
+      { onSuccess: () => router.push('/onboarding/step-7' as any) }
     );
   };
 
@@ -90,7 +94,7 @@ export default function Step6() {
           {REGULAR_PERIOD_LABELS.map(item => {
             const isActive = formData.isRegular.find(i => i === item) ? true : false;
             return (
-              <Pressable key={item} onPress={() => selectRegularPeriod(item, isActive)}>
+              <Pressable key={item} onPress={() => selectRegularPeriod(item)}>
                 <Text
                   style={[
                     typography.p,

@@ -19,24 +19,27 @@ export default function Step2() {
   const { data } = useOnboardingData();
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
   const initialized = useRef(false);
-  const [formData, setFormData] = useState({
+  const initialData = useRef({
     weight: '',
     height: '',
     waist: '',
     hips: '',
     unitSystem: 'metric' as 'metric' | 'imperial',
   });
+  const [formData, setFormData] = useState(initialData.current);
 
   useEffect(() => {
     if (data && !initialized.current) {
       initialized.current = true;
-      setFormData({
+      const loaded = {
         weight: data.profile?.weight && data.profile.weight > 0 ? String(data.profile.weight) : '',
         height: data.profile?.height && data.profile.height > 0 ? String(data.profile.height) : '',
         waist: data.profile?.waist && data.profile.waist > 0 ? String(data.profile.waist) : '',
         hips: data.profile?.hips && data.profile.hips > 0 ? String(data.profile.hips) : '',
-        unitSystem: data.profile?.unit_system || 'metric',
-      });
+        unitSystem: data.profile?.unit_system || 'metric' as 'metric' | 'imperial',
+      };
+      initialData.current = loaded;
+      setFormData(loaded);
     }
   }, [data]);
 
@@ -50,6 +53,19 @@ export default function Step2() {
   };
 
   const next = () => {
+    const init = initialData.current;
+    const hasChanges =
+      formData.weight !== init.weight ||
+      formData.height !== init.height ||
+      formData.waist !== init.waist ||
+      formData.hips !== init.hips ||
+      formData.unitSystem !== init.unitSystem;
+
+    if (!hasChanges) {
+      router.push('/onboarding/step-3' as any);
+      return;
+    }
+
     updateProfile(
       {
         weight: formData.weight ? parseFloat(formData.weight) : undefined,
@@ -58,11 +74,7 @@ export default function Step2() {
         hips: formData.hips ? parseFloat(formData.hips) : undefined,
         unit_system: formData.unitSystem,
       },
-      {
-        onSuccess: () => {
-          router.push('/onboarding/step-3' as any);
-        },
-      }
+      { onSuccess: () => router.push('/onboarding/step-3' as any) }
     );
   };
 

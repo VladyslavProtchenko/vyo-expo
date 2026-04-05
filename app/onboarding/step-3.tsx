@@ -8,7 +8,7 @@ import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { DIAGNOSIS_LABELS, DiagnosisType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step3() {
@@ -16,11 +16,14 @@ export default function Step3() {
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const { mutate: updateDiagnosis } = useUpdateDiagnosis();
+  const initialTags = useRef<DiagnosisType[]>([]);
   const [tags, setTags] = useState<DiagnosisType[]>([]);
 
   useEffect(() => {
     if (data?.medical?.diagnosed_conditions && data.medical.diagnosed_conditions.length > 0) {
-      setTags(data.medical.diagnosed_conditions as DiagnosisType[]);
+      const loaded = data.medical.diagnosed_conditions as DiagnosisType[];
+      initialTags.current = loaded;
+      setTags(loaded);
     }
   }, [data]);
 
@@ -28,7 +31,14 @@ export default function Step3() {
 
   const next = () => {
     if (tags.length === 0) return;
-    
+
+    const hasChanges = JSON.stringify([...tags].sort()) !== JSON.stringify([...initialTags.current].sort());
+
+    if (!hasChanges) {
+      router.push('/onboarding/step-4' as any);
+      return;
+    }
+
     const isDiagnosed = tags.includes('Endometriosis') || tags.includes('Adenomyosis');
     updateMedical(
       { diagnosed_conditions: tags },

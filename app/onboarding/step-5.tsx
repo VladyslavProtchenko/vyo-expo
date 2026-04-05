@@ -7,18 +7,21 @@ import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { SYMPTOM_LABELS, SymptomType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step5() {
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const initialTags = useRef<SymptomType[]>([]);
   const [tags, setTags] = useState<SymptomType[]>([]);
 
   useEffect(() => {
     if (data?.medical?.symptoms && data.medical.symptoms.length > 0) {
-      setTags(data.medical.symptoms as SymptomType[]);
+      const loaded = data.medical.symptoms as SymptomType[];
+      initialTags.current = loaded;
+      setTags(loaded);
     }
   }, [data]);
 
@@ -27,15 +30,16 @@ export default function Step5() {
   };
 
   const next = () => {
+    const hasChanges = JSON.stringify([...tags].sort()) !== JSON.stringify([...initialTags.current].sort());
+
+    if (!hasChanges) {
+      router.push('/onboarding/step-6' as any);
+      return;
+    }
+
     updateMedical(
-      {
-        symptoms: tags,
-      },
-      {
-        onSuccess: () => {
-          router.push('/onboarding/step-6' as any);
-        },
-      }
+      { symptoms: tags },
+      { onSuccess: () => router.push('/onboarding/step-6' as any) }
     );
   };
 

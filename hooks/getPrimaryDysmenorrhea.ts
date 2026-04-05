@@ -21,8 +21,8 @@ export const getPrimaryDysmenorrhea = (data: OnboardingData | null | undefined):
   const flow = data?.medical?.flow || '';
   const isRegularPeriod = (data?.medical?.is_regular_period || []) as string[];
   const intensity = data?.medical?.pain_intensity || 0;
-  const painType = data?.medical?.pain_type || '';
-  const painPeriod = data?.medical?.pain_period || '';
+  const painType = (data?.medical?.pain_type || []) as string[];
+  const painPeriod = (data?.medical?.pain_period || []) as string[];
   const painLocation = (data?.medical?.pain_location || []) as string[];
   const painDuration = data?.medical?.pain_duration || '';
   const painCase = data?.medical?.pain_case || '';
@@ -64,7 +64,9 @@ export const getPrimaryDysmenorrhea = (data: OnboardingData | null | undefined):
     'Sharp': [2, 1, -1],
     'Dull': [0, 3, 0],
   };
-  if (painTypeMap[painType]) add(...painTypeMap[painType]);
+  for (const pt of painType) {
+    if (painTypeMap[pt]) add(...painTypeMap[pt]);
+  }
 
   if (intensity <= 3) add(0, 0, 3);
   else if (intensity >= 4 && intensity <= 6) add(2, 1, 0);
@@ -77,7 +79,9 @@ export const getPrimaryDysmenorrhea = (data: OnboardingData | null | undefined):
     'Not phase-dependent': [-1, 3, -1],
     'Inconsistent': [0, 1, 0],
   };
-  if (painPeriodMap[painPeriod]) add(...painPeriodMap[painPeriod]);
+  for (const period of painPeriod) {
+    if (painPeriodMap[period]) add(...painPeriodMap[period]);
+  }
 
   if (has(painLocation, 'Lower abdomen')) add(3, 2, 0);
   if (has(painLocation, 'Lower back')) add(2, 2, 0);
@@ -118,7 +122,7 @@ export const getPrimaryDysmenorrhea = (data: OnboardingData | null | undefined):
   if (painChangeMap[isPainChange]) add(...painChangeMap[isPainChange]);
 
   // Combo rules
-  if (painType === 'Cramping' && (isMedicine === 'Well relieve' || isMedicine === 'Weel relieve')) add(2, 0, 0);
+  if (has(painType, 'Cramping') && (isMedicine === 'Well relieve' || isMedicine === 'Weel relieve')) add(2, 0, 0);
   if (has(isRegularPeriod, 'Not regular') && painCase === 'Bowel movement') add(0, 2, 0);
   if (isPainChange !== 'No' && age > 25) add(-2, 0, 0);
   if (flow === 'Heavy / Clots' && has(isRegularPeriod, 'Not regular')) add(0, 2, 0);
@@ -126,7 +130,7 @@ export const getPrimaryDysmenorrhea = (data: OnboardingData | null | undefined):
   if (has(painLocation, 'Legs') && has(painLocation, 'Pelvic area')) add(0, 2, 0);
   if (has(isRegularPeriod, 'Regular') && flow === 'Medium') add(0, 0, 2);
   if (has(isRegularPeriod, 'Not regular') && flow === 'Light / Spotting') add(0, 2, 0);
-  if (painPeriod === 'During period' && painDuration === '1-2 days') add(0, 2, 0);
+  if (has(painPeriod, 'During period') && painDuration === '1-2 days') add(0, 2, 0);
   if (has(isRegularPeriod, 'Not regular') && has(isRegularPeriod, 'Long delays/Amenorrhea')) add(0, 2, -1);
   if (has(painLocation, 'Lower abdomen') && has(painLocation, 'Lower back') && has(painLocation, 'Legs')) add(0, 2, 0);
   if (has(symptoms, 'Nausea') && has(symptoms, 'Headache') && has(symptoms, 'Dizziness')) add(2, 0, 0);

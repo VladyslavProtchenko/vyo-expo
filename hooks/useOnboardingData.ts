@@ -21,9 +21,9 @@ export interface OnboardingMedicalData {
   additional_symptoms: string[] | null;
   other_symptoms: string[] | null;
   is_pain: boolean | null;
-  pain_type: string | null;
+  pain_type: string[] | null;
   pain_intensity: number | null;
-  pain_period: string | null;
+  pain_period: string[] | null;
   pain_location: string[] | null;
   pain_duration: string | null;
   pain_case: string | null;
@@ -89,9 +89,9 @@ export const useOnboardingData = () => {
         additional_symptoms: medicalRes.data.additional_symptoms || [],
         other_symptoms: medicalRes.data.other_symptoms || [],
         is_pain: medicalRes.data.is_pain,
-        pain_type: medicalRes.data.pain_type,
+        pain_type: medicalRes.data.pain_type || [],
         pain_intensity: medicalRes.data.pain_intensity,
-        pain_period: medicalRes.data.pain_period,
+        pain_period: medicalRes.data.pain_period || [],
         pain_location: medicalRes.data.pain_location || [],
         pain_duration: medicalRes.data.pain_duration,
         pain_case: medicalRes.data.pain_case,

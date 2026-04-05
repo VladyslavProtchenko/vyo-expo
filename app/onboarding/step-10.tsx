@@ -11,7 +11,7 @@ import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { PAIN_CHANGES, PainChangeType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step10() {
@@ -21,15 +21,14 @@ export default function Step10() {
   const { mutate: updateProfile } = useUpdateProfile();
   const { mutate: updateDiagnosis } = useUpdateDiagnosis();
   const { data: diagnosisData } = useGetDiagnosis();
-  const [formData, setFormData] = useState({
-    isPainChange: '' as PainChangeType | '',
-  });
+  const initialData = useRef({ isPainChange: '' as PainChangeType | '' });
+  const [formData, setFormData] = useState(initialData.current);
 
   useEffect(() => {
     if (data?.medical?.is_pain_change) {
-      setFormData({
-        isPainChange: data.medical.is_pain_change as PainChangeType,
-      });
+      const loaded = { isPainChange: data.medical.is_pain_change as PainChangeType };
+      initialData.current = loaded;
+      setFormData(loaded);
     }
   }, [data]);
 
@@ -37,38 +36,45 @@ export default function Step10() {
     router.back();
   };
 
+  const computeDiagnosis = () => {
+    const mergedData = {
+      profile: data?.profile ?? null,
+      medical: { ...data?.medical, is_pain_change: formData.isPainChange } as any,
+    };
+    const diagnosis = getPrimaryDysmenorrhea(mergedData);
+    const alreadyEndo = diagnosisData?.diagnosis === 'endometriosis';
+
+    if (alreadyEndo || diagnosis === 'endometriosis') {
+      router.push('/onboarding/step-11' as any);
+      return;
+    }
+
+    const pcosResult = getPCOS(data);
+    const diagnosisPayload = pcosResult > 0
+      ? { diagnosis: 'pcos' as const, pcos_type: (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible' }
+      : { diagnosis: diagnosis as Exclude<typeof diagnosis, 'pcos'> };
+
+    updateDiagnosis(diagnosisPayload, {
+      onSuccess: () => {
+        updateProfile(
+          { onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 10 },
+          { onSuccess: () => router.push('/sync-data' as any) }
+        );
+      },
+    });
+  };
+
   const next = () => {
+    const hasChanges = formData.isPainChange !== initialData.current.isPainChange;
+
+    if (!hasChanges) {
+      computeDiagnosis();
+      return;
+    }
+
     updateMedical(
       { is_pain_change: formData.isPainChange || undefined },
-      {
-        onSuccess: () => {
-          const mergedData = {
-            profile: data?.profile ?? null,
-            medical: { ...data?.medical, is_pain_change: formData.isPainChange } as any,
-          };
-          const diagnosis = getPrimaryDysmenorrhea(mergedData);
-          const alreadyEndo = diagnosisData?.diagnosis === 'endometriosis';
-
-          if (alreadyEndo || diagnosis === 'endometriosis') {
-            router.push('/onboarding/step-11' as any);
-            return;
-          }
-
-          const pcosResult = getPCOS(data);
-          const diagnosisPayload = pcosResult > 0
-            ? { diagnosis: 'pcos' as const, pcos_type: (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible' }
-            : { diagnosis: diagnosis as Exclude<typeof diagnosis, 'pcos'> };
-
-          updateDiagnosis(diagnosisPayload, {
-            onSuccess: () => {
-              updateProfile(
-                { onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 10 },
-                { onSuccess: () => router.push('/sync-data' as any) }
-              );
-            },
-          });
-        },
-      }
+      { onSuccess: computeDiagnosis }
     );
   };
 

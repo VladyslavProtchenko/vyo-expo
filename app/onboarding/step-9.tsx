@@ -7,24 +7,27 @@ import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { MEDICINE_EFFECTS, MedicineEffectType, PAIN_CASES, PainCaseType } from '@/types/diagnosis';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 export default function Step9() {
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
-  const [formData, setFormData] = useState({
+  const initialData = useRef({
     painCase: '' as PainCaseType | '',
     isMedicine: '' as MedicineEffectType | '',
   });
+  const [formData, setFormData] = useState(initialData.current);
 
   useEffect(() => {
     if (data?.medical) {
-      setFormData({
-        painCase: (data.medical.pain_case as PainCaseType) || '',
-        isMedicine: (data.medical.is_medicine as MedicineEffectType) || '',
-      });
+      const loaded = {
+        painCase: (data.medical.pain_case as PainCaseType) || '' as PainCaseType | '',
+        isMedicine: (data.medical.is_medicine as MedicineEffectType) || '' as MedicineEffectType | '',
+      };
+      initialData.current = loaded;
+      setFormData(loaded);
     }
   }, [data]);
 
@@ -33,16 +36,19 @@ export default function Step9() {
   };
 
   const next = () => {
+    const init = initialData.current;
+    const hasChanges =
+      formData.painCase !== init.painCase ||
+      formData.isMedicine !== init.isMedicine;
+
+    if (!hasChanges) {
+      router.push('/onboarding/step-10' as any);
+      return;
+    }
+
     updateMedical(
-      {
-        pain_case: formData.painCase || undefined,
-        is_medicine: formData.isMedicine || undefined,
-      },
-      {
-        onSuccess: () => {
-          router.push('/onboarding/step-10' as any);
-        },
-      }
+      { pain_case: formData.painCase || undefined, is_medicine: formData.isMedicine || undefined },
+      { onSuccess: () => router.push('/onboarding/step-10' as any) }
     );
   };
 

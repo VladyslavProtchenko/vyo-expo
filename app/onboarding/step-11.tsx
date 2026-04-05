@@ -11,7 +11,7 @@ import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 const surgeries = [
@@ -39,21 +39,24 @@ export default function Step11() {
   const { mutate: updateDiagnosis, isPending: isUpdatingDiagnosis } = useUpdateDiagnosis();
   const loading = isUpdatingMedical || isUpdatingProfile || isUpdatingDiagnosis;
 
-  const [formData, setFormData] = useState({
+  const initialData = useRef({
     surgery: '',
     surgeryDate: null as string | null,
     otherSymptoms: [] as string[],
   });
+  const [formData, setFormData] = useState(initialData.current);
 
   const noSurgery = formData.surgery === 'None of these';
 
   useEffect(() => {
     if (data?.medical) {
-      setFormData({
+      const loaded = {
         surgery: data.medical.surgery || '',
         surgeryDate: data.medical.surgery_date || null,
         otherSymptoms: data.medical.other_symptoms || [],
-      });
+      };
+      initialData.current = loaded;
+      setFormData(loaded);
     }
   }, [data]);
 
@@ -78,43 +81,54 @@ export default function Step11() {
     });
   };
 
+  const computeDiagnosis = () => {
+    const mergedData = {
+      profile: data?.profile ?? null,
+      medical: { ...data?.medical, other_symptoms: formData.otherSymptoms } as any,
+    };
+
+    if (!noSurgery) {
+      completeOnboarding({
+        diagnosis: 'endometriosis',
+        endo_type: getEndoCluster(mergedData),
+        is_endo_surgery: true,
+        is_endo_additional: false,
+      });
+    } else {
+      const pcosResult = getPCOS(data);
+      if (pcosResult > 0) {
+        const pcosType = (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible';
+        completeOnboarding({ diagnosis: 'pcos', pcos_type: pcosType });
+      } else {
+        completeOnboarding({
+          diagnosis: 'endometriosis',
+          endo_type: getEndoCluster(mergedData),
+          is_endo_surgery: false,
+          is_endo_additional: formData.otherSymptoms.length > 0,
+        });
+      }
+    }
+  };
+
   const next = () => {
+    const init = initialData.current;
+    const hasChanges =
+      formData.surgery !== init.surgery ||
+      formData.surgeryDate !== init.surgeryDate ||
+      JSON.stringify([...formData.otherSymptoms].sort()) !== JSON.stringify([...init.otherSymptoms].sort());
+
+    if (!hasChanges) {
+      computeDiagnosis();
+      return;
+    }
+
     updateMedical(
       {
         surgery: !noSurgery ? formData.surgery || undefined : undefined,
         surgery_date: !noSurgery ? formData.surgeryDate || undefined : undefined,
         other_symptoms: noSurgery ? formData.otherSymptoms : [],
       },
-      {
-        onSuccess: () => {
-          const mergedData = {
-            profile: data?.profile ?? null,
-            medical: { ...data?.medical, other_symptoms: formData.otherSymptoms } as any,
-          };
-
-          if (!noSurgery) {
-            completeOnboarding({
-              diagnosis: 'endometriosis',
-              endo_type: getEndoCluster(mergedData),
-              is_endo_surgery: true,
-              is_endo_additional: false,
-            });
-          } else {
-            const pcosResult = getPCOS(data);
-            if (pcosResult > 0) {
-              const pcosType = (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible';
-              completeOnboarding({ diagnosis: 'pcos', pcos_type: pcosType });
-            } else {
-              completeOnboarding({
-                diagnosis: 'endometriosis',
-                endo_type: getEndoCluster(mergedData),
-                is_endo_surgery: false,
-                is_endo_additional: formData.otherSymptoms.length > 0,
-              });
-            }
-          }
-        },
-      }
+      { onSuccess: computeDiagnosis }
     );
   };
 

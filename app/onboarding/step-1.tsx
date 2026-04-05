@@ -23,22 +23,25 @@ export default function Step1() {
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const initialized = useRef(false);
-  const [formData, setFormData] = useState({
+  const initialData = useRef({
     age: 18,
     menstruationDate: null as string | null,
     menstrDuration: 5,
     cycle: 28,
   });
+  const [formData, setFormData] = useState(initialData.current);
 
   useEffect(() => {
     if (data && !initialized.current) {
       initialized.current = true;
-      setFormData({
+      const loaded = {
         age: data.profile?.age && data.profile.age > 0 ? data.profile.age : 18,
         menstruationDate: data.medical?.start_menstruation || null,
         menstrDuration: data.medical?.menstruation_duration || 5,
         cycle: data.medical?.cycle_duration && data.medical.cycle_duration > 0 ? data.medical.cycle_duration : 28,
-      });
+      };
+      initialData.current = loaded;
+      setFormData(loaded);
     }
   }, [data]);
 
@@ -47,25 +50,32 @@ export default function Step1() {
   };
 
   const next = () => {
-    updateProfile(
-      { age: formData.age },
-      {
-        onSuccess: () => {
-          updateMedical(
-            {
-              start_menstruation: formData.menstruationDate,
-              menstruation_duration: formData.menstrDuration,
-              cycle_duration: formData.cycle,
-            },
-            {
-              onSuccess: () => {
-                router.push('/onboarding/step-2' as any);
-              },
-            }
-          );
+    const init = initialData.current;
+    const profileChanged = formData.age !== init.age;
+    const medicalChanged =
+      formData.menstruationDate !== init.menstruationDate ||
+      formData.menstrDuration !== init.menstrDuration ||
+      formData.cycle !== init.cycle;
+
+    const saveMedical = (onDone: () => void) => {
+      if (!medicalChanged) { onDone(); return; }
+      updateMedical(
+        {
+          start_menstruation: formData.menstruationDate,
+          menstruation_duration: formData.menstrDuration,
+          cycle_duration: formData.cycle,
         },
-      }
-    );
+        { onSuccess: onDone }
+      );
+    };
+
+    const navigate = () => router.push('/onboarding/step-2' as any);
+
+    if (profileChanged) {
+      updateProfile({ age: formData.age }, { onSuccess: () => saveMedical(navigate) });
+    } else {
+      saveMedical(navigate);
+    }
   };
 
   const progressPercentage = 9.09; // Step 1 = 9.09% (1/11 * 100)
