@@ -5,12 +5,12 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "com.vyo",
+    "scheme": "com.vyo.health",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.vyo",
+      "bundleIdentifier": "com.vyo.health",
       "infoPlist": {
         "NSPhotoLibraryUsageDescription": "We need access to your photo library so you can choose a profile picture.",
         "NSCameraUsageDescription": "We need access to your camera so you can take a profile picture.",
@@ -18,10 +18,16 @@
         "CFBundleURLTypes": [
           {
             "CFBundleURLSchemes": [
-              "com.vyo"
+              "com.vyo.health"
+            ]
+          },
+          {
+            "CFBundleURLSchemes": [
+              "com.vyo.health"
             ]
           }
-        ]
+        ],
+        "ITSAppUsesNonExemptEncryption": false
       }
     },
     "android": {
@@ -32,11 +38,12 @@
       "edgeToEdgeEnabled": true,
       "softwareKeyboardLayoutMode": "resize",
       "predictiveBackGestureEnabled": false,
-      "package": "com.vyo",
+      "package": "com.vyo.health",
       "permissions": [
-        "READ_EXTERNAL_STORAGE",
-        "WRITE_EXTERNAL_STORAGE",
-        "CAMERA"
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
       ]
     },
     "web": {
@@ -66,6 +73,12 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "ecee8b35-6b93-4bfb-9039-e988281c48f3"
+      }
     }
   }
 }

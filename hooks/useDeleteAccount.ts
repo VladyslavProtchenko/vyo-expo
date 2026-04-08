@@ -15,12 +15,11 @@ export const useDeleteAccount = () => {
       const { error } = await supabase.rpc('delete_user_account');
 
       if (error) throw error;
-      
+
       return true;
     },
     onSuccess: () => {
-      // Redirect to login screen
-      router.replace('/');
+      router.replace('/account-deleted' as any);
     },
   });
 };

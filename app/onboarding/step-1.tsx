@@ -15,6 +15,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { StyleSheet, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+import Toast from 'react-native-toast-message';
 
 export default function Step1() {
   const { t } = useTranslation();
@@ -49,13 +50,25 @@ export default function Step1() {
     router.back();
   };
 
+  const onError = (error: Error) => {
+    Toast.show({
+      type: 'error',
+      text1: 'Failed to save',
+      text2: error.message || 'Please try again',
+    });
+  };
+
   const next = () => {
     const init = initialData.current;
-    const profileChanged = formData.age !== init.age;
+    const isFirstTime = !data?.medical;
+    const profileChanged = isFirstTime || formData.age !== init.age;
     const medicalChanged =
+      isFirstTime ||
       formData.menstruationDate !== init.menstruationDate ||
       formData.menstrDuration !== init.menstrDuration ||
       formData.cycle !== init.cycle;
+
+    const navigate = () => router.push('/onboarding/step-2' as any);
 
     const saveMedical = (onDone: () => void) => {
       if (!medicalChanged) { onDone(); return; }
@@ -65,14 +78,12 @@ export default function Step1() {
           menstruation_duration: formData.menstrDuration,
           cycle_duration: formData.cycle,
         },
-        { onSuccess: onDone }
+        { onSuccess: onDone, onError }
       );
     };
 
-    const navigate = () => router.push('/onboarding/step-2' as any);
-
     if (profileChanged) {
-      updateProfile({ age: formData.age }, { onSuccess: () => saveMedical(navigate) });
+      updateProfile({ age: formData.age }, { onSuccess: () => saveMedical(navigate), onError });
     } else {
       saveMedical(navigate);
     }

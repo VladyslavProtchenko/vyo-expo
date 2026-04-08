@@ -26,8 +26,7 @@ export const useUpdateProfile = () => {
 
       const { error } = await supabase
         .from('profiles')
-        .update(data)
-        .eq('id', session.user.id);
+        .upsert({ id: session.user.id, ...data }, { onConflict: 'id' });
 
       if (error) throw error;
 

@@ -11,6 +11,7 @@ import 'react-native-reanimated';
 import Toast, { ErrorToast, ToastConfig } from 'react-native-toast-message';
 
 import '@/config/i18n';
+import { AppColors } from '@/constants/theme';
 import { supabase } from '@/config/supabase';
 import { SessionProvider, useSession } from '@/contexts/session';
 import { useColorScheme } from '@/hooks/use-color-scheme';
@@ -29,16 +30,17 @@ const toastConfig: ToastConfig = {
       style={{
         borderLeftWidth: 0,
         borderRadius: 12,
-        backgroundColor: '#111827',
+        backgroundColor: AppColors.white,
         minHeight: 64,
+        width: '92%',
       }}
       text1Style={{
-        color: '#FFFFFF',
+        color: AppColors.error,
         fontSize: 14,
         fontWeight: '700',
       }}
       text2Style={{
-        color: '#E5E7EB',
+        color: AppColors.error,
         fontSize: 13,
       }}
     />
@@ -74,6 +76,7 @@ const protectedScreens = [
   'youtube-screen',
   'physiotherapy',
   'phase',
+  'account-deleted',
 ] as const;
 
 export default function RootLayout() {
@@ -102,7 +105,7 @@ export default function RootLayout() {
               <RootNavigator fontsLoaded={fontsLoaded} fontError={fontError} />
             </SessionProvider>
             <StatusBar style="auto" />
-            <Toast config={toastConfig} topOffset={64} />
+            <Toast config={toastConfig} position="top" topOffset={64} />
           </ThemeProvider>
         </QueryClientProvider>
       </KeyboardProvider>
@@ -126,6 +129,16 @@ function RootNavigator({ fontsLoaded, fontError }: RootNavigatorProps) {
       SplashScreen.hideAsync();
     }
   }, [fontsLoaded, fontError, isLoading]);
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!session) {
+      const inPublicScreen = publicScreens.includes(segments[0] as any);
+      if (!inPublicScreen) {
+        router.replace('/');
+      }
+    }
+  }, [session, isLoading, segments]);
 
   useEffect(() => {
     if (!session || isLoading) return;

@@ -27,13 +27,26 @@ export function SessionProvider({ children }: SessionProviderProps) {
       try {
         const { data } = await supabase.auth.getSession();
 
-        if (!isMounted) {
-          return;
+        if (!isMounted) return;
+
+        const cachedSession = data.session ?? null;
+
+        if (cachedSession) {
+          // Validate session is still active on the server
+          const { error } = await supabase.auth.getUser();
+          if (error) {
+            // Token is invalid or expired — clear it
+            await supabase.auth.signOut();
+            if (isMounted) {
+              setSession(null);
+              hadSessionRef.current = false;
+            }
+            return;
+          }
         }
 
-        const nextSession = data.session ?? null;
-        setSession(nextSession);
-        hadSessionRef.current = !!nextSession;
+        setSession(cachedSession);
+        hadSessionRef.current = !!cachedSession;
       } finally {
         if (isMounted) {
           setIsLoading(false);

@@ -22,7 +22,7 @@ export default function YoutubeCard({
   const [videoTitle, setVideoTitle] = useState<string>("");
   const [videoDuration, setVideoDuration] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const videoId = "cPOK1__NAzE";
+  const videoId = "k_KmLXXPb50";
   const playerRef = useRef<any>(null);
 
   // Calculate video dimensions to center it on screen
