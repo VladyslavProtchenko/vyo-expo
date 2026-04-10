@@ -68,7 +68,8 @@
           "cameraPermission": "We need access to your camera so you can take a profile picture."
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "@sentry/react-native"
     ],
     "experiments": {
       "typedRoutes": true,

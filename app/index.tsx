@@ -1,9 +1,11 @@
 import AuthButton from '@/components/AuthButton';
 import ButtonRounded from '@/components/ui/ButtonRounded';
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import { globalStyles, typography } from '@/constants/typography';
 import { useGoogleSignIn } from '@/hooks/useGoogleSignIn';
 import { useLoadUserData } from '@/hooks/useLoadUserData';
+import Toast from 'react-native-toast-message';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useState } from 'react';
@@ -42,7 +44,8 @@ export default function Login() {
                 .single();
 
             if (error && error.code !== 'PGRST116') {
-                console.error('❌ Error checking profile:', error);
+                Sentry.captureException(error, { tags: { action: 'check_profile' } });
+                Toast.show({ type: 'error', text1: 'Failed to load profile', text2: error.message });
                 setChecking(false);
                 return;
             }
@@ -63,7 +66,8 @@ export default function Login() {
                     });
 
                 if (createError) {
-                    console.error('❌ Error creating profile:', createError);
+                    Sentry.captureException(createError, { tags: { action: 'create_profile' } });
+                    Toast.show({ type: 'error', text1: 'Failed to create profile', text2: createError.message });
                     setChecking(false);
                     return;
                 }
@@ -86,8 +90,8 @@ export default function Login() {
                 console.log('📝 Onboarding not completed - redirecting to onboarding');
                 router.replace('/onboarding/step-1' as any);
             }
-        } catch (error) {
-            console.error('❌ Error checking auth status:', error);
+        } catch (error: unknown) {
+            Sentry.captureException(error, { tags: { action: 'check_auth_status' } });
             setChecking(false);
         }
     };
@@ -102,8 +106,8 @@ export default function Login() {
             } else {
                 console.error('❌ Google sign in error:', result.error);
             }
-        } catch (error) {
-            console.error('❌ Google login exception:', error);
+        } catch (error: unknown) {
+            Sentry.captureException(error, { tags: { action: 'google_login' } });
         }
     }
 

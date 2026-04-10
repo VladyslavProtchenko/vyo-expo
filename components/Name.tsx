@@ -1,8 +1,10 @@
 import Input from '@/components/ui/Input';
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import useUserStore from '@/store/useUserStore';
 import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
+import Toast from 'react-native-toast-message';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function Name() {
@@ -24,26 +26,21 @@ export default function Name() {
     setIsSaving(true);
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session?.user) {
-        console.error('User not authenticated');
-        return;
-      }
+      if (!session?.user) throw new Error('Not authenticated');
 
       const { error } = await supabase
         .from('profiles')
         .update({ name: newName.trim() })
         .eq('id', session.user.id);
 
-      if (error) {
-        console.error('Error updating name:', error);
-        return;
-      }
+      if (error) throw error;
 
-      // Update local store
       setUser({ name: newName.trim() });
       setIsModalVisible(false);
-    } catch (error) {
-      console.error('Error saving name:', error);
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'update_name' } });
+      const message = err instanceof Error ? err.message : 'Please try again.';
+      Toast.show({ type: 'error', text1: 'Failed to save name', text2: message });
     } finally {
       setIsSaving(false);
     }

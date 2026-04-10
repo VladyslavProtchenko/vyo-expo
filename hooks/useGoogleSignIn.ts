@@ -1,6 +1,8 @@
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import * as WebBrowser from 'expo-web-browser';
 import { useState } from 'react';
+import Toast from 'react-native-toast-message';
 
 // Завершаем сессию браузера после авторизации
 WebBrowser.maybeCompleteAuthSession();
@@ -28,7 +30,8 @@ export const useGoogleSignIn = () => {
       });
 
       if (error) {
-        console.error('❌ [Supabase] Google sign in error:', error);
+        Sentry.captureException(error, { tags: { action: 'google_sign_in' } });
+        Toast.show({ type: 'error', text1: 'Google sign in failed', text2: error.message });
         return { success: false, error: error.message };
       }
 
@@ -63,32 +66,29 @@ export const useGoogleSignIn = () => {
               });
               
               if (sessionError) {
-                console.error('❌ Session error:', sessionError);
+                Sentry.captureException(sessionError, { tags: { action: 'google_set_session' } });
+                Toast.show({ type: 'error', text1: 'Google sign in failed', text2: sessionError.message });
                 return { success: false, error: sessionError.message };
               }
-              
-              console.log('✅ [Google] Sign in successful!');
               return { success: true, data: sessionData };
             }
           }
-          
+
           if (accessToken) {
-            console.log('✅ Found tokens in query params');
             const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
               access_token: accessToken,
               refresh_token: refreshToken || '',
             });
-            
+
             if (sessionError) {
-              console.error('❌ Session error:', sessionError);
+              Sentry.captureException(sessionError, { tags: { action: 'google_set_session' } });
+              Toast.show({ type: 'error', text1: 'Google sign in failed', text2: sessionError.message });
               return { success: false, error: sessionError.message };
             }
-            
-            console.log('✅ [Google] Sign in successful!');
             return { success: true, data: sessionData };
           }
-          
-          console.error('❌ No tokens in callback URL');
+
+          Sentry.captureMessage('Google sign in: no tokens in callback URL', 'warning');
           return { success: false, error: 'No tokens received' };
         }
 
@@ -99,9 +99,11 @@ export const useGoogleSignIn = () => {
       }
 
       return { success: false, error: 'Authentication failed' };
-    } catch (err: any) {
-      console.error('❌ [Google] Sign in failed:', { message: err.message, err });
-      return { success: false, error: err.message || 'Google sign in failed' };
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'google_sign_in' } });
+      const message = err instanceof Error ? err.message : 'Google sign in failed';
+      Toast.show({ type: 'error', text1: 'Google sign in failed', text2: message });
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }

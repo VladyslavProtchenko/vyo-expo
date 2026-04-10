@@ -117,8 +117,8 @@ export default function ShoppingListAdd() {
       setSelected([]);
       setSelectedCustom([]);
       setDeleteModalVisible(false);
-    } catch (e) {
-      console.error('Delete shopping list error:', e);
+    } catch {
+      // handled by useDeleteShoppingList onError
     }
   };
   const handleSave = async () => {
@@ -132,8 +132,8 @@ export default function ShoppingListAdd() {
         listId: idToSave,
       });
       router.push('/shopping-list');
-    } catch (e) {
-      console.error('Save shopping list error:', e);
+    } catch {
+      // handled by useSaveShoppingList onError
     }
   };
 

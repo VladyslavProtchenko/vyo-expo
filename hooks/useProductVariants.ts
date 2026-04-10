@@ -1,5 +1,6 @@
 import { useDeletedProducts } from '@/hooks/useDeletedProducts';
 import { useProductSettings } from '@/hooks/useProductSettings';
+import * as Sentry from '@sentry/react-native';
 import { CurrentPhaseInfo } from '@/store/phase';
 import { Products as AllProducts, Product } from '@/store/products';
 import { generateProductVariants } from '@/utils/openai';
@@ -82,6 +83,10 @@ export function useProductVariants() {
       return found;
     },
     staleTime: Infinity,
+    throwOnError: (error) => {
+      Sentry.captureException(error, { tags: { action: 'load_product_variants' } });
+      return false;
+    },
   });
 
   const refresh = useCallback(async () => {

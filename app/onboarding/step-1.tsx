@@ -13,14 +13,12 @@ import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
-import Toast from 'react-native-toast-message';
-
 export default function Step1() {
   const { t } = useTranslation();
   const router = useRouter();
-  const { data } = useOnboardingData();
+  const { data, isLoading } = useOnboardingData();
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const initialized = useRef(false);
@@ -50,14 +48,6 @@ export default function Step1() {
     router.back();
   };
 
-  const onError = (error: Error) => {
-    Toast.show({
-      type: 'error',
-      text1: 'Failed to save',
-      text2: error.message || 'Please try again',
-    });
-  };
-
   const next = () => {
     const init = initialData.current;
     const isFirstTime = !data?.medical;
@@ -78,12 +68,12 @@ export default function Step1() {
           menstruation_duration: formData.menstrDuration,
           cycle_duration: formData.cycle,
         },
-        { onSuccess: onDone, onError }
+        { onSuccess: onDone }
       );
     };
 
     if (profileChanged) {
-      updateProfile({ age: formData.age }, { onSuccess: () => saveMedical(navigate), onError });
+      updateProfile({ age: formData.age }, { onSuccess: () => saveMedical(navigate) });
     } else {
       saveMedical(navigate);
     }
@@ -91,6 +81,17 @@ export default function Step1() {
 
   const progressPercentage = 9.09; // Step 1 = 9.09% (1/11 * 100)
   const isFormInvalid = !formData.menstruationDate || formData.age <= 0 || formData.menstrDuration <= 0 || formData.cycle <= 0;
+
+  if (isLoading) {
+    return (
+      <View style={styles.container}>
+        <Progress percentage={progressPercentage} isSkip={false} goBack={goBack} showBack={false} />
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="#000" />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -202,6 +203,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     paddingTop: 16,
     paddingBottom: 36,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
 

@@ -1,5 +1,8 @@
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
+import Toast from 'react-native-toast-message';
 
 interface SaveProfileResult {
   success: boolean;
@@ -63,6 +66,7 @@ export const useSaveDiagnosis = () => {
 
 export const useSavePartialQuiz = () => {
   const [loading, setLoading] = useState(false);
+  const queryClient = useQueryClient();
 
   const savePartialQuizData = async (currentStep: number): Promise<SaveProfileResult> => {
     setLoading(true);
@@ -84,13 +88,19 @@ export const useSavePartialQuiz = () => {
         .eq('id', session.user.id);
 
       if (error) {
+        Sentry.captureException(error, { tags: { action: 'save_partial_quiz' } });
+        Toast.show({ type: 'error', text1: 'Failed to save', text2: error.message || 'Please try again.' });
         return { success: false, error: error.message };
       }
 
+      await queryClient.invalidateQueries({ queryKey: ['onboarding'] });
       return { success: true };
-      
-    } catch (error: any) {
-      return { success: false, error: error.message };
+
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Unknown error';
+      Sentry.captureException(err, { tags: { action: 'save_partial_quiz' } });
+      Toast.show({ type: 'error', text1: 'Failed to save', text2: message });
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }

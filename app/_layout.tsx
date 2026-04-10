@@ -11,8 +11,15 @@ import 'react-native-reanimated';
 import Toast, { ErrorToast, ToastConfig } from 'react-native-toast-message';
 
 import '@/config/i18n';
+import * as Sentry from '@sentry/react-native';
 import { AppColors } from '@/constants/theme';
 import { supabase } from '@/config/supabase';
+
+Sentry.init({
+  dsn: process.env.EXPO_PUBLIC_SENTRY_DSN,
+  tracesSampleRate: 1.0,
+  beforeSend: (event) => (__DEV__ ? null : event),
+});
 import { SessionProvider, useSession } from '@/contexts/session';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { checkStorageVersion } from '@/utils/storageVersion';
@@ -79,7 +86,7 @@ const protectedScreens = [
   'phase',
 ] as const;
 
-export default function RootLayout() {
+function RootLayout() {
   const colorScheme = useColorScheme();
   const [storageReady, setStorageReady] = useState(false);
 
@@ -113,6 +120,8 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+export default Sentry.wrap(RootLayout);
 
 type RootNavigatorProps = {
   fontsLoaded: boolean;

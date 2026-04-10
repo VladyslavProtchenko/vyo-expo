@@ -1,5 +1,7 @@
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import { useQuery } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
 
 export interface OnboardingProfileData {
   age: number | null;
@@ -43,7 +45,7 @@ export const useOnboardingData = () => {
     queryKey: ['onboarding-data'],
     queryFn: async (): Promise<OnboardingData> => {
       const { data: { session } } = await supabase.auth.getSession();
-      
+
       if (!session?.user) {
         throw new Error('Not authenticated');
       }
@@ -107,5 +109,14 @@ export const useOnboardingData = () => {
     gcTime: Infinity,
     retry: 1,
     refetchOnMount: 'always',
+    throwOnError: (error) => {
+      Sentry.captureException(error, { tags: { action: 'load_onboarding_data' } });
+      Toast.show({
+        type: 'error',
+        text1: 'Failed to load data',
+        text2: error.message || 'Please restart the app.',
+      });
+      return false;
+    },
   });
 };

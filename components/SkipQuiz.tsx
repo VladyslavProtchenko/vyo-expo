@@ -21,9 +21,6 @@ export default function SkipQuiz({ currentStep }: SkipQuizProps) {
     
     if (result.success) {
       router.push('/sync-data' as any);
-    } else {
-      console.error('Failed to save partial quiz:', result.error);
-      alert('Failed to save data. Please try again.');
     }
   };
 

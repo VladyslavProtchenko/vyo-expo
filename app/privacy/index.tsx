@@ -1,5 +1,7 @@
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import { globalStyles, typography } from '@/constants/typography';
+import Toast from 'react-native-toast-message';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React, { useState } from 'react';
@@ -31,8 +33,9 @@ export default function Privacy() {
           .eq('id', session.user.id);
       }
       router.replace('/onboarding/step-1' as any);
-    } catch {
-      router.replace('/onboarding/step-1' as any);
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'accept_privacy' } });
+      Toast.show({ type: 'error', text1: 'Failed to save consent', text2: 'Please try again.' });
     } finally {
       setLoading(false);
     }

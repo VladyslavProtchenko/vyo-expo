@@ -28,7 +28,6 @@ export default function NumericField({ title, field, defaultValue }: NumericFiel
     
     updateProfile({ field, value }, {
       onSuccess: () => setIsModalVisible(false),
-      onError: (error) => console.error(`Error saving ${field}:`, error),
     });
   };
 

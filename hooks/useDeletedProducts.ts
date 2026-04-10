@@ -1,11 +1,17 @@
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
 
 export const useDeletedProducts = () => {
   const queryClient = useQueryClient();
 
   const query = useQuery({
     queryKey: ['deletedProducts'],
+    throwOnError: (error) => {
+      Sentry.captureException(error, { tags: { action: 'load_deleted_products' } });
+      return false;
+    },
     queryFn: async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session?.user) throw new Error('User not authenticated');
@@ -46,6 +52,10 @@ export const useDeletedProducts = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['deletedProducts'] });
+    },
+    onError: (error: Error) => {
+      Sentry.captureException(error, { tags: { action: 'update_deleted_products' } });
+      Toast.show({ type: 'error', text1: 'Failed to save', text2: error.message || 'Please try again.' });
     },
   });
 

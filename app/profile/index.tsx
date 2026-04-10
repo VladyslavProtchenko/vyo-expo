@@ -2,6 +2,7 @@ import Avatar from '@/components/Avatar';
 import { useAuthCleanup } from '@/hooks/useAuthCleanup';
 import { useSignOut } from '@/hooks/useSupabaseAuth';
 import { useUpdateAvatar } from '@/hooks/useUpdateAvatar';
+import useUserStore from '@/store/useUserStore';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import { useRouter } from 'expo-router';

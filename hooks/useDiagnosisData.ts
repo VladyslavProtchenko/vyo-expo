@@ -1,5 +1,7 @@
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
 
 type DiagnosisValue = 'normal' | 'dysmenorrhea' | 'endometriosis' | 'pcos';
 type PCOSType = 'high' | 'middle' | 'possible';
@@ -57,6 +59,10 @@ export const useUpdateDiagnosis = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: QUERY_KEY });
+    },
+    onError: (error: Error) => {
+      Sentry.captureException(error, { tags: { action: 'update_diagnosis' } });
+      Toast.show({ type: 'error', text1: 'Failed to save', text2: error.message || 'Please try again.' });
     },
   });
 };

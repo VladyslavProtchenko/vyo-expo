@@ -1,5 +1,7 @@
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import { useQuery } from '@tanstack/react-query';
+import Toast from 'react-native-toast-message';
 
 export type ShoppingListRow = {
   id: string;
@@ -14,6 +16,11 @@ export type ShoppingListRow = {
 export const useShoppingLists = () => {
   return useQuery({
     queryKey: ['shoppingLists'],
+    throwOnError: (error) => {
+      Sentry.captureException(error, { tags: { action: 'load_shopping_lists' } });
+      Toast.show({ type: 'error', text1: 'Failed to load lists', text2: error.message || 'Please try again.' });
+      return false;
+    },
     queryFn: async (): Promise<ShoppingListRow[]> => {
       const {
         data: { session },
@@ -36,6 +43,11 @@ export const useShoppingListById = (id: string | undefined) => {
   return useQuery({
     queryKey: ['shoppingList', id],
     enabled: !!id,
+    throwOnError: (error) => {
+      Sentry.captureException(error, { tags: { action: 'load_shopping_list_by_id' } });
+      Toast.show({ type: 'error', text1: 'Failed to load list', text2: error.message || 'Please try again.' });
+      return false;
+    },
     queryFn: async (): Promise<ShoppingListRow | null> => {
       if (!id) return null;
       const {
@@ -60,6 +72,10 @@ export const useShoppingListForToday = () => {
   const today = new Date().toISOString().slice(0, 10);
   return useQuery({
     queryKey: ['shoppingListToday', today],
+    throwOnError: (error) => {
+      Sentry.captureException(error, { tags: { action: 'load_shopping_list_today' } });
+      return false;
+    },
     queryFn: async (): Promise<ShoppingListRow | null> => {
       const {
         data: { session },

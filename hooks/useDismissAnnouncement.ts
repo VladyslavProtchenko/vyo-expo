@@ -1,4 +1,5 @@
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export const useDismissAnnouncement = () => {
@@ -20,6 +21,9 @@ export const useDismissAnnouncement = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['global-announcement'] });
+    },
+    onError: (error: Error) => {
+      Sentry.captureException(error, { tags: { action: 'dismiss_announcement' } });
     },
   });
 };

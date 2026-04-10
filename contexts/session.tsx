@@ -1,5 +1,6 @@
 import { supabase } from '@/config/supabase';
 import { consumeManualSignOutFlag } from '@/utils/authSessionEvents';
+import * as Sentry from '@sentry/react-native';
 import { Session } from '@supabase/supabase-js';
 import { createContext, ReactNode, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import Toast from 'react-native-toast-message';
@@ -27,15 +28,18 @@ export function SessionProvider({ children }: SessionProviderProps) {
         if (nextSession) {
           const { error } = await supabase.auth.getUser();
           if (error) {
-            // Token invalid or revoked — clear it
+            Sentry.captureException(error, { tags: { action: 'session_token_validation' } });
             await supabase.auth.signOut();
             setSession(null);
             hadSessionRef.current = false;
           } else {
+            Sentry.setUser({ id: nextSession.user.id });
+            Sentry.addBreadcrumb({ category: 'auth', message: 'Session restored on app start', level: 'info' });
             setSession(nextSession);
             hadSessionRef.current = true;
           }
         } else {
+          Sentry.setUser(null);
           setSession(null);
           hadSessionRef.current = false;
         }
@@ -47,10 +51,19 @@ export function SessionProvider({ children }: SessionProviderProps) {
       const hasSession = !!nextSession;
       const shouldShowExpiredToast = hadSession && !hasSession && !consumeManualSignOutFlag();
 
+      if (nextSession) {
+        Sentry.setUser({ id: nextSession.user.id });
+      } else {
+        Sentry.setUser(null);
+      }
+
+      Sentry.addBreadcrumb({ category: 'auth', message: `Auth event: ${event}`, level: 'info' });
+
       setSession(nextSession ?? null);
       hadSessionRef.current = hasSession;
 
       if (shouldShowExpiredToast) {
+        Sentry.captureMessage('Session expired unexpectedly', 'warning');
         Toast.show({
           type: 'error',
           text1: 'Session expired',

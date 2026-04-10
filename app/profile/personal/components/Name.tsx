@@ -21,7 +21,6 @@ export default function Name() {
     
     updateProfile({ field: 'name', value: newName.trim() }, {
       onSuccess: () => setIsModalVisible(false),
-      onError: (error) => console.error('Error saving name:', error),
     });
   };
 

@@ -1,4 +1,5 @@
 import { supabase } from '@/config/supabase';
+import * as Sentry from '@sentry/react-native';
 import { useQuery } from '@tanstack/react-query';
 
 interface Announcement {
@@ -37,5 +38,9 @@ export const useGlobalAnnouncement = () => {
       return activeAnnouncement as Announcement;
     },
     staleTime: 5 * 60 * 1000,
+    throwOnError: (error) => {
+      Sentry.captureException(error, { tags: { action: 'load_announcement' } });
+      return false;
+    },
   });
 };

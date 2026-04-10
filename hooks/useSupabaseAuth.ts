@@ -1,5 +1,6 @@
 import { supabase } from '@/config/supabase';
 import { markManualSignOut } from '@/utils/authSessionEvents';
+import * as Sentry from '@sentry/react-native';
 import { useState } from 'react';
 
 export const useSignIn = () => {
@@ -8,15 +9,22 @@ export const useSignIn = () => {
   const signIn = async (email: string, password: string) => {
     try {
       setLoading(true);
+      Sentry.addBreadcrumb({ category: 'auth', message: 'Sign in attempt', level: 'info' });
+
       const { data, error } = await supabase.auth.signInWithPassword({ email, password });
 
       if (error) {
+        Sentry.addBreadcrumb({ category: 'auth', message: `Sign in failed: ${error.message}`, level: 'warning' });
         return { success: false, error: error.message };
       }
 
+      Sentry.setUser({ id: data.user.id });
+      Sentry.addBreadcrumb({ category: 'auth', message: 'Sign in successful', level: 'info' });
       return { success: true, data: { user: data.user, session: data.session } };
-    } catch (err: any) {
-      return { success: false, error: err.message || 'Login failed' };
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'sign_in' } });
+      const message = err instanceof Error ? err.message : 'Login failed';
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }
@@ -31,23 +39,28 @@ export const useSignUp = () => {
   const signUp = async (email: string, password: string, name?: string) => {
     try {
       setLoading(true);
-      const { data, error } = await supabase.auth.signUp({ 
-        email, 
+      Sentry.addBreadcrumb({ category: 'auth', message: 'Sign up attempt', level: 'info' });
+
+      const { data, error } = await supabase.auth.signUp({
+        email,
         password,
-        options: {
-          data: {
-            name: name || '',
-          }
-        }
+        options: { data: { name: name || '' } },
       });
 
       if (error) {
+        Sentry.addBreadcrumb({ category: 'auth', message: `Sign up failed: ${error.message}`, level: 'warning' });
         return { success: false, error: error.message };
       }
 
+      if (data.user) {
+        Sentry.setUser({ id: data.user.id });
+      }
+      Sentry.addBreadcrumb({ category: 'auth', message: 'Sign up successful', level: 'info' });
       return { success: true, data: { user: data.user, session: data.session } };
-    } catch (err: any) {
-      return { success: false, error: err.message || 'Registration failed' };
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'sign_up' } });
+      const message = err instanceof Error ? err.message : 'Registration failed';
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }
@@ -62,21 +75,24 @@ export const useResetPassword = () => {
   const sendOTP = async (email: string) => {
     try {
       setLoading(true);
-      // Use signInWithOtp to send OTP code (not magic link)
+      Sentry.addBreadcrumb({ category: 'auth', message: 'OTP send attempt', level: 'info' });
+
       const { error } = await supabase.auth.signInWithOtp({
         email,
-        options: {
-          shouldCreateUser: false,
-        }
+        options: { shouldCreateUser: false },
       });
 
       if (error) {
+        Sentry.addBreadcrumb({ category: 'auth', message: `OTP send failed: ${error.message}`, level: 'warning' });
         return { success: false, error: error.message };
       }
 
+      Sentry.addBreadcrumb({ category: 'auth', message: 'OTP sent successfully', level: 'info' });
       return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err.message || 'Failed to send code' };
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'send_otp' } });
+      const message = err instanceof Error ? err.message : 'Failed to send code';
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }
@@ -91,21 +107,21 @@ export const useVerifyOTP = () => {
   const verifyCode = async (email: string, token: string) => {
     try {
       setLoading(true);
-      
-      // Verify the OTP token (this will authenticate the user)
-      const { error } = await supabase.auth.verifyOtp({
-        email,
-        token,
-        type: 'email',
-      });
+      Sentry.addBreadcrumb({ category: 'auth', message: 'OTP verify attempt', level: 'info' });
+
+      const { error } = await supabase.auth.verifyOtp({ email, token, type: 'email' });
 
       if (error) {
+        Sentry.addBreadcrumb({ category: 'auth', message: `OTP verify failed: ${error.message}`, level: 'warning' });
         return { success: false, error: error.message };
       }
 
+      Sentry.addBreadcrumb({ category: 'auth', message: 'OTP verified successfully', level: 'info' });
       return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err.message || 'Verification failed' };
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'verify_otp' } });
+      const message = err instanceof Error ? err.message : 'Verification failed';
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }
@@ -120,23 +136,24 @@ export const useUpdatePassword = () => {
   const updatePassword = async (newPassword: string) => {
     try {
       setLoading(true);
-      
-      // Update the password (user must be authenticated after OTP verification)
-      const { error } = await supabase.auth.updateUser({
-        password: newPassword
-      });
+      Sentry.addBreadcrumb({ category: 'auth', message: 'Password update attempt', level: 'info' });
+
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
 
       if (error) {
+        Sentry.addBreadcrumb({ category: 'auth', message: `Password update failed: ${error.message}`, level: 'warning' });
         return { success: false, error: error.message };
       }
 
-      // Sign out after password change to force re-login
       markManualSignOut();
       await supabase.auth.signOut();
-
+      Sentry.setUser(null);
+      Sentry.addBreadcrumb({ category: 'auth', message: 'Password updated, signed out', level: 'info' });
       return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err.message || 'Password update failed' };
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'update_password' } });
+      const message = err instanceof Error ? err.message : 'Password update failed';
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }
@@ -151,34 +168,31 @@ export const useVerifyOTPAndUpdatePassword = () => {
   const verifyAndUpdate = async (email: string, token: string, newPassword: string) => {
     try {
       setLoading(true);
-      
-      // Verify the OTP token for password recovery
-      const { error: verifyError } = await supabase.auth.verifyOtp({
-        email,
-        token,
-        type: 'recovery', // Changed from 'email' to 'recovery'
-      });
+      Sentry.addBreadcrumb({ category: 'auth', message: 'OTP verify + password update attempt', level: 'info' });
+
+      const { error: verifyError } = await supabase.auth.verifyOtp({ email, token, type: 'recovery' });
 
       if (verifyError) {
+        Sentry.addBreadcrumb({ category: 'auth', message: `OTP recovery verify failed: ${verifyError.message}`, level: 'warning' });
         return { success: false, error: verifyError.message };
       }
 
-      // After successful OTP verification, update the password
-      const { error: updateError } = await supabase.auth.updateUser({
-        password: newPassword
-      });
+      const { error: updateError } = await supabase.auth.updateUser({ password: newPassword });
 
       if (updateError) {
+        Sentry.addBreadcrumb({ category: 'auth', message: `Password update after OTP failed: ${updateError.message}`, level: 'warning' });
         return { success: false, error: updateError.message };
       }
 
-      // Sign out after password change to force re-login
       markManualSignOut();
       await supabase.auth.signOut();
-
+      Sentry.setUser(null);
+      Sentry.addBreadcrumb({ category: 'auth', message: 'Password reset complete, signed out', level: 'info' });
       return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err.message || 'Password update failed' };
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'verify_and_update_password' } });
+      const message = err instanceof Error ? err.message : 'Password update failed';
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }
@@ -194,15 +208,22 @@ export const useSignOut = () => {
     try {
       setLoading(true);
       markManualSignOut();
+      Sentry.addBreadcrumb({ category: 'auth', message: 'Sign out attempt', level: 'info' });
+
       const { error } = await supabase.auth.signOut();
-     
+
       if (error) {
+        Sentry.addBreadcrumb({ category: 'auth', message: `Sign out failed: ${error.message}`, level: 'warning' });
         return { success: false, error: error.message };
       }
-     
+
+      Sentry.setUser(null);
+      Sentry.addBreadcrumb({ category: 'auth', message: 'Sign out successful', level: 'info' });
       return { success: true };
-    } catch (err: any) {
-      return { success: false, error: err.message || 'Logout failed' };
+    } catch (err: unknown) {
+      Sentry.captureException(err, { tags: { action: 'sign_out' } });
+      const message = err instanceof Error ? err.message : 'Logout failed';
+      return { success: false, error: message };
     } finally {
       setLoading(false);
     }
