@@ -11,6 +11,7 @@ import React, { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Dimensions, ImageBackground, Platform, StyleSheet, Text, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import Toast from 'react-native-toast-message';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -33,7 +34,9 @@ export default function NewPassword() {
         if (result.success) {
             router.push('/email-login' as any);
         } else {
-            setSubmitError(result.error || 'Failed to change password. Please try again.');
+            const message = result.error || 'Failed to change password. Please try again.';
+            setSubmitError(message);
+            Toast.show({ type: 'error', text1: 'Failed to change password', text2: message });
         }
     };
 

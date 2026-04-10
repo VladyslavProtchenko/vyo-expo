@@ -1,25 +1,7 @@
-import { supabase } from '@/config/supabase';
 import { AppColors } from '@/constants/theme';
-import useSymptomsStore from '@/store/useSymptoms';
-import useUserStore from '@/store/useUserStore';
-import { markManualSignOut } from '@/utils/authSessionEvents';
-import { useEffect } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 export default function AccountDeletedScreen() {
-  const resetUser = useUserStore((s) => s.resetUser);
-  const resetSymptoms = useSymptomsStore((s) => s.reset);
-
-  useEffect(() => {
-    const cleanup = async () => {
-      markManualSignOut();
-      resetUser();
-      resetSymptoms();
-      await supabase.auth.signOut();
-    };
-
-    cleanup();
-  }, []);
 
   return (
     <View style={styles.container}>

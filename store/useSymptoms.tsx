@@ -21,8 +21,13 @@ const useSymptomsStore = create<IInfoStore>()(
             storage: createJSONStorage(() => AsyncStorage),
             partialize: (state) => ({
                 name: state.name,
-
-              }),
+            }),
+            version: 1,
+            migrate: (persistedState, version) => {
+                // Handle future store shape migrations here
+                // Example: if (version === 0) { ... }
+                return persistedState as IInfoStore;
+            },
         }
     )
 );

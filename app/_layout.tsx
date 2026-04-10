@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Stack, useRouter, useSegments } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -15,7 +15,7 @@ import { AppColors } from '@/constants/theme';
 import { supabase } from '@/config/supabase';
 import { SessionProvider, useSession } from '@/contexts/session';
 import { useColorScheme } from '@/hooks/use-color-scheme';
-import { useSessionKeepAlive } from '@/hooks/useSessionKeepAlive';
+import { checkStorageVersion } from '@/utils/storageVersion';
 import PainStep1 from '@/app/pain-steps/step-1';
 import PhaseScreen from './phase';
 import ShoppingList from './shopping-list';
@@ -53,6 +53,7 @@ const publicScreens = [
   'email-login',
   'email-registration',
   'email-reset-password',
+  'account-deleted',
 ] as const;
 
 const protectedScreens = [
@@ -76,17 +77,15 @@ const protectedScreens = [
   'youtube-screen',
   'physiotherapy',
   'phase',
-  'account-deleted',
 ] as const;
 
 export default function RootLayout() {
-  // return (
-  //   <GestureHandlerRootView style={{ flex: 1 }}>
-  //     <ShoppingListAdd />
-  //   </GestureHandlerRootView>
-  // );
   const colorScheme = useColorScheme();
-  useSessionKeepAlive();
+  const [storageReady, setStorageReady] = useState(false);
+
+  useEffect(() => {
+    checkStorageVersion().finally(() => setStorageReady(true));
+  }, []);
 
   const [fontsLoaded, fontError] = useFonts({
     'ArchivoBlack-Regular': require('@/assets/fonts/ArchivoBlack-Regular.ttf'),
@@ -95,6 +94,8 @@ export default function RootLayout() {
     'Poppins-SemiBold': require('@/assets/fonts/Poppins/Poppins-SemiBold.ttf'),
     'Poppins-Bold': require('@/assets/fonts/Poppins/Poppins-Bold.ttf'),
   });
+
+  if (!storageReady) return null;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -122,7 +123,20 @@ function RootNavigator({ fontsLoaded, fontError }: RootNavigatorProps) {
   const { session, isLoading } = useSession();
   const segments = useSegments();
   const router = useRouter();
-  const [onboardingCompleted, setOnboardingCompleted] = useState<boolean | null>(null);
+
+  const { data: onboardingCompleted = null } = useQuery({
+    queryKey: ['onboarding', session?.user.id],
+    queryFn: async () => {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarding_completed')
+        .eq('id', session!.user.id)
+        .single();
+      return profile?.onboarding_completed ?? false;
+    },
+    enabled: !!session,
+    staleTime: Infinity,
+  });
 
   useEffect(() => {
     if ((fontsLoaded || fontError) && !isLoading) {
@@ -141,29 +155,16 @@ function RootNavigator({ fontsLoaded, fontError }: RootNavigatorProps) {
   }, [session, isLoading, segments]);
 
   useEffect(() => {
-    if (!session || isLoading) return;
+    if (!session || isLoading || onboardingCompleted === null) return;
 
-    const checkOnboarding = async () => {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('onboarding_completed')
-        .eq('id', session.user.id)
-        .single();
+    const inOnboarding = segments[0] === 'onboarding';
+    const inPublicScreen = publicScreens.includes(segments[0] as any);
+    const inPasswordReset = segments[0] === 'new-password';
 
-      const completed = profile?.onboarding_completed ?? false;
-      setOnboardingCompleted(completed);
-
-      const inOnboarding = segments[0] === 'onboarding';
-      const inPublicScreen = publicScreens.includes(segments[0] as any);
-      const inPasswordReset = segments[0] === 'new-password';
-
-      if (!completed && !inOnboarding && !inPublicScreen && !inPasswordReset) {
-        router.replace('/onboarding/step-1' as any);
-      }
-    };
-
-    checkOnboarding();
-  }, [session, isLoading, segments]);
+    if (!onboardingCompleted && !inOnboarding && !inPublicScreen && !inPasswordReset) {
+      router.replace('/onboarding/step-1' as any);
+    }
+  }, [session, isLoading, onboardingCompleted, segments]);
 
   if ((!fontsLoaded && !fontError) || isLoading || (session && onboardingCompleted === null)) {
     return null;

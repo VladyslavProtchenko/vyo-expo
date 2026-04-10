@@ -1,34 +1,6 @@
 import { supabase } from '@/config/supabase';
 import { markManualSignOut } from '@/utils/authSessionEvents';
-import { Session, User } from '@supabase/supabase-js';
-import { useEffect, useState } from 'react';
-
-export const useAuth = () => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const getSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    };
-
-    getSession();
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      setLoading(false);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
-
-  return { user, session, loading };
-};
+import { useState } from 'react';
 
 export const useSignIn = () => {
   const [loading, setLoading] = useState(false);

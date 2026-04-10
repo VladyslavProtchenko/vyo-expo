@@ -1,8 +1,7 @@
 import Avatar from '@/components/Avatar';
+import { useAuthCleanup } from '@/hooks/useAuthCleanup';
 import { useSignOut } from '@/hooks/useSupabaseAuth';
 import { useUpdateAvatar } from '@/hooks/useUpdateAvatar';
-import useSymptomsStore from '@/store/useSymptoms';
-import useUserStore from '@/store/useUserStore';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import { useRouter } from 'expo-router';
@@ -11,8 +10,8 @@ import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'r
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { name, avatarUrl, resetUser } = useUserStore();
-  const resetSymptoms = useSymptomsStore((s) => s.reset);
+  const { name, avatarUrl } = useUserStore();
+  const { clearAllUserData } = useAuthCleanup();
   const { pickAndUploadImage, isProcessing } = useUpdateAvatar();
   const { signOut, loading: isSigningOut } = useSignOut();
 
@@ -108,9 +107,8 @@ export default function ProfileScreen() {
   const handleSignOut = async () => {
     const result = await signOut();
     if (result.success) {
-      resetUser();
-      resetSymptoms();
-      router.replace('/' as any);
+      clearAllUserData();
+      // routing handled by _layout.tsx via onAuthStateChange
     }
   };
 

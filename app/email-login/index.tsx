@@ -9,10 +9,11 @@ import { LoginFormData, loginSchema } from '@/types/validationSchemas';
 import { ArrowRight } from 'lucide-react-native';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import React, { useState } from 'react';
+import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { Dimensions, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, ImageBackground, Platform, StyleSheet, TouchableOpacity, View, Text } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import Toast from 'react-native-toast-message';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -20,16 +21,14 @@ export default function EmailLogin() {
     const router = useRouter();
     const { signIn, loading: isPending } = useSignIn();
     const { refetch: loadUserData } = useLoadUserData();
-    const [errorMessage, setErrorMessage] = useState('');
 
-    const { control, handleSubmit, formState: { errors, isValid } } = useForm<LoginFormData>({
+    const { control, handleSubmit, setError, formState: { errors, isValid } } = useForm<LoginFormData>({
         resolver: zodResolver(loginSchema),
         mode: 'onChange',
         defaultValues: { email: '', password: '' },
     });
 
     const onSubmit = async (data: LoginFormData) => {
-        setErrorMessage('');
         const result = await signIn(data.email, data.password);
 
         if (result.success) {
@@ -46,7 +45,13 @@ export default function EmailLogin() {
 
             router.replace(profile?.onboarding_completed ? '/(tabs)/home' as any : '/onboarding/step-1' as any);
         } else {
-            setErrorMessage(result.error || 'Failed to login');
+            const message = result.error || 'Failed to login';
+            setError('email', { type: 'email-address', message });
+            Toast.show({
+                type: 'error',
+                text1: 'Login failed',
+                text2: message,
+            });
         }
     };
 
@@ -64,12 +69,6 @@ export default function EmailLogin() {
             <View style={[styles.form, styles.formContent]}>
                 <Text style={[typography.h1, styles.title]}>Welcome back, dear</Text>
 
-                {errorMessage ? (
-                    <View style={styles.errorContainer}>
-                        <Text style={styles.errorMessage}>{errorMessage}</Text>
-                    </View>
-                ) : null}
-
                 <View style={styles.inputBox}>
                     <Controller
                         control={control}
@@ -81,12 +80,10 @@ export default function EmailLogin() {
                                 value={value}
                                 onChange={onChange}
                                 onBlur={onBlur}
+                                error={errors.email ? { type: 'email-address', message: errors.email.message || '' } : null}
                             />
                         )}
                     />
-                    {errors.email && (
-                        <Text style={styles.errorText}>{errors.email.message}</Text>
-                    )}
                 </View>
 
                 <View style={styles.inputBox}>
@@ -159,28 +156,9 @@ const styles = StyleSheet.create({
     title: {
         marginBottom: 16,
     },
-    errorContainer: {
-        backgroundColor: AppColors.errorBackground,
-        borderRadius: 8,
-        padding: 12,
-        marginBottom: 16,
-    },
-    errorMessage: {
-        color: AppColors.errorDark,
-        fontSize: 14,
-        fontFamily: 'Poppins',
-        textAlign: 'center',
-    },
     inputBox: {
         position: 'relative',
         marginBottom: 24,
-    },
-    errorText: {
-        position: 'absolute',
-        bottom: -20,
-        color: AppColors.error,
-        fontSize: 12,
-        fontFamily: 'Poppins',
     },
     errorTextPassword: {
         marginTop: 4,

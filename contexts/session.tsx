@@ -21,43 +21,25 @@ export function SessionProvider({ children }: SessionProviderProps) {
   const hadSessionRef = useRef(false);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const loadSession = async () => {
-      try {
-        const { data } = await supabase.auth.getSession();
-
-        if (!isMounted) return;
-
-        const cachedSession = data.session ?? null;
-
-        if (cachedSession) {
-          // Validate session is still active on the server
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, nextSession) => {
+      // INITIAL_SESSION fires once on mount — validate token server-side
+      if (event === 'INITIAL_SESSION') {
+        if (nextSession) {
           const { error } = await supabase.auth.getUser();
           if (error) {
-            // Token is invalid or expired — clear it
+            // Token invalid or revoked — clear it
             await supabase.auth.signOut();
-            if (isMounted) {
-              setSession(null);
-              hadSessionRef.current = false;
-            }
-            return;
+            setSession(null);
+            hadSessionRef.current = false;
+          } else {
+            setSession(nextSession);
+            hadSessionRef.current = true;
           }
+        } else {
+          setSession(null);
+          hadSessionRef.current = false;
         }
-
-        setSession(cachedSession);
-        hadSessionRef.current = !!cachedSession;
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    loadSession();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((_event, nextSession) => {
-      if (!isMounted) {
+        setIsLoading(false);
         return;
       }
 
@@ -67,7 +49,6 @@ export function SessionProvider({ children }: SessionProviderProps) {
 
       setSession(nextSession ?? null);
       hadSessionRef.current = hasSession;
-      setIsLoading(false);
 
       if (shouldShowExpiredToast) {
         Toast.show({
@@ -78,19 +59,10 @@ export function SessionProvider({ children }: SessionProviderProps) {
       }
     });
 
-    return () => {
-      isMounted = false;
-      authListener.subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
-  const value = useMemo(
-    () => ({
-      session,
-      isLoading,
-    }),
-    [session, isLoading]
-  );
+  const value = useMemo(() => ({ session, isLoading }), [session, isLoading]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

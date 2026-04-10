@@ -10,6 +10,7 @@ import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Animated, Dimensions, ImageBackground, Keyboard, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import Toast from 'react-native-toast-message';
 
 export default function EmailRegistration() {
     const router = useRouter();
@@ -20,7 +21,7 @@ export default function EmailRegistration() {
     const imageHeight = useRef(new Animated.Value(screenHeight * 0.25)).current;
     const overlayOpacity = useRef(new Animated.Value(0)).current;
     
-    const { control, handleSubmit, formState: { errors, isValid } } = useForm<RegistrationFormData>({
+    const { control, handleSubmit, setError, formState: { errors, isValid } } = useForm<RegistrationFormData>({
         resolver: zodResolver(registrationSchema),
         mode: 'onChange',
         defaultValues: { 
@@ -88,7 +89,16 @@ export default function EmailRegistration() {
 
             router.replace('/onboarding/step-1' as any);
         } else {
-            console.error('❌ Registration failed:', result.error);
+            const message = result.error || 'Please try again.';
+            const isEmailTaken = message.toLowerCase().includes('already') || message.toLowerCase().includes('registered');
+            if (isEmailTaken) {
+                setError('email', { message: 'This email is already registered.' });
+            }
+            Toast.show({
+                type: 'error',
+                text1: 'Registration failed',
+                text2: message,
+            });
         }
     };
 
@@ -130,7 +140,7 @@ export default function EmailRegistration() {
                                 value={value}
                                 onChange={onChange}
                                 onBlur={onBlur}
-                                error={errors.name ? { type: 'name', message: errors.name.message || 'Name is required' } : null}
+                                error={errors.name ? { type: 'default', message: errors.name.message || 'Name is required' } : null}
                             />
                         )}
                     />
@@ -145,7 +155,7 @@ export default function EmailRegistration() {
                                 value={value}
                                 onChange={onChange}
                                 onBlur={onBlur}
-                                error={errors.email ? { type: 'email', message: errors.email.message || 'Email is required' } : null}
+                                error={errors.email ? { type: 'email-address', message: errors.email.message || 'Email is required' } : null}
                             />
                         )}
                     />

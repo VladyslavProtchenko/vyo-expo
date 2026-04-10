@@ -1,3 +1,4 @@
+import { useQueryClient } from '@tanstack/react-query';
 import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
@@ -18,6 +19,7 @@ import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 export default function Step7() {
   const { t } = useTranslation();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
@@ -85,7 +87,7 @@ export default function Step7() {
           onSuccess: () => {
             updateProfile(
               { onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 7 },
-              { onSuccess: () => router.push('/sync-data' as any) }
+              { onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['onboarding'] }); router.push('/sync-data' as any); } }
             );
           },
         });

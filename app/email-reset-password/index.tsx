@@ -11,6 +11,7 @@ import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Dimensions, ImageBackground, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { KeyboardAvoidingView } from 'react-native-keyboard-controller';
+import Toast from 'react-native-toast-message';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -62,7 +63,9 @@ export default function EmailResetPassword() {
             setUserEmail(data.email);
             setResendTimer(60);
         } else {
-            setSubmitError(result.error || 'Failed to send code. Please try again.');
+            const message = result.error || 'Failed to send code. Please try again.';
+            setSubmitError(message);
+            Toast.show({ type: 'error', text1: 'Failed to send code', text2: message });
         }
     };
 
@@ -76,7 +79,9 @@ export default function EmailResetPassword() {
             setResendTimer(60);
             codeForm.reset();
         } else {
-            setSubmitError(result.error || 'Failed to resend code.');
+            const message = result.error || 'Failed to resend code.';
+            setSubmitError(message);
+            Toast.show({ type: 'error', text1: 'Failed to resend code', text2: message });
         }
     };
 
@@ -87,7 +92,9 @@ export default function EmailResetPassword() {
         if (result.success) {
             router.push({ pathname: '/new-password' as any, params: { email: userEmail } });
         } else {
-            setSubmitError(result.error || 'Invalid code. Please try again.');
+            const message = result.error || 'Invalid code. Please try again.';
+            setSubmitError(message);
+            Toast.show({ type: 'error', text1: 'Invalid code', text2: message });
         }
     };
 
