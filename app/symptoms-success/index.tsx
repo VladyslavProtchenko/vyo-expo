@@ -40,11 +40,6 @@ export default function SymptomsSuccess() {
         <Text style={[typography.p, { textAlign: 'center', marginBottom: 16 }]}>
           Your body speaks — and you're learning to hear it. Keep going!
         </Text>
-        <View style={{ flexDirection: 'row', gap: 16, marginTop: 32 }}>
-          <LottieView ref={fire1Ref} source={require('@/assets/animations/fire.json')} loop style={{ width: 50, height: 50 }} />
-          <LottieView ref={fire2Ref} source={require('@/assets/animations/fire.json')} loop style={{ width: 50, height: 50 }} />
-          <LottieView ref={fire3Ref} source={require('@/assets/animations/fire.json')} loop style={{ width: 50, height: 50 }} />
-        </View>
         <Text style={{ textAlign: 'center', marginBottom: 32 }}>3 days streak</Text>
         <ButtonGradient title="Go Home" onPress={() => router.push('/(tabs)/home' as any)} />
       </View>

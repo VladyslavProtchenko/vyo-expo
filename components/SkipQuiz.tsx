@@ -16,11 +16,11 @@ export default function SkipQuiz({ currentStep }: SkipQuizProps) {
 
   const handleSkip = async () => {
     setOpen(false);
-    
+
     const result = await savePartialQuizData(currentStep);
-    
+
     if (result.success) {
-      router.push('/sync-data' as any);
+      router.push('/(tabs)/home' as any);
     }
   };
 

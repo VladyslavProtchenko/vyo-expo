@@ -58,7 +58,7 @@ export default function PhaseInfo() {
         {isQuizSkipped && <SkipPoster />}
       </View>
 
-      <StoriesList />
+      {!isQuizSkipped && <StoriesList />}
 
       <View style={styles.wrapper}>
         <References />

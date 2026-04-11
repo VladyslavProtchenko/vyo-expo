@@ -76,7 +76,7 @@ const styles = StyleSheet.create({
   text: {
     fontFamily: 'Poppins',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '500',
   },
   blackText: {
     color: '#000000',
