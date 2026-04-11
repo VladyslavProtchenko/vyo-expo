@@ -1,6 +1,6 @@
 import { useRouter } from 'expo-router';
 import { MoveLeft, Settings2, ShoppingCart } from 'lucide-react-native';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CarePlanList from '@/app/(tabs)/components/List';
@@ -136,13 +136,19 @@ export default function Products() {
                 <Text>
                   <B>{supplement.title}</B>
                 </Text>
-                <Text>{supplement.description}</Text>
+                <Text style={styles.supplementDescription}>{supplement.description}</Text>
               </View>
               <Text>{supplement.dosage}</Text>
             </View>
           ))}
         </View>
-        <Text style={{ marginBottom: 16 }}>Dosages are based on evidence-based protocols. Learn more</Text>
+        <Text>Food examples are for illustrative purposes only. Actual nutrient levels can vary based on food origin, freshness, and cooking methods (e.g., boiling or frying may reduce vitamin content). Aim for a diverse diet to ensure optimal intake</Text>
+        <Text
+          style={{ marginBottom: 16, textDecorationLine: 'underline', color: 'blue' }}
+          onPress={() => Linking.openURL('https://ods.od.nih.gov/factsheets/list-all/')}
+        >
+          Learn more
+        </Text>
 
         <References />
 
@@ -163,11 +169,18 @@ const stats = [
 ];
 
 const supplements = [
-  { title: 'Iron', description: 'Breakfast with meal, add vit C', dosage: '15 mg ' },
-  { title: 'Omega-3', description: 'Breakfast with meal', dosage: '10mg' },
+  { title: 'Iron', description: '~150g of beef steak + 1 cup of boiled white beans + a large serving of spinach', dosage: '18 mg' },
+  { title: 'Magnesium', description: '~2 slices of whole-grain bread + 1/2 cup of pumpkin seeds', dosage: '310 mg' },
+  { title: 'Vitamin B1 (Thiamine)', description: '~1/2 cup of sunflower seeds or a serving of green peas', dosage: '1,1 mg' },
+  { title: 'Vitamin B2 (Riboflavin)', description: '~200g of grilled mushrooms + 150g of cooked spinach', dosage: '1,1 mg' },
+  { title: 'Vitamin B6 (Pyridoxine)', description: '~1 medium banana + 150g of roasted chicken breast', dosage: '1,3 mg' },
+  { title: 'Vitamin B9 (Folic acid)', description: '~1 cup of cooked asparagus and a portion of spinach', dosage: '400 mcg DFE' },
+
+  { title: 'Vitamin B12 (Cobalamin)', description: '~1 salmon fillet or 2 large eggs', dosage: '2,4 mcg' },
+  { title: 'Omega-3 (EPA/DHA)', description: '~30g of walnuts or a small piece of mackerel', dosage: '500 mg' },
+
   { title: 'Potassium', description: '30 min before meal', dosage: '200mg' },
   { title: 'B vitamins', description: '30 min before meal', dosage: '10mg' },
-  { title: 'Magnesium', description: '30 min before sleep', dosage: '30mg' },
 ];
 
 const styles = StyleSheet.create({
@@ -175,6 +188,12 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
     backgroundColor: 'white',
+  },
+  supplementDescription: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: 12,
+    lineHeight: 12 * 1.4,
+    color: '#676767',
   },
   disclaimerBox: {
     padding: 16,

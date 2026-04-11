@@ -12,7 +12,11 @@
       "distribution": "internal"
     },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "SENTRY_ORG": "vladyslav-protchenko-c0",
+        "SENTRY_PROJECT": "vyo_health"
+      }
     }
   },
   "submit": {

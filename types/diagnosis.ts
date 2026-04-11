@@ -26,11 +26,13 @@ export type AdditionalSymptomType =
   | 'Hirsutism*'
   | 'Androgenic alopecia*'
   | 'Acne'
+  | 'Acanthosis nigricans*'
 
 export const ADDITIONAL_SYMPTOM_LABELS: AdditionalSymptomType[] = [
   'Hirsutism*',
   'Androgenic alopecia*',
   'Acne',
+  'Acanthosis nigricans*',
 ];
 
 export type SymptomType =
