@@ -2,6 +2,7 @@ import { typography } from '@/constants/typography';
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import dayjs, { Dayjs } from 'dayjs';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { Modal, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -53,7 +54,7 @@ export default ({
           setTempDate(value ? dayjs(value).toDate() : new Date());
           setShow(true);
         }}
-        style={styles.trigger}
+        style={[styles.trigger, !value && styles.triggerBorder]}
       >
         <Text style={[typography.p, value ? styles.active_title : styles.title]}>{title}</Text>
         {value ? (
@@ -63,9 +64,16 @@ export default ({
         ) : (
           <View></View>
         )}
-        
         <Octicons style={styles.icon} name="calendar" size={24} color="black" />
       </Pressable>
+      {value && (
+        <LinearGradient
+          colors={['#FDFFA2', '#B4ECD0']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.gradientBorder}
+        />
+      )}
 
       <Modal visible={show} transparent animationType="fade">
         <Pressable style={styles.modalOverlay} onPress={onCancel}>
@@ -100,13 +108,19 @@ export default ({
 const styles = StyleSheet.create({
   trigger: {
     width: '100%',
-    borderBottomWidth: 1,
-    borderBottomColor: '#000000',
     padding: 16,
     paddingBottom: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     position: 'relative',
+  },
+  triggerBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+  },
+  gradientBorder: {
+    height: 2,
+    width: '100%',
   },
   modalOverlay: {
     flex: 1,

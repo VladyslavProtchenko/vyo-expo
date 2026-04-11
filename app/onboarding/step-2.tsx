@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Keyboard, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
 
 export default function Step2() {
@@ -27,6 +27,14 @@ export default function Step2() {
     unitSystem: 'metric' as 'metric' | 'imperial',
   });
   const [formData, setFormData] = useState(initialData.current);
+  const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    const sub = Keyboard.addListener('keyboardDidShow', () => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    });
+    return () => sub.remove();
+  }, []);
 
   useEffect(() => {
     if (data && !initialized.current) {
@@ -89,8 +97,8 @@ export default function Step2() {
         goBack={goBack}
         currentStep={2}
       />
-      <KeyboardAwareScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer} bottomOffset={120}>
-        <View style={styles.content}>
+      <KeyboardAwareScrollView ref={scrollRef} style={styles.scrollView} contentContainerStyle={styles.contentContainer} bottomOffset={16}>
+        <View style={styles.form}>
           <Number number="2" />
           <Text style={[typography.h1, styles.title]}>{t('onboarding.step2.title')}</Text>
           <Text style={typography.p}>{t('onboarding.step2.description')}</Text>
@@ -184,7 +192,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 16,
   },
-  content: {
+  form: {
     flex: 1,
   },
   title: {
@@ -234,7 +242,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingTop: 16,
-    paddingBottom: 36,
+    paddingBottom: 16,
   },
 });
 

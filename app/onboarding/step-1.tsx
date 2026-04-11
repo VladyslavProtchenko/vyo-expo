@@ -13,8 +13,9 @@ import dayjs from 'dayjs';
 import { useRouter } from 'expo-router';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Keyboard, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-controller';
+
 export default function Step1() {
   const { t } = useTranslation();
   const router = useRouter();
@@ -29,6 +30,14 @@ export default function Step1() {
     cycle: 28,
   });
   const [formData, setFormData] = useState(initialData.current);
+  const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    const sub = Keyboard.addListener('keyboardDidShow', () => {
+      scrollRef.current?.scrollToEnd({ animated: true });
+    });
+    return () => sub.remove();
+  }, []);
 
   useEffect(() => {
     if (data && !initialized.current) {
@@ -101,55 +110,57 @@ export default function Step1() {
         goBack={goBack}
         showBack={false}
       />
-      <KeyboardAwareScrollView style={styles.scrollView} contentContainerStyle={styles.contentContainer} bottomOffset={120}>
-        <View style={styles.content}>
-        <Number number="1" />
-        <Text style={[typography.h1, styles.title]}>{t('onboarding.step1.title')}</Text>
-        <Text style={typography.subtitle}>{t('onboarding.step1.age_subtitle')}</Text>
-        <Text style={typography.p}>{t('onboarding.step1.age_description')}</Text>
+      <KeyboardAwareScrollView
+        ref={scrollRef}
+        style={styles.scrollView}
+        contentContainerStyle={styles.contentContainer}
+        bottomOffset={16}
+      >
+        <View style={styles.form}>
+          <Number number="1" />
+          <Text style={[typography.h1, styles.title]}>{t('onboarding.step1.title')}</Text>
+          <Text style={typography.subtitle}>{t('onboarding.step1.age_subtitle')}</Text>
+          <Text style={typography.p}>{t('onboarding.step1.age_description')}</Text>
 
-        <View style={styles.calendarSpacing}>
-          <Input
-            type="numeric"
-            value={formData.age > 0 ? String(formData.age) : ''}
-            onChange={(value: string) => {
-              const numericValue = value.replace(/[^0-9]/g, '');
-              setFormData(prev => ({ ...prev, age: numericValue ? parseInt(numericValue, 10) : 0 }));
-            }}
-            placeholder={t('onboarding.step1.age_placeholder')}
-          />
-        </View>
+          <View style={styles.calendarSpacing}>
+            <Input
+              type="numeric"
+              value={formData.age > 0 ? String(formData.age) : ''}
+              onChange={(value: string) => {
+                const numericValue = value.replace(/[^0-9]/g, '');
+                setFormData(prev => ({ ...prev, age: numericValue ? parseInt(numericValue, 10) : 0 }));
+              }}
+              placeholder={t('onboarding.step1.age_placeholder')}
+            />
+          </View>
 
-        <Text style={typography.subtitle}>{t('onboarding.step1.cycle_subtitle')}</Text>
+          <Text style={typography.subtitle}>{t('onboarding.step1.cycle_subtitle')}</Text>
 
-        <View style={styles.calendarSpacing}>
-          <Calendar
-            value={formData.menstruationDate}
-            setValue={(value) => setFormData(prev => ({ ...prev, menstruationDate: value }))}
-            title={t('onboarding.step1.menstruation_start')}
-          />
-        </View>
+          <View style={styles.calendarSpacing}>
+            <Calendar
+              value={formData.menstruationDate}
+              setValue={(value) => setFormData(prev => ({ ...prev, menstruationDate: value }))}
+              title={t('onboarding.step1.menstruation_start')}
+            />
+          </View>
 
-        <View style={styles.selectSpacing}>
-          <Select
-            title={t('onboarding.step1.menstruation_duration')}
-            value={formData.menstrDuration}
-            setValue={(value) => setFormData(prev => ({ ...prev, menstrDuration: value }))}
-            values={Array.from({ length: 16 }, (_, i) => i + 1)}
-          />
-        </View>
+          <View style={styles.selectSpacing}>
+            <Select
+              title={t('onboarding.step1.menstruation_duration')}
+              value={formData.menstrDuration}
+              setValue={(value) => setFormData(prev => ({ ...prev, menstrDuration: value }))}
+              values={Array.from({ length: 16 }, (_, i) => i + 1)}
+            />
+          </View>
 
-        <View style={styles.selectSpacing}>
-          <Input
-            type="numeric"
-            value={formData.cycle > 0 ? String(formData.cycle) : ''}
-            onChange={(value: string) => {
-              const numericValue = value.replace(/[^0-9]/g, '');
-              setFormData(prev => ({ ...prev, cycle: numericValue ? parseInt(numericValue, 10) : 0 }));
-            }}
-            placeholder={t('onboarding.step1.cycle_duration_placeholder')}
-          />
-        </View>
+          <View style={styles.selectSpacing}>
+            <Select
+              title={t('onboarding.step1.cycle_duration_placeholder')}
+              value={formData.cycle > 0 ? formData.cycle : null}
+              setValue={(value) => setFormData(prev => ({ ...prev, cycle: value }))}
+              values={Array.from({ length: 25 }, (_, i) => i + 21)}
+            />
+          </View>
         </View>
 
         <View style={styles.buttonContainer}>
@@ -158,7 +169,7 @@ export default function Step1() {
             title={isUpdatingProfile || isUpdatingMedical ? t('onboarding.step1.saving') : t('onboarding.step1.next')}
             icon={(
               <MaterialIcons
-                color={isFormInvalid ? '#999999' : '#000000'}
+                color={isFormInvalid || isUpdatingProfile || isUpdatingMedical ? '#999999' : '#000000'}
                 name="arrow-forward"
                 size={26}
               />
@@ -185,7 +196,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 16,
   },
-  content: {
+  form: {
     flex: 1,
   },
   title: {
@@ -202,7 +213,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingTop: 16,
-    paddingBottom: 36,
+    paddingBottom: 16,
   },
   loaderContainer: {
     flex: 1,

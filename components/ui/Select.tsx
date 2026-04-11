@@ -1,6 +1,7 @@
 import { typography } from '@/constants/typography';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Picker } from '@react-native-picker/picker';
+import { LinearGradient } from 'expo-linear-gradient';
 import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -21,11 +22,19 @@ export default function Select({
 
   return (
     <View>
-      <Pressable onPress={() => setOpen(true)} style={styles.trigger}>
+      <Pressable onPress={() => setOpen(true)} style={[styles.trigger, !value && styles.triggerBorder]}>
         <Text style={[typography.p, value ? styles.active_title : styles.title]}>{title}</Text>
         {value ? <Text style={[typography.p, styles.value]}>{value}</Text> : <View></View>}
         <MaterialIcons style={styles.icon} name="keyboard-arrow-down" size={24} color="black" />
       </Pressable>
+      {value && (
+        <LinearGradient
+          colors={['#FDFFA2', '#B4ECD0']}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={styles.gradientBorder}
+        />
+      )}
 
       <Modal visible={open} transparent animationType="fade">
         <Pressable style={styles.modalOverlay} onPress={() => setOpen(false)}>
@@ -55,13 +64,19 @@ export default function Select({
 const styles = StyleSheet.create({
   trigger: {
     width: '100%',
-    borderBottomWidth: 1,
-    borderBottomColor: '#000000',
     padding: 16,
     paddingBottom: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     position: 'relative',
+  },
+  triggerBorder: {
+    borderBottomWidth: 1,
+    borderBottomColor: '#000000',
+  },
+  gradientBorder: {
+    height: 2,
+    width: '100%',
   },
   modalOverlay: {
     flex: 1,
