@@ -32,14 +32,14 @@ export default function SymptomsPage() {
         <View style={{ gap: 16, marginBottom: 100 }}>
           <View style={styles.card}>
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '600' }}>Period</Text>
+              <Text style={styles.cardTitle}>Period</Text>
               <CustomSwitch value={isPeriod} onValueChange={setIsPeriod} />
             </View>
           </View>
           <PainCard />
 
           <View style={styles.card}>
-            <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '600' }}>I am feeling today:</Text>
+            <Text style={styles.cardTitle}>I am feeling today:</Text>
             <View style={styles.tagsContainer}>
               {feelingItems.map((item) => {
                 const isActive = feeling === item;
@@ -53,7 +53,7 @@ export default function SymptomsPage() {
           </View>
 
           <View style={styles.card}>
-            <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '600' }}>Vaginal discharge:</Text>
+            <Text style={styles.cardTitle}>Vaginal discharge:</Text>
             <View style={styles.tagsContainer}>
               {dischargeItems.map((item) => {
                 const isActive = discharge === item;
@@ -67,7 +67,7 @@ export default function SymptomsPage() {
           </View>
 
           <View style={styles.card}>
-            <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '600' }}>I have energy today:</Text>
+            <Text style={styles.cardTitle}>I have energy today:</Text>
             <View style={styles.tagsContainer}>
               {energyItems.map((item) => {
                 const isActive = energy === item;
@@ -90,11 +90,17 @@ export default function SymptomsPage() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#F3F3F3',
   },
   scrollView: {
     paddingVertical: 16,
     paddingHorizontal: 16,
+  },
+  cardTitle: {
+    fontFamily: 'Poppins',
+    fontSize: 16,
+    fontWeight: '600',
+    maxWidth: '80%',
   },
   card: {
     padding: 16,

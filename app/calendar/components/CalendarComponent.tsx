@@ -91,15 +91,6 @@ export default function CalendarComponent() {
       }
     }
 
-    // Round the right edge on today and left edge on tomorrow
-    if (marked[todayStr]) {
-      marked[todayStr] = { ...marked[todayStr], endingDay: true };
-    }
-    const tomorrowStr = today.add(1, 'day').format('YYYY-MM-DD');
-    if (marked[tomorrowStr]) {
-      marked[tomorrowStr] = { ...marked[tomorrowStr], startingDay: true };
-    }
-
     return marked;
   }, [startMenstruation, cycleDuration, menstruationDuration, todayStr]);
 
@@ -158,6 +149,14 @@ export default function CalendarComponent() {
             text: {
               color: '#000',
               fontSize: 18,
+            },
+            todayText: {
+              color: '#fff',
+              fontSize: 18,
+            },
+            today: {
+              borderRadius: 17,
+              transform: [{ scale: 1.1 }],
             },
           },
         }}
