@@ -6,6 +6,7 @@ import useUserStore from '@/store/useUserStore';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Feather from '@expo/vector-icons/Feather';
 import { useRouter } from 'expo-router';
+import FeedbackCard from '@/app/profile/components/FeedbackCard';
 import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
   
 
@@ -144,7 +145,9 @@ export default function ProfileScreen() {
 
         <View style={styles.menuContainer}>
           {menuGroups.map((group, groupIndex) => (
-            <View key={groupIndex} style={styles.menuCard}>
+            <View key={groupIndex}>
+              {groupIndex === 2 && <FeedbackCard />}
+              <View style={styles.menuCard}>
               {group.map((item, itemIndex) => (
                 <TouchableOpacity
                   key={itemIndex}
@@ -178,6 +181,7 @@ export default function ProfileScreen() {
                   <Ionicons name="chevron-forward" size={24} color="#000" />
                 </TouchableOpacity>
               ))}
+              </View>
             </View>
           ))}
         </View>
