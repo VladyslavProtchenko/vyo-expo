@@ -8,12 +8,14 @@ import YoutubePlayer, { getYoutubeMeta } from "react-native-youtube-iframe";
 const { width, height } = Dimensions.get("window");
 
 interface YoutubeCardProps {
+  videoId?: string;
   playButtonPosition?: "center" | "bottom-right";
   playButtonSize?: number;
   style?: StyleProp<ViewStyle>;
 }
 
-export default function YoutubeCard({ 
+export default function YoutubeCard({
+  videoId = "W0KWvOsgpYk",
   playButtonPosition = "center",
   playButtonSize = 28,
   style,
@@ -22,7 +24,6 @@ export default function YoutubeCard({
   const [videoTitle, setVideoTitle] = useState<string>("");
   const [videoDuration, setVideoDuration] = useState<string>("");
   const [loading, setLoading] = useState(true);
-  const videoId = "k_KmLXXPb50";
   const playerRef = useRef<any>(null);
 
   // Calculate video dimensions to center it on screen
@@ -84,9 +85,7 @@ export default function YoutubeCard({
         ]}
       >
         <Image
-          source={{
-            uri: `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
-          }}
+          source={require('@/assets/images/video-placeholder.webp')}
           style={{ width: "100%", height: "100%" }}
           resizeMode="cover"
         />

@@ -38,9 +38,11 @@ export default function SyncData() {
               icon={(<MaterialIcons color={'#000000'} name="arrow-forward" size={26} />)}
             />
             <ButtonRounded
-              type="shadow"
-              title="I accept"
+              type="black"
+              title="Skip"
               onPress={handleAccept}
+              className={{ backgroundColor: 'transparent', borderWidth: 0 }}
+              textStyle={{ color: '#fff' }}
             />
           </View>
         </View>

@@ -23,10 +23,7 @@ Sentry.init({
 import { SessionProvider, useSession } from '@/contexts/session';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 import { checkStorageVersion } from '@/utils/storageVersion';
-import PainStep1 from '@/app/pain-steps/step-1';
-import PhaseScreen from './phase';
-import ShoppingList from './shopping-list';
-import ShoppingListAdd from './shopping-list/add';
+
 SplashScreen.preventAutoHideAsync();
 const queryClient = new QueryClient();
 
@@ -77,6 +74,7 @@ const protectedScreens = [
   'video-screen',
   'article-screen',
   'body-care',
+  'body-care-article',
   'category-page',
   'stress-management',
   'products',
@@ -89,7 +87,7 @@ const protectedScreens = [
 function RootLayout() {
   const colorScheme = useColorScheme();
   const [storageReady, setStorageReady] = useState(false);
-
+  // return <SyncData />
   useEffect(() => {
     checkStorageVersion().finally(() => setStorageReady(true));
   }, []);

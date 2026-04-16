@@ -1,6 +1,24 @@
 import YoutubeCard from '@/components/YoutubeCard';
 import { ScrollView, Text, View } from 'react-native';
 
+const items = [
+  {
+    title: 'Pelvic floor: Awareness',
+    time: 15,
+    image: require('@/assets/images/body-care/body-care-1.webp'),
+  },
+  {
+    title: 'Pelvic floor: Awareness',
+    time: 5,
+    image: require('@/assets/images/body-care/body-care-2.webp'),
+  },
+  {
+    title: 'Pelvic floor: Awareness',
+    time: 15,
+    image: require('@/assets/images/body-care/body-care-3.webp'),
+  },
+]
+
 export default function RecommendedVideos() {
   return (
     <>

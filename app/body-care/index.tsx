@@ -1,4 +1,4 @@
-import RecommendedVideos from '@/app/body-care/components/RecommendedVideos';
+import Recommendations from '@/app/body-care/components/Recommendations';
 import SkipPoster from '@/app/phase/components/SkipPoster';
 import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'expo-router';
@@ -29,7 +29,7 @@ export default function BodyCare() {
         <Text style={{ fontFamily: 'Poppins', fontSize: 16, fontWeight: '600', marginLeft: 12 }}>Body care</Text>
       </TouchableOpacity>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {isQuizSkipped ? <SkipPoster /> : <RecommendedVideos />}
+        {isQuizSkipped ? <SkipPoster /> : <Recommendations />}
         <Text style={{ fontFamily: 'ArchivoBlack-Regular', fontSize: 16, marginBottom: 12, marginTop: 24 }}>All categories</Text>
 
         <View>

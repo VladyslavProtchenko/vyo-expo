@@ -2,7 +2,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useVideoPlayer, VideoView } from 'expo-video';
 import { Play } from 'lucide-react-native';
 import React, { useRef, useState } from 'react';
-import { StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Image, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
 
 interface VideoCardProps {
   videoUrl?: string;
@@ -84,14 +84,10 @@ export default function VideoCard({ videoUrl, videoSource, title, style }: Video
       onPress={handlePress}
       activeOpacity={0.9}
     >
-      <VideoView
-        ref={videoRef}
-        player={player}
+      <Image
+        source={require('@/assets/images/video-placeholder.webp')}
         style={styles.video}
-        contentFit="cover"
-        nativeControls={true}
-        // allowsFullscreen={true}
-        allowsPictureInPicture={false}
+        resizeMode="cover"
       />
       <View style={styles.overlay}>
         <LinearGradient

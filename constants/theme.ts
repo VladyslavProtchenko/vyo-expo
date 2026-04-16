@@ -42,6 +42,7 @@ export const AppColors = {
   // Text
   textSecondary: '#404040',
   textMuted: '#999999',
+  gray: '#828282',
 
   // Error states
   error: '#EF4444',
