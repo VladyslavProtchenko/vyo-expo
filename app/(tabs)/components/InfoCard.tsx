@@ -13,7 +13,7 @@ export default function InfoCard({
       <View style={styles.card}>
         <View style={styles.noteHeader}>
           <View style={styles.titleBox}>
-            <Image source={require('@/assets/images/icons/home_note_icon1.png')} style={styles.cardIcon} />
+            <Image source={require('@/assets/images/icons/home_note_icon1.webp')} style={styles.cardIcon} />
             <Text style={[typography.p, styles.title]}>{title}</Text>
             <Pressable onPress={onClose}>
               <MaterialIcons name="close" size={24} color="black" style={styles.closeIcon} />

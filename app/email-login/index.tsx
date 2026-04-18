@@ -61,7 +61,7 @@ export default function EmailLogin() {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <ImageBackground
-                source={require('@/assets/images/login.png')}
+                source={require('@/assets/images/login.webp')}
                 resizeMode="cover"
                 style={styles.image}
             />

@@ -1,4 +1,5 @@
 import { Image, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 
 const description = "This isn\u2019t a generic diet.\nIt\u2019s an evidence-based personal care plan built around your cycle phase, symptoms, and diagnoses.";
@@ -10,7 +11,7 @@ export default function Slide2() {
       <View style={styles.content}>
         <View style={styles.imageWrapper}>
           <Image
-            source={require('@/assets/images/care-plan/how-2.webp')}
+            source={{ uri: `${STORAGE_URL}/content/care-plan/how-2.webp` }}
             style={styles.image}
             resizeMode="cover"
           />

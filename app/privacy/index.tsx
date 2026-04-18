@@ -46,7 +46,7 @@ export default function Privacy() {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('@/assets/images/flower.png')}
+        source={require('@/assets/images/flower.webp')}
         resizeMode="cover"
         style={styles.backgroundImage}
       >

@@ -3,6 +3,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import { useTranslation } from 'react-i18next';
 import { BlurView } from 'expo-blur';
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -28,7 +29,7 @@ function Slide1() {
         </Text>
       </View>
 
-      <Image source={require('@/assets/images/phases/figure-1.webp')} style={s1.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} resizeMode="contain" />
     </View>
   );
 }
@@ -157,7 +158,7 @@ function Slide4() {
         <Text style={s4.body}>{t('nutrition_stories_endo.ovulation.slide4.para1')}</Text>
 
         <View style={s4.row}>
-          <Image source={require('@/assets/images/phases/food-6.webp')} style={s4.photo} resizeMode="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-6.webp` }} style={s4.photo} resizeMode="cover" />
           <View style={s4.tip}>
             <Text style={s4.emoji}>🌿</Text>
             <Text style={s4.tipText}>{t('nutrition_stories_endo.ovulation.slide4.tip1')}</Text>

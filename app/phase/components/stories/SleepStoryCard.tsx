@@ -7,6 +7,7 @@ import { OVULATION_STORIES } from './sleep/SlidesOvulation';
 import { FOLICULAR_STORIES } from './sleep/SlidesFollicular';
 import { LUTEAL_STORIES } from './sleep/SlidesLuteal';
 import { CurrentPhaseInfo, PhaseName } from '@/store/phase';
+import { STORAGE_URL } from '@/config/supabase'
 
 const STORIES_BY_PHASE: Record<PhaseName, any[]> = {
   follicular: FOLICULAR_STORIES,
@@ -24,7 +25,7 @@ export default function SleepStoryCard() {
     <>
       <TouchableOpacity onPress={() => setVisible(true)} activeOpacity={0.9}>
         <ImageBackground
-          source={require('@/assets/images/phases/stories-3.webp')}
+          source={{ uri: `${STORAGE_URL}/content/phases/stories-3.webp` }}
           style={styles.card}
           imageStyle={styles.cardImage}
         >

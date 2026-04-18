@@ -6,6 +6,7 @@ import Slide2 from './slides/Slide2';
 import Slide3 from './slides/Slide3';
 import Slide4 from './slides/Slide4';
 import Slide5 from './slides/Slide5';
+import { STORAGE_URL } from '@/config/supabase'
 
 const STORIES: Story[] = [
   { id: 1, render: () => <Slide1 /> },
@@ -25,7 +26,7 @@ export default function HowToImplementCard({ isGray }: { isGray?: boolean }) {
         onPress={() => setVisible(true)}
         activeOpacity={0.7}
       >
-        <Image source={require('@/assets/images/care-plan/info-2.webp')} style={styles.icon} />
+        <Image source={{ uri: `${STORAGE_URL}/content/care-plan/info-2.webp` }} style={styles.icon} />
         <View style={styles.bottom}>
           <Text style={styles.title}>How to implement?</Text>
           <Text style={styles.description}>Step-by-step implementation of your plan</Text>

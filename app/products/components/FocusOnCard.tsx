@@ -8,10 +8,10 @@ export default function FocusOnCard() {
   const nutrients = useProductsStore((state) => state.productsInfo[phaseName as keyof typeof state.productsInfo].nutrients);
 
   const phaseIcon = {
-    menstrual: require('@/assets/images/icons/pi1.png'),
-    follicular: require('@/assets/images/icons/pi2.png'),
-    ovulation: require('@/assets/images/icons/pi3.png'),
-    luteal: require('@/assets/images/icons/pi4.png'),
+    menstrual: require('@/assets/images/icons/pi1.webp'),
+    follicular: require('@/assets/images/icons/pi2.webp'),
+    ovulation: require('@/assets/images/icons/pi3.webp'),
+    luteal: require('@/assets/images/icons/pi4.webp'),
   };
 
   return (

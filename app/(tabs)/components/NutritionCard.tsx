@@ -52,7 +52,7 @@ export default function NutritionCard({
           </View>
         </View>
         <Image 
-          source={require('@/assets/images/health.png')} 
+          source={require('@/assets/images/health.webp')} 
           style={{ height: 80, width: 80, borderRadius: 12 }} 
         />
       </TouchableOpacity>

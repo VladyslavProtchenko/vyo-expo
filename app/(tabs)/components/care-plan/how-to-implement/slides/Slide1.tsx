@@ -1,4 +1,5 @@
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 const { width } = Dimensions.get('screen');
 
@@ -6,7 +7,7 @@ export default function Slide1() {
   return (
     <View style={styles.container}>
       <Image
-        source={require('@/assets/images/care-plan/how-1.webp')}
+        source={{ uri: `${STORAGE_URL}/content/care-plan/how-1.webp` }}
         style={styles.image}
         resizeMode="cover"
       />

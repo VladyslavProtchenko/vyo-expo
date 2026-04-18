@@ -2,6 +2,7 @@ import { Story } from '@/app/(tabs)/components/StoriesModal';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -11,7 +12,7 @@ function Slide1() {
   const { t } = useTranslation();
   return (
     <View style={s1.container}>
-      <Image source={require('@/assets/images/phases/figure-2.webp')} style={s1.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-2.webp` }} style={s1.figure} resizeMode="contain" />
       <View style={s1.content}>
         <Text style={s1.title}>{t('exercise_stories.menstrual.slide1.title')}</Text>
 
@@ -37,13 +38,13 @@ const s1 = StyleSheet.create({
 
 // ─── Slide 2 ───────────────────────────────────────────────────────────────
 
-type Practice = { labelKey: string; image: ImageSourcePropType; labelSide: 'left' | 'right' };
+type Practice = { labelKey: string; image: string; labelSide: 'left' | 'right' };
 
 const PRACTICES: Practice[] = [
-  { labelKey: 'exercise_stories.menstrual.slide2.practice1', image: require('@/assets/images/phases/stress-m-3-1.webp'), labelSide: 'left' },
-  { labelKey: 'exercise_stories.menstrual.slide2.practice2', image: require('@/assets/images/phases/stress-m-3-2.webp'), labelSide: 'right' },
-  { labelKey: 'exercise_stories.menstrual.slide2.practice3', image: require('@/assets/images/phases/sport-3-3.webp'), labelSide: 'left' },
-  { labelKey: 'exercise_stories.menstrual.slide2.practice4', image: require('@/assets/images/phases/sport-3-4.webp'), labelSide: 'right' },
+  { labelKey: 'exercise_stories.menstrual.slide2.practice1', image: `${STORAGE_URL}/content/phases/stress-m-3-1.webp`, labelSide: 'left' },
+  { labelKey: 'exercise_stories.menstrual.slide2.practice2', image: `${STORAGE_URL}/content/phases/stress-m-3-2.webp`, labelSide: 'right' },
+  { labelKey: 'exercise_stories.menstrual.slide2.practice3', image: `${STORAGE_URL}/content/phases/sport-3-3.webp`, labelSide: 'left' },
+  { labelKey: 'exercise_stories.menstrual.slide2.practice4', image: `${STORAGE_URL}/content/phases/sport-3-4.webp`, labelSide: 'right' },
 ];
 
 function Slide2() {
@@ -59,7 +60,7 @@ function Slide2() {
                 {item.labelSide === 'left' && <Text style={[s2.label, s2.labelRight]}>{t(item.labelKey)}</Text>}
               </View>
               <View style={s2.col}>
-                <Image source={item.image} style={s2.photo} resizeMode="cover" />
+                <Image source={{ uri: item.image }} style={s2.photo} resizeMode="cover" />
               </View>
               <View style={s2.col}>
                 {item.labelSide === 'right' && <Text style={[s2.label, s2.labelLeft]}>{t(item.labelKey)}</Text>}
@@ -91,7 +92,7 @@ function Slide3() {
   const { t } = useTranslation();
   return (
     <View style={s3.container}>
-      <Image source={require('@/assets/images/phases/figure-2.webp')} style={s3.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-2.webp` }} style={s3.figure} resizeMode="contain" />
       <View style={s3.content}>
         <Text style={s3.title}>{t('exercise_stories.menstrual.slide3.title')}</Text>
 

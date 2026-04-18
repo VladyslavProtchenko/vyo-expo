@@ -3,6 +3,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import { useTranslation } from 'react-i18next';
 import { BlurView } from 'expo-blur';
 import { Dimensions, Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -30,7 +31,7 @@ function Slide1() {
         </Text>
       </View>
 
-      <Image source={require('@/assets/images/phases/figure-1.webp')} style={s1.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} resizeMode="contain" />
     </View>
   );
 }
@@ -135,7 +136,7 @@ function Slide4() {
       <Text style={s4.title}>{t('nutrition_stories.menstrual.slide4.title')}</Text>
 
       <View style={s4.row}>
-        <Image source={require('@/assets/images/phases/food-1.webp')} style={s4.photo} resizeMode="cover" />
+        <Image source={{ uri: `${STORAGE_URL}/content/phases/food-1.webp` }} style={s4.photo} resizeMode="cover" />
         <View style={s4.tipRight}>
           <Text style={s4.emoji}>🌿</Text>
           <Text style={s4.tipText}>{t('nutrition_stories.menstrual.slide4.tip1')}</Text>
@@ -147,7 +148,7 @@ function Slide4() {
           <Text style={s4.emoji}>🌿</Text>
           <Text style={s4.tipText}>{t('nutrition_stories.menstrual.slide4.tip2')}</Text>
         </View>
-        <Image source={require('@/assets/images/phases/food-2.webp')} style={s4.photo} resizeMode="cover" />
+        <Image source={{ uri: `${STORAGE_URL}/content/phases/food-2.webp` }} style={s4.photo} resizeMode="cover" />
       </View>
 
       <BlurView intensity={30} tint="light" style={s4.note}>
@@ -184,11 +185,11 @@ function Slide5() {
             <Text style={s5.emoji}>🌿</Text>
             <Text style={s5.tipText}>{t('nutrition_stories.menstrual.slide5.tip1')}</Text>
           </View>
-          <Image source={require('@/assets/images/phases/food-3.webp')} style={s5.photo} resizeMode="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-3.webp` }} style={s5.photo} resizeMode="cover" />
         </View>
 
         <View style={s5.row}>
-          <Image source={require('@/assets/images/phases/food-4.webp')} style={s5.photo} resizeMode="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-4.webp` }} style={s5.photo} resizeMode="cover" />
           <View style={s5.tipRight}>
             <Text style={s5.emoji}>🌿</Text>
             <Text style={s5.tipText}>{t('nutrition_stories.menstrual.slide5.tip2')}</Text>
@@ -196,7 +197,7 @@ function Slide5() {
         </View>
 
         <View style={s5.article}>
-          <Image source={require('@/assets/images/phases/food-mini.webp')} style={s5.articleImage} resizeMode="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-mini.webp` }} style={s5.articleImage} resizeMode="cover" />
           <View style={s5.articleContent}>
             <Text style={s5.articleTitle}>{t('nutrition_stories.menstrual.slide5.article_title')}</Text>
             <Text style={s5.articleTime}>{t('nutrition_stories.menstrual.slide5.article_time')}</Text>

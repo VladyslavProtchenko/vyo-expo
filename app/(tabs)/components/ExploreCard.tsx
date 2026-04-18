@@ -45,7 +45,7 @@ export default function ExploreCard() {
           <View>
             <Text style={[typography.p, styles.inTitle]}>You're in</Text>  
             <View style={styles.titleBox}>
-              <Image source={phase.icon} style={styles.titleBoxIcon} />
+              <Image source={{ uri: phase.icon }} style={styles.titleBoxIcon} />
               <Text style={[typography.p, styles.noteCardTitle]}>{phase.name}</Text>  
             </View>
           </View>

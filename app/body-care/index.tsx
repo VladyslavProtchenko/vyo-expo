@@ -5,18 +5,19 @@ import { useRouter } from 'expo-router';
 import { ChevronRight, MoveLeft } from 'lucide-react-native';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { STORAGE_URL } from '@/config/supabase'
 
 export default function BodyCare() {
   const router = useRouter();
   const { isQuizSkipped } = useUserStore();
 
   const categories = [
-    { title: 'Pilates', count: 13, image: require('@/assets/images/body-care/category-1.webp') },
-    { title: 'Yoga', count: 13, image: require('@/assets/images/body-care/category-2.webp') },
-    { title: 'Fitness at home', count: 13, image: require('@/assets/images/body-care/category-3.webp') },
-    { title: 'Pelvic excersises', count: 13, image: require('@/assets/images/body-care/category-4.webp') },
-    { title: 'Pain relief', count: 13, image: require('@/assets/images/body-care/category-5.webp') },
-    { title: 'Posture workouts', count: 13, image: require('@/assets/images/body-care/category-6.webp') },
+    { title: 'Pilates', count: 13, image: `${STORAGE_URL}/content/body-care/category-1.webp` },
+    { title: 'Yoga', count: 13, image: `${STORAGE_URL}/content/body-care/category-2.webp` },
+    { title: 'Fitness at home', count: 13, image: `${STORAGE_URL}/content/body-care/category-3.webp` },
+    { title: 'Pelvic excersises', count: 13, image: `${STORAGE_URL}/content/body-care/category-4.webp` },
+    { title: 'Pain relief', count: 13, image: `${STORAGE_URL}/content/body-care/category-5.webp` },
+    { title: 'Posture workouts', count: 13, image: `${STORAGE_URL}/content/body-care/category-6.webp` },
   ];
 
   return (
@@ -47,7 +48,7 @@ export default function BodyCare() {
               }}
             >
               <View style={{ height: 50, width: 50, borderRadius: 8, marginRight: 8, overflow: 'hidden' }}>
-                <Image source={category.image} style={{ height: 50, width: 50 }} resizeMode="cover" />
+                <Image source={{ uri: category.image }} style={{ height: 50, width: 50 }} resizeMode="cover" />
               </View>
               <View>
                 <Text style={{ fontFamily: 'ArchivoBlack-Regular', fontSize: 16, fontWeight: '600' }}>{category.title}</Text>

@@ -2,6 +2,7 @@ import { Story } from '@/app/(tabs)/components/StoriesModal';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -33,7 +34,7 @@ function Slide1() {
         <Text style={s1.body}>{t('nutrition_stories_endo.luteal.slide1.para4')}</Text>
       </View>
 
-      <Image source={require('@/assets/images/phases/figure-1.webp')} style={s1.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} resizeMode="contain" />
     </View>
   );
 }
@@ -168,7 +169,7 @@ function Slide4() {
         <Text style={s4.title}>{t('nutrition_stories_endo.luteal.slide4.title')}</Text>
 
         <View style={s4.row}>
-          <Image source={require('@/assets/images/phases/food-1.webp')} style={s4.photo} resizeMode="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-1.webp` }} style={s4.photo} resizeMode="cover" />
           <View style={s4.tip}>
             <Text style={s4.emoji}>🌿</Text>
             <Text style={s4.tipText}>{t('nutrition_stories_endo.luteal.slide4.tip1')}</Text>
@@ -180,7 +181,7 @@ function Slide4() {
             <Text style={s4.emoji}>🌿</Text>
             <Text style={s4.tipText}>{t('nutrition_stories_endo.luteal.slide4.tip2')}</Text>
           </View>
-          <Image source={require('@/assets/images/phases/food-3.webp')} style={s4.photo} resizeMode="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-3.webp` }} style={s4.photo} resizeMode="cover" />
         </View>
       </View>
 

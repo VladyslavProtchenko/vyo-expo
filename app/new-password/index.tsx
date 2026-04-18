@@ -46,7 +46,7 @@ export default function NewPassword() {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <ImageBackground
-                source={require('@/assets/images/ResetPassword.png')}
+                source={require('@/assets/images/ResetPassword.webp')}
                 resizeMode="cover"
                 style={styles.image}
             />

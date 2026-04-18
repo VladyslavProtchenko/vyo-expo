@@ -110,7 +110,7 @@ export default function EmailRegistration() {
         >
             <Animated.View style={[styles.imageContainer, { height: imageHeight }]}>
                 <ImageBackground 
-                    source={require('@/assets/images/sign-up.png')} 
+                    source={require('@/assets/images/sign-up.webp')} 
                     resizeMode="cover" 
                     style={styles.backgroundImage}
                 />

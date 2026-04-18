@@ -124,7 +124,7 @@ export default function Login() {
     return (
         <View style={styles.container}>
             <ImageBackground 
-                source={require('@/assets/images/welcome.png')} 
+                source={require('@/assets/images/welcome.webp')} 
                 resizeMode="cover" 
                 style={styles.backgroundImage}
             />

@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 
 const CONTENT= {
@@ -58,7 +59,7 @@ export default function CarePlanPreview() {
         <View style={styles.imageContainer}>
           <View style={styles.bottomCoverWrapper}>
             <Image
-              source={require("@/assets/images/care-plan/care-plan-preview.webp")}
+              source={{ uri: `${STORAGE_URL}/content/care-plan/care-plan-preview.webp` }}
               style={styles.bottomCoverImage}
               resizeMode="cover"
             />
@@ -68,13 +69,13 @@ export default function CarePlanPreview() {
           <View style={styles.card}>
             <View style={styles.cardHeader}>
               <Text style={[typography.h1, styles.title]}>Thank you for sharing!</Text>
-              <Image source={require("@/assets/images/care-plan/pink.webp")} style={styles.cardHeaderImage} />
+              <Image source={{ uri: `${STORAGE_URL}/content/care-plan/pink.webp` }} style={styles.cardHeaderImage} />
             </View>
             <Text style={[typography.p, { marginBottom: 8 }]}>{contentText}</Text>
             <Text style={[typography.p]}>{"Remember — you’re not alone in this. We’re here to support you through the pain, and your personalized care plan is just one click away."}</Text>
           </View>
           <View style={styles.card}>
-            <Image source={require("@/assets/images/care-plan/green.webp")} style={styles.pink} />
+            <Image source={{ uri: `${STORAGE_URL}/content/care-plan/green.webp` }} style={styles.pink} />
             <Text style={[typography.h1, styles.title, { marginBottom: 8 }]}>Backed by science</Text>
             <Text style={[typography.p]}>The plan is science-based, built on modern protocols, and validated by medical experts</Text>
           </View>

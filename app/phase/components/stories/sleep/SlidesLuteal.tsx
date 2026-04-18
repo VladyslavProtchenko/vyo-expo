@@ -2,6 +2,7 @@ import { Story } from '@/app/(tabs)/components/StoriesModal';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import { useTranslation } from 'react-i18next';
 import { Dimensions, Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -27,7 +28,7 @@ function Slide1() {
         <Text style={s1.body}>{t('stories.luteal.slide1.para2')}</Text>
       </View>
 
-      <Image source={require('@/assets/images/phases/figure-1.webp')} style={s1.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} resizeMode="contain" />
     </View>
   );
 }
@@ -42,12 +43,12 @@ const s1 = StyleSheet.create({
 });
 
 
-type Practice = { labelKey: string; image: ImageSourcePropType; labelSide: 'left' | 'right' };
+type Practice = { labelKey: string; image: string; labelSide: 'left' | 'right' };
 
 const PRACTICES: Practice[] = [
-  { labelKey: 'stories.follicular.slide3.practice1', image: require('@/assets/images/phases/stress-m-3-1.webp'), labelSide: 'left' },
-  { labelKey: 'stories.follicular.slide3.practice2', image: require('@/assets/images/phases/stress-m-3-2.webp'), labelSide: 'right' },
-  { labelKey: 'stories.follicular.slide3.practice3', image: require('@/assets/images/phases/stress-m-3-3.webp'), labelSide: 'left' },
+  { labelKey: 'stories.follicular.slide3.practice1', image: `${STORAGE_URL}/content/phases/stress-m-3-1.webp`, labelSide: 'left' },
+  { labelKey: 'stories.follicular.slide3.practice2', image: `${STORAGE_URL}/content/phases/stress-m-3-2.webp`, labelSide: 'right' },
+  { labelKey: 'stories.follicular.slide3.practice3', image: `${STORAGE_URL}/content/phases/stress-m-3-3.webp`, labelSide: 'left' },
 ];
 
 function Slide2() {
@@ -67,7 +68,7 @@ function Slide2() {
                 {item.labelSide === 'left' && <Text style={[s3.label, s3.labelRight]}>{t(item.labelKey)}</Text>}
               </View>
               <View style={s3.col}>
-                <Image source={item.image} style={s3.photo} resizeMode="cover" />
+                <Image source={{ uri: item.image }} style={s3.photo} resizeMode="cover" />
               </View>
               <View style={s3.col}>
                 {item.labelSide === 'right' && <Text style={[s3.label, s3.labelLeft]}>{t(item.labelKey)}</Text>}

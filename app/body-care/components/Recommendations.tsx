@@ -18,7 +18,7 @@ export default function Recommendations() {
               onPress={() => router.push({ pathname: '/body-care-article', params: { id: item.id } } as any)}
               activeOpacity={0.9}
             >
-              <Image source={item.image} style={styles.image} resizeMode="cover" />
+              <Image source={{ uri: item.image }} style={styles.image} resizeMode="cover" />
               <LinearGradient
                 colors={['transparent', 'rgba(0,0,0,0.7)']}
                 style={StyleSheet.absoluteFill}

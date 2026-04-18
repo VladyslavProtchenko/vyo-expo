@@ -103,7 +103,7 @@ export default function PhaseCircleIndicator() {
 
         <View style={styles.dayContainer}>
           <Image
-            source={PHASES[phaseName].icon}
+            source={{ uri: PHASES[phaseName].icon }}
             style={styles.phaseIconSmall}
           />
           <Text style={styles.dayText}>

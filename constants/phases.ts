@@ -1,3 +1,4 @@
+import { STORAGE_URL } from '@/config/supabase'
 export const PHASE_NAMES = ['menstrual', 'follicular', 'ovulation', 'luteal'] as const;
 
 export const PhaseColors = {
@@ -14,8 +15,8 @@ export interface PhaseInfo {
   color: string;
   colorLight: string;
   order: number;
-  icon: number;
-  image: number;
+  icon: string;
+  image: string;
 }
 
 export const PHASES: Record<PhaseName, PhaseInfo> = {
@@ -24,31 +25,31 @@ export const PHASES: Record<PhaseName, PhaseInfo> = {
     color: PhaseColors.menstrual.main,
     colorLight: PhaseColors.menstrual.light,
     order: 0,
-    icon: require('@/assets/images/phases/phase-1.webp'),
-    image: require('@/assets/images/phases/flower-1.webp'),
+    icon: `${STORAGE_URL}/content/phases/phase-1.webp`,
+    image: `${STORAGE_URL}/content/phases/flower-1.webp`,
   },
   follicular: {
     label: 'Follicular',
     color: PhaseColors.follicular.main,
     colorLight: PhaseColors.follicular.light,
     order: 1,
-    icon: require('@/assets/images/phases/phase-2.webp'),
-    image: require('@/assets/images/phases/flower-2.webp'),
+    icon: `${STORAGE_URL}/content/phases/phase-2.webp`,
+    image: `${STORAGE_URL}/content/phases/flower-2.webp`,
   },
   ovulation: {
     label: 'Ovulation',
     color: PhaseColors.ovulation.main,
     colorLight: PhaseColors.ovulation.light,
     order: 2,
-    icon: require('@/assets/images/phases/phase-3.webp'),
-    image: require('@/assets/images/phases/flower-3.webp'),
+    icon: `${STORAGE_URL}/content/phases/phase-3.webp`,
+    image: `${STORAGE_URL}/content/phases/flower-3.webp`,
   },
   luteal: {
     label: 'Luteal',
     color: PhaseColors.luteal.main,
     colorLight: PhaseColors.luteal.light,
     order: 3,
-    icon: require('@/assets/images/phases/phase-4.webp'),
-    image: require('@/assets/images/phases/flower-4.webp'),
+    icon: `${STORAGE_URL}/content/phases/phase-4.webp`,
+    image: `${STORAGE_URL}/content/phases/flower-4.webp`,
   },
 };

@@ -59,7 +59,7 @@ export default function StressManagement() {
               onPress={() => router.push({ pathname: '/article-screen', params: { id: item.id } } as any)}
               activeOpacity={0.9}
             >
-              <Image source={item.image} style={styles.cardImage} resizeMode="cover" />
+              <Image source={{ uri: item.image }} style={styles.cardImage} resizeMode="cover" />
               <LinearGradient
                 colors={['transparent', 'rgba(0,0,0,0.65)']}
                 style={StyleSheet.absoluteFill}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import Svg, { Line } from 'react-native-svg';
 import { CurrentPhaseInfo } from '@/store/phase';
+import { STORAGE_URL } from '@/config/supabase'
 
 const PHASES = ['Period', 'Follicular', 'Ovulation', 'Luteal'];
 
@@ -36,7 +37,7 @@ export default function ChartsBackground() {
       </View>
       <View style={styles.chartWrap}>
         <Image
-          source={require('@/assets/images/phases/chart.webp')}
+          source={{ uri: `${STORAGE_URL}/content/phases/chart.webp` }}
           style={styles.chart}
           resizeMode="cover"
         />

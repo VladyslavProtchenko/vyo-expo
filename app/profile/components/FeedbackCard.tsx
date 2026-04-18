@@ -1,5 +1,6 @@
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 export default function FeedbackCard() {
   const router = useRouter();
@@ -20,7 +21,7 @@ export default function FeedbackCard() {
         </TouchableOpacity>
       </View>
       <Image
-        source={require('@/assets/images/phases/figure-1.webp')}
+        source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }}
         style={styles.image}
         resizeMode="contain"
       />

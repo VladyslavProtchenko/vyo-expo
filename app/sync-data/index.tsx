@@ -20,12 +20,12 @@ export default function SyncData() {
   return (
     <View style={styles.container}>
       <ImageBackground
-        source={require('@/assets/images/sync.png')}
+        source={require('@/assets/images/sync.webp')}
         resizeMode="cover"
         style={styles.backgroundImage}
       >
         <View style={styles.content}>
-          <Image source={require('@/assets/images/health.png')} style={styles.image} />
+          <Image source={require('@/assets/images/health.webp')} style={styles.image} />
           <Text style={[typography.h1, styles.title]}>Sync data from wearable devices?</Text>
           <Text style={[typography.p, styles.text]}>
             If you are using a wearable device that shares fitness data with Apple Health, VYO can access that data and provide additional insights and analytics.

@@ -12,6 +12,7 @@ import { MENSTRUAL_STORIES_ENDO } from './nutrition-endo/SlidesMenstrual';
 import { FOLLICULAR_STORIES_ENDO } from './nutrition-endo/SlidesFollicular';
 import { OVULATION_STORIES_ENDO } from './nutrition-endo/SlidesOvulation';
 import { LUTEAL_STORIES_ENDO } from './nutrition-endo/SlidesLuteal';
+import { STORAGE_URL } from '@/config/supabase'
 
 const STORIES_NORMAL: Record<PhaseName, any[]> = {
   menstrual: MENSTRUAL_STORIES,
@@ -38,7 +39,7 @@ export default function FoodStoryCard() {
     <>
       <TouchableOpacity onPress={() => setVisible(true)} activeOpacity={0.9}>
         <ImageBackground
-          source={require('@/assets/images/phases/stories-1.webp')}
+          source={{ uri: `${STORAGE_URL}/content/phases/stories-1.webp` }}
           style={styles.card}
           imageStyle={styles.cardImage}
         >

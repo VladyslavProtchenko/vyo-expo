@@ -7,6 +7,7 @@ import { OVULATION_STORIES } from './sport/SlidesOvulation';
 import { FOLICULAR_STORIES } from './sport/SlidesFollicular';
 import { LUTEAL_STORIES } from './sport/SlidesLuteal';
 import { CurrentPhaseInfo, PhaseName } from '@/store/phase';
+import { STORAGE_URL } from '@/config/supabase'
 
 const STORIES_BY_PHASE: Record<PhaseName, any[]> = {
   follicular: FOLICULAR_STORIES,
@@ -24,7 +25,7 @@ export default function ExerciseStoryCard() {
     <>
       <TouchableOpacity onPress={() => setVisible(true)} activeOpacity={0.9}>
         <ImageBackground
-          source={require('@/assets/images/phases/stories-2.webp')}
+          source={{ uri: `${STORAGE_URL}/content/phases/stories-2.webp` }}
           style={styles.card}
           imageStyle={styles.cardImage}
         >

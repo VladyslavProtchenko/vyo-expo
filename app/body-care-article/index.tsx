@@ -37,7 +37,7 @@ export default function BodyCareArticle() {
 
         {/* Author */}
         <View style={styles.authorRow}>
-          <Image source={article.author.image} style={styles.authorAvatar} />
+          <Image source={{ uri: article.author.image }} style={styles.authorAvatar} />
           <View style={styles.authorInfo}>
             <Text style={styles.label}>Author</Text>
             <Text style={styles.authorName}>{article.author.name}</Text>

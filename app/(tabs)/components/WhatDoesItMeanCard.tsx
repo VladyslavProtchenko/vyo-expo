@@ -2,6 +2,7 @@ import { useGetDiagnosis } from '@/hooks/useDiagnosisData';
 import React, { useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import StoriesModal, { Story } from './StoriesModal';
+import { STORAGE_URL } from '@/config/supabase'
 
 const diagnosisSubtitle: Record<string, string> = {
   dysmenorrhea: 'Primary dysmenorrhea',
@@ -29,7 +30,7 @@ export default function WhatDoesItMeanCard({ isGray }: { isGray?: boolean }) {
         onPress={() => setVisible(true)}
         activeOpacity={0.7}
       >
-        <Image source={require('@/assets/images/care-plan/info-1.webp')} style={styles.icon} />
+        <Image source={{ uri: `${STORAGE_URL}/content/care-plan/info-1.webp` }} style={styles.icon} />
         <View style={styles.bottom}>
           <Text style={styles.title}>What does it mean?</Text>
           <Text style={styles.description}>{description}</Text>

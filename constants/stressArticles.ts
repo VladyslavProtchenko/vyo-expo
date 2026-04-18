@@ -1,3 +1,4 @@
+import { STORAGE_URL } from '@/config/supabase'
 export type StressArticle = {
   id: number;
   cardTitle?: string;
@@ -5,14 +6,14 @@ export type StressArticle = {
   title: string;
   subtitle: string;
   time?: number;
-  image: number;
+  image: string;
   tag: 'Breathing' | 'Forest bathing' | 'Cute therapy' | 'PMR' | 'Singing';
   videoUrl?: string;
   videos?: string[];
   author?: {
     name: string;
     title: string;
-    image: number;
+    image: string;
   };
   keyTakeways: string;
   technique?: string;
@@ -24,7 +25,7 @@ export type StressArticle = {
   references: { text: string; url?: string }[];
   isCute?: boolean;
   isForest?: boolean;
-  forestImage?: number;
+  forestImage?: string;
 };
 
 const REFERENCES = [
@@ -56,10 +57,10 @@ export const stressArticles: StressArticle[] = [
     title: 'Physiological sigh',
     subtitle: 'the fastest way to calm stress',
     time: 15,
-    image: require('@/assets/images/stress-management/stress-1.webp'),
+    image: `${STORAGE_URL}/content/stress-management/stress-1.webp`,
     tag: 'Breathing',
     videoUrl: 'kTI2pBKAcQ0',
-    author: { name: 'Alex Smirnov', title: 'Certified Psychologist/Psychotherapist with trauma and PTSD focus', image: require('@/assets/images/stress-management/author-1.webp') },
+    author: { name: 'Alex Smirnov', title: 'Certified Psychologist/Psychotherapist with trauma and PTSD focus', image: `${STORAGE_URL}/content/stress-management/author-1.webp` },
     keyTakeways: "Managing stress doesn't have to be complicated. These five science-backed techniques—physiological sigh, diaphragmatic breathing, resistance breathing, box breathing, and Shinrin-yoku (Forest Bathing)—help calm your nervous system, restore energy, and improve focus, whether you have a few seconds or several minutes.",
     technique: 'Double inhale → long exhale',
     duration: '1–3 breaths',
@@ -78,10 +79,10 @@ export const stressArticles: StressArticle[] = [
     cardTitle: 'Diaphragmatic breathing',
     subtitle: 'gentle calm and energy restoration',
     time: 5,
-    image: require('@/assets/images/stress-management/stress-2.webp'),
+    image: `${STORAGE_URL}/content/stress-management/stress-2.webp`,
     tag: 'Breathing',
     videoUrl: 'J9UkZcfMRQY',
-    author: { name: 'Lily Smirnova', title: 'Stress researcher in women, VYO founder', image: require('@/assets/images/stress-management/author-2.webp') },
+    author: { name: 'Lily Smirnova', title: 'Stress researcher in women, VYO founder', image: `${STORAGE_URL}/content/stress-management/author-2.webp` },
     keyTakeways: 'Managing stress doesn’t have to be complicated. These five science-backed techniques—physiological sigh, diaphragmatic breathing, resistance breathing, box breathing, and Shinrin-yoku (Forest Bathing)—help calm your nervous system, restore energy, and improve focus, whether you have a few seconds or several minutes.',
     technique: 'Deep belly breathing',
     duration: '3–5 minutes',
@@ -100,10 +101,10 @@ export const stressArticles: StressArticle[] = [
     cardTitle: 'Breathing with resistance',
     subtitle: 'strengthen your core and lungs',
     time: 15,
-    image: require('@/assets/images/stress-management/stress-3.webp'),
+    image: `${STORAGE_URL}/content/stress-management/stress-3.webp`,
     tag: 'Breathing',
     videoUrl: 'W0KWvOsgpYk',
-    author: { name: 'Alex Smirnov', title: 'Certified Psychologist/Psychotherapist with trauma and PTSD focus', image: require('@/assets/images/stress-management/author-1.webp') },
+    author: { name: 'Alex Smirnov', title: 'Certified Psychologist/Psychotherapist with trauma and PTSD focus', image: `${STORAGE_URL}/content/stress-management/author-1.webp` },
     keyTakeways: 'Managing stress doesn’t have to be complicated. These five science-backed techniques—physiological sigh, diaphragmatic breathing, resistance breathing, box breathing, and Shinrin-yoku (Forest Bathing)—help calm your nervous system, restore energy, and improve focus, whether you have a few seconds or several minutes.',
     technique: 'Belly breathing with light',
     duration: '3–5 minutes',
@@ -122,10 +123,10 @@ export const stressArticles: StressArticle[] = [
     title: 'Box breathing',
     subtitle: 'calmness and focus under pressure',
     time: 15,
-    image: require('@/assets/images/stress-management/stress-4.webp'),
+    image: `${STORAGE_URL}/content/stress-management/stress-4.webp`,
     tag: 'Breathing',
     videoUrl: 'clJKYv-rL5g',
-    author: { name: 'Lily Smirnova', title: 'Stress researcher in women, VYO founder', image: require('@/assets/images/stress-management/author-2.webp') },
+    author: { name: 'Lily Smirnova', title: 'Stress researcher in women, VYO founder', image: `${STORAGE_URL}/content/stress-management/author-2.webp` },
     keyTakeways: 'Managing stress doesn’t have to be complicated. These five science-backed techniques—physiological sigh, diaphragmatic breathing, resistance breathing, box breathing, and Shinrin-yoku (Forest Bathing)—help calm your nervous system, restore energy, and improve focus, whether you have a few seconds or several minutes.',
     technique: 'Inhale → hold → exhale → hold',
     duration: '3–5 minutes',
@@ -144,15 +145,15 @@ export const stressArticles: StressArticle[] = [
   {
     id: 5,
     isForest: true,
-    forestImage: require('@/assets/images/stress-management/forest-bg.webp'),
+    forestImage: `${STORAGE_URL}/content/stress-management/forest-bg.webp`,
     cardTitle: 'Forest bathing',
     title: 'Shinrin-yoku (forest bathing)',
     subtitle: 'mindful immersion in nature',
     time: 15,
-    image: require('@/assets/images/stress-management/stress-5.webp'),
+    image: `${STORAGE_URL}/content/stress-management/stress-5.webp`,
     tag: 'Forest bathing',
     videoUrl: '',
-    author: { name: 'Lily Smirnova', title: 'Stress researcher in women, VYO founder', image: require('@/assets/images/stress-management/author-2.webp') },
+    author: { name: 'Lily Smirnova', title: 'Stress researcher in women, VYO founder', image: `${STORAGE_URL}/content/stress-management/author-2.webp` },
     keyTakeways: 'Managing stress doesn’t have to be complicated. These five science-backed techniques—physiological sigh, diaphragmatic breathing, resistance breathing, box breathing, and Shinrin-yoku (Forest Bathing)—help calm your nervous system, restore energy, and improve focus, whether you have a few seconds or several minutes.',
     technique: 'Slow, mindful engagement with a forest environment using all five senses',
     duration: 'Flexible; 20–60 minutes recommended for noticeable effects',
@@ -172,7 +173,7 @@ export const stressArticles: StressArticle[] = [
     cardSubtitle: 'Video feed',
     title: 'Take a minute',
     subtitle: 'let this soften your mood',
-    image: require('@/assets/images/stress-management/stress-6.webp'),
+    image: `${STORAGE_URL}/content/stress-management/stress-6.webp`,
     tag: 'Cute therapy',
     keyTakeways: 'Managing stress doesn’t have to be complicated. These five science-backed techniques—physiological sigh, diaphragmatic breathing, resistance breathing, box breathing, and Shinrin-yoku (Forest Bathing)—help calm your nervous system, restore energy, and improve focus, whether you have a few seconds or several minutes.',
     videos: ['kTI2pBKAcQ0', 'J9UkZcfMRQY', 'W0KWvOsgpYk', 'clJKYv-rL5g'],

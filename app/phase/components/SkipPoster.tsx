@@ -3,6 +3,7 @@ import { CurrentPhaseInfo } from '@/store/phase';
 import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'expo-router';
 import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 const phaseBackgroundColors = {
   menstrual: '#FFCED1',
@@ -12,10 +13,10 @@ const phaseBackgroundColors = {
 };
 
 const phaseImages = {
-  menstrual: require('@/assets/images/home-page/girl-1.webp'),
-  follicular: require('@/assets/images/home-page/girl-2.webp'),
-  ovulation: require('@/assets/images/home-page/girl-3.webp'),
-  luteal: require('@/assets/images/home-page/girl-4.webp'),
+  menstrual: `${STORAGE_URL}/content/home-page/girl-1.webp`,
+  follicular: `${STORAGE_URL}/content/home-page/girl-2.webp`,
+  ovulation: `${STORAGE_URL}/content/home-page/girl-3.webp`,
+  luteal: `${STORAGE_URL}/content/home-page/girl-4.webp`,
 };
 
 export default function SkipPoster({ style }: { style?: StyleProp<ViewStyle> }) {
@@ -41,7 +42,7 @@ export default function SkipPoster({ style }: { style?: StyleProp<ViewStyle> }) 
           textStyle={styles.buttonText}
         />
       </View>
-      <Image source={image} style={styles.image} resizeMode="contain" />
+      <Image source={{ uri: image }} style={styles.image} resizeMode="contain" />
     </View>
   );
 }

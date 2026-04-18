@@ -1,13 +1,14 @@
+import { STORAGE_URL } from '@/config/supabase'
 export type BodyCareArticle = {
   id: number;
   title: string;
   time: number;
-  image: number;
+  image: string;
   videoUrl: string;
   author: {
     name: string;
     title: string;
-    image: number;
+    image: string;
   };
   model: {
     name: string;
@@ -28,12 +29,12 @@ export const bodyCareArticles: BodyCareArticle[] = [
     id: 1,
     title: 'Pelvic floor: Awareness',
     time: 15,
-    image: require('@/assets/images/body-care/body-care-1.webp'),
+    image: `${STORAGE_URL}/content/body-care/body-care-1.webp`,
     videoUrl: 'xgEc42wNd-E',
     author: {
       name: 'Viktoriia Kubyshena',
       title: "Physical Therapist, MSK rehab & women's health",
-      image: require('@/assets/images/body-care/author.webp'),
+      image: `${STORAGE_URL}/content/body-care/author.webp`,
     },
     model: {
       name: 'Viktoria Khemych',
@@ -73,12 +74,12 @@ export const bodyCareArticles: BodyCareArticle[] = [
     id: 2,
     title: 'Pelvic floor: Awareness',
     time: 5,
-    image: require('@/assets/images/body-care/body-care-2.webp'),
+    image: `${STORAGE_URL}/content/body-care/body-care-2.webp`,
     videoUrl: 'uavBK-zkT_c',
     author: {
       name: 'Viktoriia Kubyshena',
       title: "Physical Therapist, MSK rehab & women's health",
-      image: require('@/assets/images/body-care/author.webp'),
+      image: `${STORAGE_URL}/content/body-care/author.webp`,
     },
     model: {
       name: 'Viktoria Khemych',
@@ -117,12 +118,12 @@ export const bodyCareArticles: BodyCareArticle[] = [
     id: 3,
     title: 'Pelvic floor: Awareness',
     time: 15,
-    image: require('@/assets/images/body-care/body-care-3.webp'),
+    image: `${STORAGE_URL}/content/body-care/body-care-3.webp`,
     videoUrl: 'nC8ngEMcVuY',
     author: {
       name: 'Viktoriia Kubyshena',
       title: "Physical Therapist, MSK rehab & women's health",
-      image: require('@/assets/images/body-care/author.webp'),
+      image: `${STORAGE_URL}/content/body-care/author.webp`,
     },
     model: {
       name: 'Viktoria Khemych',

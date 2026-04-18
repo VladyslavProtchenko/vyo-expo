@@ -1,21 +1,22 @@
 import YoutubeCard from '@/components/YoutubeCard';
 import { ScrollView, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 const items = [
   {
     title: 'Pelvic floor: Awareness',
     time: 15,
-    image: require('@/assets/images/body-care/body-care-1.webp'),
+    image: `${STORAGE_URL}/content/body-care/body-care-1.webp`,
   },
   {
     title: 'Pelvic floor: Awareness',
     time: 5,
-    image: require('@/assets/images/body-care/body-care-2.webp'),
+    image: `${STORAGE_URL}/content/body-care/body-care-2.webp`,
   },
   {
     title: 'Pelvic floor: Awareness',
     time: 15,
-    image: require('@/assets/images/body-care/body-care-3.webp'),
+    image: `${STORAGE_URL}/content/body-care/body-care-3.webp`,
   },
 ]
 

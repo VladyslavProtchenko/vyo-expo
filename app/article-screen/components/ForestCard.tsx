@@ -16,7 +16,7 @@ export default function ForestCard({ session }: Props) {
       activeOpacity={0.85}
       onPress={() => router.push({ pathname: '/audio-player', params: { sessionId: session.id } } as any)}
     >
-      <Image source={session.image} style={styles.image} resizeMode="cover" />
+      <Image source={{ uri: session.image }} style={styles.image} resizeMode="cover" />
       <View style={styles.overlay} />
 
       {/* Title + duration — top left */}

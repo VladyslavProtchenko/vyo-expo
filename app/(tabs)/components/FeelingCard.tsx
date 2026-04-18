@@ -12,7 +12,7 @@ export default function FeelingCard() {
   return (
     <View style={styles.card}>
       <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, flex: 1, marginRight: 16 }}>
-        <Image source={require('@/assets/images/icons/pinkHeart.png')} style={styles.cardIcon} />
+        <Image source={require('@/assets/images/icons/pinkHeart.webp')} style={styles.cardIcon} />
         <Text style={styles.cardTitle}>How are you feeling today?</Text>
       </View>
       <ButtonRounded

@@ -40,7 +40,7 @@ export default function ArticleScreen() {
         {/* Forest hero image */}
         {article.isForest && article.forestImage ? (
           <View style={styles.heroWrapper}>
-            <Image source={article.forestImage} style={styles.heroImage} resizeMode="cover" />
+            <Image source={{ uri: article.forestImage }} style={styles.heroImage} resizeMode="cover" />
             <TouchableOpacity style={styles.closeBtnHero} onPress={() => router.back()}>
               <X size={20} color="white" />
             </TouchableOpacity>
@@ -58,7 +58,7 @@ export default function ArticleScreen() {
         {/* Author */}
         {article.author ? (
           <View style={styles.authorRow}>
-            <Image source={article.author.image} style={styles.authorAvatar} />
+            <Image source={{ uri: article.author.image }} style={styles.authorAvatar} />
             <View style={styles.authorInfo}>
               <Text style={styles.label}>Author</Text>
               <Text style={styles.authorName}>{article.author.name}</Text>

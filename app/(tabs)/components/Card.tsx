@@ -22,9 +22,9 @@ export default function CarePlanCard() {
         <View style={styles.tab}>
           <Text style={styles.backedText}>Backed by science</Text>
           <View style={styles.images}>
-            <Image source={require('@/assets/images/exp3.png')} style={[styles.expertImage, styles.expert3]} />
-            <Image source={require('@/assets/images/exp2.png')} style={[styles.expertImage, styles.expert2]} />
-            <Image source={require('@/assets/images/exp1.png')} style={[styles.expertImage, styles.expert1]} />
+            <Image source={require('@/assets/images/exp3.webp')} style={[styles.expertImage, styles.expert3]} />
+            <Image source={require('@/assets/images/exp2.webp')} style={[styles.expertImage, styles.expert2]} />
+            <Image source={require('@/assets/images/exp1.webp')} style={[styles.expertImage, styles.expert1]} />
           </View>
         </View>
       </View>
@@ -33,7 +33,7 @@ export default function CarePlanCard() {
           <Text style={typography.p}>{subtitle}</Text>
         </View>
       </View>
-      <Image source={require('@/assets/images/corner.png')} style={styles.corner} />
+      <Image source={require('@/assets/images/corner.webp')} style={styles.corner} />
     </View>
   );
 }

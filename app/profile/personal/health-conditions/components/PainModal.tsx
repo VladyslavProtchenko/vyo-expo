@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
 import { Image, ImageBackground, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 interface PainModalProps {
   visible: boolean;
@@ -22,7 +23,7 @@ export default function PainModal({ visible, onClose }: PainModalProps) {
     >
       <View style={styles.modalContainer}>
         <ImageBackground 
-          source={require('@/assets/images/pain/pain.webp')} 
+          source={{ uri: `${STORAGE_URL}/content/pain/pain.webp` }} 
           resizeMode="cover" 
           style={styles.backgroundImage}
         >
@@ -35,7 +36,7 @@ export default function PainModal({ visible, onClose }: PainModalProps) {
 
           <View style={styles.content}>
             <Image 
-              source={require('@/assets/images/pain/pain-icon.webp')} 
+              source={{ uri: `${STORAGE_URL}/content/pain/pain-icon.webp` }} 
               style={styles.heartIcon}
             />
             <Text style={[typography.h1, styles.title]}>

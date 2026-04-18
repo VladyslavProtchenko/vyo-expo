@@ -97,7 +97,7 @@ export default function AudioPlayer() {
   const sliderValue = isSeeking ? seekValue : position;
 
   return (
-    <ImageBackground source={session.image} style={styles.bg} resizeMode="cover">
+    <ImageBackground source={{ uri: session.image }} style={styles.bg} resizeMode="cover">
       <View style={styles.overlay} />
       <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
         {/* Close */}

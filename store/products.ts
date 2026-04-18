@@ -1,3 +1,4 @@
+import { STORAGE_URL } from '@/config/supabase'
 export type NutrientAmount = { per100g: number; inPortion: number };
 
 export type Omega3Amount = NutrientAmount & { type: 'ALA' | 'EPA+DHA' | 'DHA' };
@@ -75,7 +76,7 @@ export interface Product {
 export const Products: Product[] = [
   {
     name: 'Acerola cherry',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/acerola-cherry.webp',
+    imageUrl: `${STORAGE_URL}/products/acerola-cherry.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -85,7 +86,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Almonds',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/almonds.webp',
+    imageUrl: `${STORAGE_URL}/products/almonds.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'choline', 'methionine-cysteine', 'fiber'],
     composition: {
@@ -104,7 +105,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Apple with skin',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/apple-with-skin.webp',
+    imageUrl: `${STORAGE_URL}/products/apple-with-skin.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c', 'fiber'],
     composition: {
@@ -115,7 +116,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Avocado',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/avocado.webp',
+    imageUrl: `${STORAGE_URL}/products/avocado.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'omega-3', 'choline', 'methionine-cysteine', 'fiber'],
     composition: {
@@ -134,7 +135,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Baked salmon',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/baked-salmon.webp',
+    imageUrl: `${STORAGE_URL}/products/baked-salmon.webp`,
     nutrients: ['vitamin-b6', 'vitamin-b12', 'magnesium', 'potassium', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '150g',
@@ -148,7 +149,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Baked sweet potato',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/baked-sweet-potato.webp',
+    imageUrl: `${STORAGE_URL}/products/baked-sweet-potato.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b6', 'potassium'],
     composition: {
@@ -159,7 +160,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Baked trout',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/baked-trout.webp',
+    imageUrl: `${STORAGE_URL}/products/baked-trout.webp`,
     nutrients: ['vitamin-b12'],
     composition: {
       portion: '150g',
@@ -168,7 +169,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Banana',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/banana.webp',
+    imageUrl: `${STORAGE_URL}/products/banana.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'choline', 'vitamin-c'],
     composition: {
@@ -183,13 +184,13 @@ export const Products: Product[] = [
   },
   {
     name: 'Beef liver',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/beef-liver.webp',
+    imageUrl: `${STORAGE_URL}/products/beef-liver.webp`,
     nutrients: ['iron'],
     composition: { portion: '80g', iron: { per100g: 6.2, inPortion: 5.0 } },
   },
   {
     name: 'Black currant',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/black-currant.webp',
+    imageUrl: `${STORAGE_URL}/products/black-currant.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -199,7 +200,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Boiled chicken breast',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/boiled-chicken-breast.webp',
+    imageUrl: `${STORAGE_URL}/products/boiled-chicken-breast.webp`,
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b12', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '150g',
@@ -212,7 +213,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Boiled egg',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/chicken-egg.webp',
+    imageUrl: `${STORAGE_URL}/products/chicken-egg.webp`,
     dietary: 'vegetarian',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'vitamin-b12', 'vitamin-b2', 'vitamin-e', 'omega-3', 'choline', 'methionine-cysteine'],
     composition: {
@@ -232,7 +233,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Boiled potato',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/boiled-potato.webp',
+    imageUrl: `${STORAGE_URL}/products/boiled-potato.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'potassium', 'choline', 'vitamin-c'],
     composition: {
@@ -247,7 +248,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Brie cheese',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/brie-cheese.webp',
+    imageUrl: `${STORAGE_URL}/products/brie-cheese.webp`,
     dietary: 'vegetarian',
     nutrients: ['vitamin-b12'],
     composition: {
@@ -257,7 +258,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Canned sardines',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/canned-sardines.webp',
+    imageUrl: `${STORAGE_URL}/products/canned-sardines.webp`,
     nutrients: ['iron', 'vitamin-b12', 'omega-3'],
     composition: {
       portion: '90g',
@@ -268,7 +269,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Canned tuna',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/canned-tuna.webp',
+    imageUrl: `${STORAGE_URL}/products/canned-tuna.webp`,
     nutrients: ['vitamin-b6', 'vitamin-b12', 'potassium', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '100g',
@@ -281,7 +282,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Canola oil',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/canola-oil.webp',
+    imageUrl: `${STORAGE_URL}/products/canola-oil.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-e', 'omega-3'],
     composition: {
@@ -292,7 +293,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cashews',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cashews.webp',
+    imageUrl: `${STORAGE_URL}/products/cashews.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'magnesium', 'potassium'],
     composition: {
@@ -305,7 +306,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cheddar cheese',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cheddar-cheese.webp',
+    imageUrl: `${STORAGE_URL}/products/cheddar-cheese.webp`,
     dietary: 'vegetarian',
     nutrients: ['vitamin-b12', 'vitamin-b2'],
     composition: {
@@ -316,7 +317,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Chia seeds',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/chia-seeds.webp',
+    imageUrl: `${STORAGE_URL}/products/chia-seeds.webp`,
     dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
@@ -326,7 +327,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Chicken egg',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/chicken-egg.webp',
+    imageUrl: `${STORAGE_URL}/products/chicken-egg.webp`,
     dietary: 'vegetarian',
     nutrients: ['iron', 'magnesium'],
     composition: {
@@ -337,13 +338,13 @@ export const Products: Product[] = [
   },
   {
     name: 'Chicken liver',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/chicken-liver.webp',
+    imageUrl: `${STORAGE_URL}/products/chicken-liver.webp`,
     nutrients: ['iron'],
     composition: { portion: '70g', iron: { per100g: 9.0, inPortion: 6.3 } },
   },
   {
     name: 'Cooked Atlantic salmon',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-atlantic-salmon.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-atlantic-salmon.webp`,
     nutrients: ['omega-3'],
     composition: {
       portion: '100g',
@@ -352,7 +353,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked beef liver',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/beef-liver.webp',
+    imageUrl: `${STORAGE_URL}/products/beef-liver.webp`,
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'vitamin-b12', 'vitamin-b2', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '80g',
@@ -368,7 +369,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked Brussels sprouts',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-brussels-sprouts.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-brussels-sprouts.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b9'],
     composition: {
@@ -378,7 +379,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked asparagus',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-asparagus.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-asparagus.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b9'],
     composition: {
@@ -388,7 +389,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked bluefin tuna',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-bluefin-tuna.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-bluefin-tuna.webp`,
     nutrients: ['omega-3'],
     composition: {
       portion: '85g',
@@ -397,7 +398,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked broccoli',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-broccoli.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-broccoli.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b9', 'magnesium', 'potassium', 'vitamin-e', 'choline', 'methionine-cysteine', 'vitamin-c', 'fiber'],
     composition: {
@@ -415,7 +416,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked brown rice',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-brown-rice.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-brown-rice.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'choline', 'methionine-cysteine'],
     composition: {
@@ -430,7 +431,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked buckwheat',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-buckwheat.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-buckwheat.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'magnesium', 'potassium', 'methionine-cysteine'],
     composition: {
@@ -445,7 +446,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked chickpeas',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-chickpeas.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-chickpeas.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'choline', 'methionine-cysteine'],
     composition: {
@@ -461,7 +462,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked green peas',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-green-peas.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-green-peas.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9'],
     composition: {
@@ -474,7 +475,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked kidney beans',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-kidney-beans.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-kidney-beans.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'potassium'],
     composition: {
@@ -486,7 +487,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked lentils',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-lentils.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-lentils.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'choline', 'methionine-cysteine', 'fiber'],
     composition: {
@@ -505,7 +506,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked millet',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-millet.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-millet.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium'],
     composition: {
@@ -519,7 +520,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked mushrooms',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-mushrooms.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-mushrooms.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b2'],
     composition: {
@@ -529,7 +530,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked mussels',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-mussels.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-mussels.webp`,
     nutrients: ['vitamin-b12'],
     composition: {
       portion: '100g',
@@ -538,7 +539,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked oats',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-oats.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-oats.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'choline', 'methionine-cysteine', 'fiber'],
     composition: {
@@ -557,20 +558,20 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked pearl barley',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-pearl-barley.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-pearl-barley.webp`,
     dietary: 'vegan',
     nutrients: ['iron'],
     composition: { portion: '200g', iron: { per100g: 1.2, inPortion: 2.4 } },
   },
   {
     name: 'Cooked pork',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-pork.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-pork.webp`,
     nutrients: ['vitamin-b1'],
     composition: { portion: '100g', 'vitamin-b1': { per100g: 0.85, inPortion: 0.85 } },
   },
   {
     name: 'Cooked spinach',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-spinach.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-spinach.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'omega-3', 'methionine-cysteine'],
     composition: {
@@ -588,7 +589,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked white beans',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-white-beans.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-white-beans.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'choline', 'methionine-cysteine'],
     composition: {
@@ -605,7 +606,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked beans',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-white-beans.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-white-beans.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b2', 'fiber'],
     composition: {
@@ -616,7 +617,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cottage cheese',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cottage-cheese.webp',
+    imageUrl: `${STORAGE_URL}/products/cottage-cheese.webp`,
     dietary: 'vegetarian',
     nutrients: ['vitamin-b12', 'choline', 'methionine-cysteine'],
     composition: {
@@ -628,7 +629,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Dark chocolate (70%)',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/dark-chocolate-70.webp',
+    imageUrl: `${STORAGE_URL}/products/dark-chocolate-70.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'magnesium'],
     composition: {
@@ -639,7 +640,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Dates',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/dates.webp',
+    imageUrl: `${STORAGE_URL}/products/dates.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium'],
     composition: {
@@ -653,7 +654,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Dried apricots',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/dried-apricots.webp',
+    imageUrl: `${STORAGE_URL}/products/dried-apricots.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium'],
     composition: {
@@ -667,7 +668,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Dried figs',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/dried-figs.webp',
+    imageUrl: `${STORAGE_URL}/products/dried-figs.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'fiber'],
     composition: {
@@ -682,7 +683,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Dry oats',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/dry-oats.webp',
+    imageUrl: `${STORAGE_URL}/products/dry-oats.webp`,
     dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
@@ -692,7 +693,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Durum wheat pasta',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/durum-wheat-pasta.webp',
+    imageUrl: `${STORAGE_URL}/products/durum-wheat-pasta.webp`,
     dietary: 'vegan',
     nutrients: ['magnesium', 'potassium'],
     composition: {
@@ -703,7 +704,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Flaxseed oil',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/flaxseed-oil.webp',
+    imageUrl: `${STORAGE_URL}/products/flaxseed-oil.webp`,
     dietary: 'vegan',
     nutrients: ['omega-3'],
     composition: {
@@ -713,7 +714,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Flaxseed',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/flaxseed.webp',
+    imageUrl: `${STORAGE_URL}/products/flaxseed.webp`,
     dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
@@ -723,7 +724,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Fortified cereal',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/fortified-cereal.webp',
+    imageUrl: `${STORAGE_URL}/products/fortified-cereal.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-e', 'choline'],
     composition: {
@@ -734,7 +735,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Fortified nutritional yeast',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/fortified-nutritional-yeast.webp',
+    imageUrl: `${STORAGE_URL}/products/fortified-nutritional-yeast.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b12'],
     composition: {
@@ -744,7 +745,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Fortified plant milk',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/fortified-plant-milk.webp',
+    imageUrl: `${STORAGE_URL}/products/fortified-plant-milk.webp`,
     dietary: 'vegan',
     nutrients: ['choline'],
     composition: {
@@ -754,7 +755,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Fresh parsley',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/fresh-parsley.webp',
+    imageUrl: `${STORAGE_URL}/products/fresh-parsley.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -764,7 +765,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Fresh strawberries',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/fresh-strawberries.webp',
+    imageUrl: `${STORAGE_URL}/products/fresh-strawberries.webp`,
     dietary: 'vegan',
     nutrients: ['magnesium', 'potassium', 'vitamin-c'],
     composition: {
@@ -776,7 +777,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Grapefruit',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/grapefruit.webp',
+    imageUrl: `${STORAGE_URL}/products/grapefruit.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -786,7 +787,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Ground flaxseed',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/ground-flaxseed.webp',
+    imageUrl: `${STORAGE_URL}/products/ground-flaxseed.webp`,
     dietary: 'vegan',
     nutrients: ['omega-3'],
     composition: {
@@ -796,7 +797,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Hazelnuts',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/hazelnuts.webp',
+    imageUrl: `${STORAGE_URL}/products/hazelnuts.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-e', 'methionine-cysteine'],
     composition: {
@@ -807,7 +808,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Kiwifruit',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/kiwifruit.webp',
+    imageUrl: `${STORAGE_URL}/products/kiwifruit.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-e', 'vitamin-c'],
     composition: {
@@ -818,7 +819,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Orange',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/orange.webp',
+    imageUrl: `${STORAGE_URL}/products/orange.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b9', 'magnesium', 'potassium', 'choline', 'vitamin-c'],
     composition: {
@@ -832,7 +833,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Orange juice',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/orange.webp',
+    imageUrl: `${STORAGE_URL}/products/orange.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b9', 'potassium'],
     composition: {
@@ -843,7 +844,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Pacific herring, cooked',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/pacific-herring-cooked.webp',
+    imageUrl: `${STORAGE_URL}/products/pacific-herring-cooked.webp`,
     nutrients: ['omega-3'],
     composition: {
       portion: '144g',
@@ -852,7 +853,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Peanuts',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/peanuts.webp',
+    imageUrl: `${STORAGE_URL}/products/peanuts.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b1', 'magnesium', 'vitamin-e'],
     composition: {
@@ -864,7 +865,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Pear with skin',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/pear-with-skin.webp',
+    imageUrl: `${STORAGE_URL}/products/pear-with-skin.webp`,
     dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
@@ -874,7 +875,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Pistachios',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/pistachios.webp',
+    imageUrl: `${STORAGE_URL}/products/pistachios.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'magnesium', 'vitamin-e', 'fiber'],
     composition: {
@@ -888,7 +889,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Plain yogurt',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/plain-yogurt.webp',
+    imageUrl: `${STORAGE_URL}/products/plain-yogurt.webp`,
     dietary: 'vegetarian',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'vitamin-b12', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'omega-3', 'choline', 'methionine-cysteine'],
     composition: {
@@ -907,7 +908,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Prunes',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/prunes.webp',
+    imageUrl: `${STORAGE_URL}/products/prunes.webp`,
     dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
@@ -917,7 +918,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Pumpkin seeds',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/pumpkin-seeds.webp',
+    imageUrl: `${STORAGE_URL}/products/pumpkin-seeds.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'methionine-cysteine'],
     composition: {
@@ -932,7 +933,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Raisins',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/raisins.webp',
+    imageUrl: `${STORAGE_URL}/products/raisins.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'potassium'],
     composition: {
@@ -943,7 +944,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Raspberries',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/raspberries.webp',
+    imageUrl: `${STORAGE_URL}/products/raspberries.webp`,
     dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
@@ -953,7 +954,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Raw Atlantic mackerel',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/raw-atlantic-mackerel.webp',
+    imageUrl: `${STORAGE_URL}/products/raw-atlantic-mackerel.webp`,
     nutrients: ['omega-3'],
     composition: {
       portion: '112g',
@@ -962,7 +963,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Raw cabbage',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/raw-cabbage.webp',
+    imageUrl: `${STORAGE_URL}/products/raw-cabbage.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -972,7 +973,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Raw carrot',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/raw-carrot.webp',
+    imageUrl: `${STORAGE_URL}/products/raw-carrot.webp`,
     dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
@@ -982,7 +983,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Raw spinach',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/raw-spinach.webp',
+    imageUrl: `${STORAGE_URL}/products/raw-spinach.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -992,7 +993,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Red bell pepper, raw',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/red-bell-pepper-raw.webp',
+    imageUrl: `${STORAGE_URL}/products/red-bell-pepper-raw.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -1002,7 +1003,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Roast turkey',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/roast-turkey.webp',
+    imageUrl: `${STORAGE_URL}/products/roast-turkey.webp`,
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b12', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '150g',
@@ -1014,7 +1015,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Rose hips, raw',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/rose-hips-raw.webp',
+    imageUrl: `${STORAGE_URL}/products/rose-hips-raw.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -1024,7 +1025,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Salmon fish oil',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/salmon-fish-oil.webp',
+    imageUrl: `${STORAGE_URL}/products/salmon-fish-oil.webp`,
     nutrients: ['omega-3'],
     composition: {
       portion: '13.6g',
@@ -1033,7 +1034,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Sesame seeds',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/sesame-seeds.webp',
+    imageUrl: `${STORAGE_URL}/products/sesame-seeds.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'magnesium'],
     composition: {
@@ -1044,7 +1045,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Soybean oil',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/soybean-oil.webp',
+    imageUrl: `${STORAGE_URL}/products/soybean-oil.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-e', 'omega-3'],
     composition: {
@@ -1055,7 +1056,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Stewed beef',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/stewed-beef.webp',
+    imageUrl: `${STORAGE_URL}/products/stewed-beef.webp`,
     nutrients: ['iron', 'vitamin-b6', 'vitamin-b12', 'choline', 'methionine-cysteine'],
     composition: {
       portion: '120g',
@@ -1068,7 +1069,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Sunflower seeds',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/sunflower-seeds.webp',
+    imageUrl: `${STORAGE_URL}/products/sunflower-seeds.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'potassium', 'vitamin-e', 'choline', 'methionine-cysteine'],
     composition: {
@@ -1086,7 +1087,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Tangerine',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/tangerine.webp',
+    imageUrl: `${STORAGE_URL}/products/tangerine.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -1096,7 +1097,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Tofu',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/tofu.webp',
+    imageUrl: `${STORAGE_URL}/products/tofu.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'magnesium'],
     composition: {
@@ -1107,14 +1108,14 @@ export const Products: Product[] = [
   },
   {
     name: 'Tomato juice',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/tomato-juice.webp',
+    imageUrl: `${STORAGE_URL}/products/tomato-juice.webp`,
     dietary: 'vegan',
     nutrients: ['potassium'],
     composition: { portion: '240ml', potassium: { per100g: 217, inPortion: 520 } },
   },
   {
     name: 'Tomato',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/tomato.webp',
+    imageUrl: `${STORAGE_URL}/products/tomato.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-c'],
     composition: {
@@ -1124,7 +1125,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Walnuts',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/walnuts.webp',
+    imageUrl: `${STORAGE_URL}/products/walnuts.webp`,
     dietary: 'vegan',
     nutrients: ['omega-3', 'choline'],
     composition: {
@@ -1135,7 +1136,7 @@ export const Products: Product[] = [
   },
   {
     name: 'White cabbage',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/white-cabbage.webp',
+    imageUrl: `${STORAGE_URL}/products/white-cabbage.webp`,
     dietary: 'vegan',
     nutrients: ['fiber'],
     composition: {
@@ -1145,7 +1146,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Whole grain bread',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/whole-grain-bread.webp',
+    imageUrl: `${STORAGE_URL}/products/whole-grain-bread.webp`,
     dietary: 'vegan',
     nutrients: ['iron', 'vitamin-b1', 'vitamin-b6', 'vitamin-b9', 'magnesium', 'fiber'],
     composition: {
@@ -1161,7 +1162,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Wheat bread',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/whole-grain-bread.webp',
+    imageUrl: `${STORAGE_URL}/products/whole-grain-bread.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-b2'],
     composition: {
@@ -1171,7 +1172,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Whole milk',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/whole-milk.webp',
+    imageUrl: `${STORAGE_URL}/products/whole-milk.webp`,
     dietary: 'vegetarian',
     nutrients: ['vitamin-b6', 'vitamin-b9', 'vitamin-b12', 'vitamin-b2', 'magnesium', 'potassium', 'vitamin-e', 'omega-3', 'choline', 'methionine-cysteine', 'vitamin-c'],
     composition: {
@@ -1191,7 +1192,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Wheat germ oil',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/wheat-germ-oil.webp',
+    imageUrl: `${STORAGE_URL}/products/wheat-germ-oil.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-e'],
     composition: {
@@ -1201,7 +1202,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Sunflower oil',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/sunflower-oil.webp',
+    imageUrl: `${STORAGE_URL}/products/sunflower-oil.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-e'],
     composition: {
@@ -1211,7 +1212,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Corn oil',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/corn-oil.webp',
+    imageUrl: `${STORAGE_URL}/products/corn-oil.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-e'],
     composition: {
@@ -1221,7 +1222,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Mango',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/mango.webp',
+    imageUrl: `${STORAGE_URL}/products/mango.webp`,
     dietary: 'vegan',
     nutrients: ['vitamin-e'],
     composition: {
@@ -1231,7 +1232,7 @@ export const Products: Product[] = [
   },
   {
     name: 'Cooked cauliflower',
-    imageUrl: 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/products/cooked-cauliflower.webp',
+    imageUrl: `${STORAGE_URL}/products/cooked-cauliflower.webp`,
     dietary: 'vegan',
     nutrients: ['choline', 'vitamin-c', 'fiber'],
     composition: {

@@ -20,7 +20,7 @@ export default function StressManagementList() {
 
   const renderTextIconCard = ({ item }: { item: any }) => (
     <View style={styles.textIconCard}>
-      <Image source={require('@/assets/images/icons/tip-icon.png')} style={styles.cardIcon} />
+      <Image source={require('@/assets/images/icons/tip-icon.webp')} style={styles.cardIcon} />
       <Text style={styles.textIconCardTitle}>{item.title}</Text>
       <Text style={styles.textIconCardDescription}>{item.description}</Text>
     </View>

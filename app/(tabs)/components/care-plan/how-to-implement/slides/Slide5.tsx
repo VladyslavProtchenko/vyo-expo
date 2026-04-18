@@ -1,9 +1,10 @@
 import { ImageBackground, StyleSheet, Text, View } from 'react-native';
+import { STORAGE_URL } from '@/config/supabase'
 
 export default function Slide5() {
   return (
     <ImageBackground
-      source={require('@/assets/images/care-plan/how-4.webp')}
+      source={{ uri: `${STORAGE_URL}/content/care-plan/how-4.webp` }}
       style={styles.container}
       imageStyle={styles.bgImage}
       resizeMode="cover"

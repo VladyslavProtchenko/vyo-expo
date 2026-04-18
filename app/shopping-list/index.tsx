@@ -12,8 +12,9 @@ import {
   View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { STORAGE_URL } from '@/config/supabase'
 
-const LIST_THUMBNAIL = require('@/assets/images/phases/flower-1.webp');
+const LIST_THUMBNAIL = `${STORAGE_URL}/content/phases/flower-1.webp`;
 
 function formatListDate(dateStr: string): string {
   const d = dayjs(dateStr);
@@ -67,7 +68,7 @@ export default function ShoppingList() {
                   }
                 >
                   <Image
-                    source={LIST_THUMBNAIL}
+                    source={{ uri: LIST_THUMBNAIL }}
                     style={styles.thumbnail}
                     resizeMode="cover"
                   />
