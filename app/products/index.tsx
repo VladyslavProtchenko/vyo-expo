@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { MoveLeft, Settings2, ShoppingCart } from 'lucide-react-native';
-import { Image, Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Linking, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import CarePlanList from '@/app/(tabs)/components/List';
@@ -64,8 +65,10 @@ export default function Products() {
             <View key={`${product.name}-${index}`} style={{ alignItems: 'center', gap: 8, width: 100 }}>
               {product.imageUrl ? (
                 <Image
-                  source={product.imageUrl}
+                  source={{ uri: product.imageUrl ?? undefined }}
                   style={{ width: 100, height: 100, borderRadius: 12, backgroundColor: 'white', marginBottom: 4 }}
+                  contentFit="cover"
+                  transition={200}
                 />
               ) : (
                 <View

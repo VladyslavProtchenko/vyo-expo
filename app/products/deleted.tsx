@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { MoveLeft, RotateCcw } from 'lucide-react-native';
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useDeletedProducts } from '@/hooks/useDeletedProducts';
@@ -67,8 +68,10 @@ export default function ProductsDeleted() {
                   </TouchableOpacity>
                   {product.imageUrl ? (
                     <Image
-                      source={product.imageUrl}
+                      source={{ uri: product.imageUrl ?? undefined }}
                       style={{ width: 100, height: 100, borderRadius: 12, backgroundColor: 'white', marginBottom: 4 }}
+                      contentFit="cover"
+                      transition={200}
                     />
                   ) : (
                     <View

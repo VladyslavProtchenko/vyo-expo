@@ -1,6 +1,7 @@
 import { useRouter } from 'expo-router';
 import { MoveLeft, Trash } from 'lucide-react-native';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import FocusOnCard from '@/app/products/components/FocusOnCard';
@@ -109,7 +110,7 @@ const CategoryList = ({ title }: { title: string }) => {
                 <Trash size={20} color="white" />
               </TouchableOpacity>
               {product.imageUrl ? (
-                <Image source={product.imageUrl} style={styles.productImage} />
+                <Image source={{ uri: product.imageUrl ?? undefined }} style={styles.productImage} contentFit="cover" transition={200} />
               ) : (
                 <View style={styles.productImagePlaceholder}>
                   <Text style={styles.productImagePlaceholderText}>
