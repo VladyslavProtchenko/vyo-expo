@@ -94,6 +94,7 @@ function RootLayout() {
 
   const [fontsLoaded, fontError] = useFonts({
     'ArchivoBlack-Regular': require('@/assets/fonts/ArchivoBlack-Regular.ttf'),
+    'Geologica': require('@/assets/fonts/Geologica.ttf'),
     'Poppins': require('@/assets/fonts/Poppins/Poppins-Regular.ttf'),
     'Poppins-Medium': require('@/assets/fonts/Poppins/Poppins-Medium.ttf'),
     'Poppins-SemiBold': require('@/assets/fonts/Poppins/Poppins-SemiBold.ttf'),
