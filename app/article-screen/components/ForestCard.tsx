@@ -3,6 +3,7 @@ import PlayIcon from '@/assets/images/icons/PlayIcon';
 import { useRouter } from 'expo-router';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
+
 type Props = {
   session: ForestSession;
 };
@@ -22,7 +23,7 @@ export default function ForestCard({ session }: Props) {
       {/* Title + duration — top left */}
       <View style={styles.info}>
         <Text style={styles.title}>{session.title}</Text>
-        <Text style={styles.duration}>{session.duration} min</Text>
+        <Text style={styles.duration}>{Math.round(session.duration / 60)} min</Text>
       </View>
 
       {/* Play button — bottom left */}

@@ -10,7 +10,8 @@
     "android": "expo run:android",
     "ios": "expo run:ios",
     "web": "expo start --web",
-    "lint": "expo lint"
+    "lint": "expo lint",
+    "build:ios": "node scripts/bump-build.mjs && export $(grep -v '^#' .env | grep '=' | xargs) && eas build --platform ios --profile production --local --output ./build.ipa && eas submit --platform ios --path ./build.ipa --profile production"
   },
   "dependencies": {
     "@expo/vector-icons": "^15.0.3",
@@ -80,6 +81,7 @@
     "@types/react": "~19.1.0",
     "eslint": "^9.25.0",
     "eslint-config-expo": "~10.0.0",
+    "music-metadata": "^11.12.3",
     "sharp": "^0.33.5",
     "typescript": "~5.9.2"
   },

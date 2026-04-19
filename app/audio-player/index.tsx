@@ -109,7 +109,7 @@ export default function AudioPlayer() {
         <View style={styles.center}>
           <Animated.View style={[styles.textGroup, centerStyle]}>
             <Text style={[text.title24, styles.title]}>{session.title}</Text>
-            <Text style={styles.subtitle}>{session.duration} min</Text>
+            <Text style={styles.subtitle}>{Math.round(session.duration / 60)} min</Text>
           </Animated.View>
 
           <TouchableOpacity
