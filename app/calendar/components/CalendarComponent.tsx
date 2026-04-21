@@ -1,4 +1,5 @@
-import { PHASES } from '@/constants/phases';
+import { PHASES, PhaseName } from '@/constants/phases';
+import { computePhaseInfo } from '@/store/phase';
 import useUserStore from '@/store/useUserStore';
 import { MaterialIcons } from '@expo/vector-icons';
 import dayjs from 'dayjs';
@@ -18,76 +19,44 @@ export default function CalendarComponent() {
   const todayStr = today.format('YYYY-MM-DD');
 
   const markedDates = useMemo(() => {
-    const marked: any = {};
+    const marked: Record<string, { color: string; startingDay?: boolean; endingDay?: boolean }> = {};
     const start = dayjs(startMenstruation);
-    const ovulationDay = cycleDuration - 14;
 
-    // Find current cycle and current phase boundaries
+    // Use shared phase calculation for consistent boundaries
+    const { phases } = computePhaseInfo({
+      startMenstruation,
+      menstruationDuration,
+      cycleDuration,
+    });
+
+    // Find current cycle and current phase for "active" highlighting
     const daysSinceStart = today.diff(start, 'day');
-    const currentCycleIndex = Math.floor(daysSinceStart / cycleDuration);
-    const currentCycleStart = start.add(currentCycleIndex * cycleDuration, 'day');
+    const finalCycleDuration = cycleDuration || 28;
+    const currentCycleIndex = Math.floor(daysSinceStart / finalCycleDuration);
+    const currentCycleStart = start.add(currentCycleIndex * finalCycleDuration, 'day');
     const dayInCycle = today.diff(currentCycleStart, 'day');
 
-    // Determine current phase start day (within cycle)
-    let currentPhaseStart: number;
-    if (dayInCycle < menstruationDuration) {
-      currentPhaseStart = 0; // menstrual
-    } else if (dayInCycle < ovulationDay) {
-      currentPhaseStart = menstruationDuration; // follicular
-    } else if (dayInCycle === ovulationDay) {
-      currentPhaseStart = ovulationDay; // ovulation
-    } else {
-      currentPhaseStart = ovulationDay + 1; // luteal
-    }
-
-    const activePhaseStartDate = currentCycleStart.add(currentPhaseStart, 'day');
+    const currentPhase = phases.find(p => dayInCycle >= p.start && dayInCycle <= p.end) || phases[0];
+    const activePhaseStartDate = currentCycleStart.add(currentPhase.start, 'day');
 
     const isActivePeriod = (dateObj: dayjs.Dayjs) =>
       dateObj.isSameOrAfter(activePhaseStartDate, 'day') && dateObj.isSameOrBefore(today, 'day');
 
     for (let cycleOffset = -6; cycleOffset <= 6; cycleOffset++) {
-      const cycleStart = start.add(cycleOffset * cycleDuration, 'day');
+      const cycleStart = start.add(cycleOffset * finalCycleDuration, 'day');
 
-      // Менструальная фаза
-      for (let i = 0; i < menstruationDuration; i++) {
-        const dateObj = cycleStart.add(i, 'day');
-        const date = dateObj.format('YYYY-MM-DD');
-        marked[date] = {
-          color: isActivePeriod(dateObj) ? PHASES.menstrual.color : PHASES.menstrual.colorLight,
-          startingDay: i === 0,
-          endingDay: i === menstruationDuration - 1,
-        };
-      }
+      for (const phase of phases) {
+        const phaseColors = PHASES[phase.name as PhaseName];
 
-      // Фолликулярная фаза
-      for (let i = menstruationDuration; i < ovulationDay; i++) {
-        const dateObj = cycleStart.add(i, 'day');
-        const date = dateObj.format('YYYY-MM-DD');
-        marked[date] = {
-          color: isActivePeriod(dateObj) ? PHASES.follicular.color : PHASES.follicular.colorLight,
-          startingDay: i === menstruationDuration,
-          endingDay: i === ovulationDay - 1,
-        };
-      }
-
-      // Овуляция
-      const ovulationDateObj = cycleStart.add(ovulationDay, 'day');
-      const ovulationDate = ovulationDateObj.format('YYYY-MM-DD');
-      marked[ovulationDate] = {
-        color: isActivePeriod(ovulationDateObj) ? PHASES.ovulation.color : PHASES.ovulation.colorLight,
-        startingDay: true,
-        endingDay: true,
-      };
-
-      // Лютеиновая фаза
-      for (let i = ovulationDay + 1; i < cycleDuration; i++) {
-        const dateObj = cycleStart.add(i, 'day');
-        const date = dateObj.format('YYYY-MM-DD');
-        marked[date] = {
-          color: isActivePeriod(dateObj) ? PHASES.luteal.color : PHASES.luteal.colorLight,
-          startingDay: i === ovulationDay + 1,
-          endingDay: i === cycleDuration - 1,
-        };
+        for (let i = phase.start; i <= phase.end; i++) {
+          const dateObj = cycleStart.add(i, 'day');
+          const date = dateObj.format('YYYY-MM-DD');
+          marked[date] = {
+            color: isActivePeriod(dateObj) ? phaseColors.color : phaseColors.colorCalendar,
+            startingDay: i === phase.start,
+            endingDay: i === phase.end,
+          };
+        }
       }
     }
 

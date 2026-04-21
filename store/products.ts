@@ -18,6 +18,7 @@ export const NUTRIENTS = [
   'choline',
   'fiber',
   'methionine-cysteine',
+  'antioxidants',
 ] as const;
 
 export type Nutrient = (typeof NUTRIENTS)[number];

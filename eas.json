@@ -18,7 +18,8 @@
       "autoIncrement": true,
       "env": {
         "SENTRY_ORG": "vladyslav-protchenko-c0",
-        "SENTRY_PROJECT": "vyo_health"
+        "SENTRY_PROJECT": "vyo_health",
+        "SENTRY_ALLOW_FAILURE": "true"
       }
     }
   },

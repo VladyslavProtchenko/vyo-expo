@@ -7,10 +7,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import CarePlanList from '@/app/(tabs)/components/List';
 import SkipPoster from '@/app/phase/components/SkipPoster';
 import FocusOnCard from '@/app/products/components/FocusOnCard';
-import References from '@/app/products/components/References';
 import B from '@/components/B';
+import References from '@/components/ui/References';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import ButtonRounded from '@/components/ui/ButtonRounded';
+import { NUTRIENT_INFO } from '@/constants/nutrients';
 import { useProductVariants } from '@/hooks/useProductVariants';
 import { useShoppingListStore } from '@/store/shoppingList';
 import useUserStore from '@/store/useUserStore';
@@ -133,13 +134,13 @@ export default function Products() {
 
         <View style={{ padding: 16, borderRadius: 24, backgroundColor: '#F5F5F5', gap: 8, marginBottom: 24 }}>
           {supplements.map((supplement) => (
-            <View key={supplement.title} style={{ flexDirection: 'row', width: '100%', gap: 8 }}>
+            <View key={supplement.id} style={{ flexDirection: 'row', width: '100%', gap: 8 }}>
               <Image source={require('@/assets/images/pill.webp')} style={{ width: 50, height: 50, borderRadius: 12 }} />
               <View style={{ flex: 1, gap: 4, justifyContent: 'center' }}>
                 <Text>
-                  <B>{supplement.title}</B>
+                  <B>{supplement.name}</B>
                 </Text>
-                <Text style={styles.supplementDescription}>{supplement.description}</Text>
+                <Text style={styles.supplementDescription}>{supplement.foodEquivalent}</Text>
               </View>
               <Text>{supplement.dosage}</Text>
             </View>
@@ -153,7 +154,7 @@ export default function Products() {
           Learn more
         </Text>
 
-        <References />
+        <References references={PRODUCT_REFERENCES} titleVariant="large" />
 
         <View style={styles.disclaimerBox}>
           <Text style={styles.disclaimerText}>
@@ -165,6 +166,18 @@ export default function Products() {
   );
 }
 
+const PRODUCT_REFERENCES = [
+  { text: 'Owen P, Heneghan C, Musgrave H, et al. Oxford Handbook of Obstetrics and Gynaecology. 4th ed. Oxford University Press, 2023.' },
+  { text: 'Nillni YI, Rasmusson AM, Paul EL, Pineles SL. The impact of the menstrual cycle and underlying hormones in anxiety and PTSD. Curr Psychiatry Rep. 2021;23(2):8.', url: 'https://link.springer.com/article/10.1007/s11920-020-01221-9' },
+  { text: 'Bernal A, Paolieri D. The influence of estradiol and progesterone on neurocognition during the menstrual cycle. Behav Brain Res. 2022;417:113593.', url: 'https://www.sciencedirect.com/science/article/pii/S0166432821004812?via%3Dihub' },
+  { text: 'Barth C, Villringer A, Sacher J. Sex hormones affect neurotransmitters and shape the adult female brain. Front Neurosci. 2015;9:37.', url: 'https://www.frontiersin.org/journals/neuroscience/articles/10.3389/fnins.2015.00037/full' },
+  { text: 'Rogan MM, Black KE. Dietary energy intake across the menstrual cycle: a narrative review. Nutr Rev. 2023;81(7):869-886.', url: 'https://academic.oup.com/nutritionreviews/article/81/7/869/6823870' },
+  { text: 'Hirschberg AL. Sex hormones, appetite and eating behaviour in women. Maturitas. 2012;71:248-256.', url: 'https://linkinghub.elsevier.com/retrieve/pii/S0378512211004154' },
+  { text: 'Burdge GC, Wootton SA. Conversion of alpha-linolenic acid to eicosapentaenoic, docosapentaenoic and docosahexaenoic acids in young women. Br J Nutr. 2002;88(4):411-420.' },
+  { text: 'Dietary Supplement Fact Sheets', url: 'https://ods.od.nih.gov/factsheets/list-all/' },
+  { text: 'FDC USA', url: 'https://fdc.nal.usda.gov/' },
+];
+
 const stats = [
   { title: '<4', description: 'No worries! Supplements help fill the gaps.', color: '#C9DA5D' },
   { title: '5-7', description: 'On good track! Supplements can still support balance', color: '#99DA5D' },
@@ -172,18 +185,14 @@ const stats = [
 ];
 
 const supplements = [
-  { title: 'Iron', description: '~150g of beef steak + 1 cup of boiled white beans + a large serving of spinach', dosage: '18 mg' },
-  { title: 'Magnesium', description: '~2 slices of whole-grain bread + 1/2 cup of pumpkin seeds', dosage: '310 mg' },
-  { title: 'Vitamin B1 (Thiamine)', description: '~1/2 cup of sunflower seeds or a serving of green peas', dosage: '1,1 mg' },
-  { title: 'Vitamin B2 (Riboflavin)', description: '~200g of grilled mushrooms + 150g of cooked spinach', dosage: '1,1 mg' },
-  { title: 'Vitamin B6 (Pyridoxine)', description: '~1 medium banana + 150g of roasted chicken breast', dosage: '1,3 mg' },
-  { title: 'Vitamin B9 (Folic acid)', description: '~1 cup of cooked asparagus and a portion of spinach', dosage: '400 mcg DFE' },
-
-  { title: 'Vitamin B12 (Cobalamin)', description: '~1 salmon fillet or 2 large eggs', dosage: '2,4 mcg' },
-  { title: 'Omega-3 (EPA/DHA)', description: '~30g of walnuts or a small piece of mackerel', dosage: '500 mg' },
-
-  { title: 'Potassium', description: '30 min before meal', dosage: '200mg' },
-  { title: 'B vitamins', description: '30 min before meal', dosage: '10mg' },
+  NUTRIENT_INFO.iron,
+  NUTRIENT_INFO.magnesium,
+  NUTRIENT_INFO['vitamin-b1'],
+  NUTRIENT_INFO['vitamin-b2'],
+  NUTRIENT_INFO['vitamin-b6'],
+  NUTRIENT_INFO['vitamin-b9'],
+  NUTRIENT_INFO['vitamin-b12'],
+  NUTRIENT_INFO['omega-3'],
 ];
 
 const styles = StyleSheet.create({

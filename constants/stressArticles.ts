@@ -175,8 +175,8 @@ export const stressArticles: StressArticle[] = [
     subtitle: 'let this soften your mood',
     image: `${STORAGE_URL}/content/stress-management/stress-6.webp`,
     tag: 'Cute therapy',
-    keyTakeways: 'Managing stress doesn’t have to be complicated. These five science-backed techniques—physiological sigh, diaphragmatic breathing, resistance breathing, box breathing, and Shinrin-yoku (Forest Bathing)—help calm your nervous system, restore energy, and improve focus, whether you have a few seconds or several minutes.',
-    videos: ['kTI2pBKAcQ0', 'J9UkZcfMRQY', 'W0KWvOsgpYk', 'clJKYv-rL5g'],
+    keyTakeways: 'Viewing cute content (e.g., animals, babies, playful interactions) is a simple, evidence-based way to improve mood, reduce stress, and enhance attention. This effect is often referred to as the “kawaii effect,” where exposure to cute stimuli triggers positive emotional and behavioral responses.',
+    videos: ['IimQQE_zBDM', 'ym0FPTNqVXs', 'EAa2d1Ppp8Y', '3JTB_wtOvGs', 'TOA7eLZlEPU', 'tJKHyc9vKOc', '3OUIY2Sv99s'],
     references: REFERENCES,
   },
 ];

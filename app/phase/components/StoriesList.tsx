@@ -1,7 +1,7 @@
 import { ScrollView, StyleSheet } from 'react-native';
-import ExerciseStoryCard from './stories/ExerciseStoryCard';
-import FoodStoryCard from './stories/FoodStoryCard';
-import SleepStoryCard from './stories/SleepStoryCard';
+import ExerciseStoryCard from '@/components/stories/ExerciseStoryCard';
+import FoodStoryCard from '@/components/stories/FoodStoryCard';
+import SleepStoryCard from '@/components/stories/SleepStoryCard';
 
 export default function StoriesList() {
   return (

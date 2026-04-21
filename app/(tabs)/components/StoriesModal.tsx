@@ -11,6 +11,8 @@ export type Story = {
     label: string;
     onPress: () => void;
   };
+  // Renders after tapAreas so it captures touches (use for interactive bottom content)
+  bottomContent?: React.ReactNode;
 };
 
 function ProgressBar({ active, passed, paused }: { active: boolean; passed: boolean; paused: boolean }) {
@@ -144,6 +146,8 @@ export default function StoriesModal({
 
   const current = stories[index];
 
+  if (!current) return null;
+
   return (
     <Modal visible={visible} animationType="fade" statusBarTranslucent>
       <View style={styles.container}>
@@ -185,6 +189,13 @@ export default function StoriesModal({
             <TouchableOpacity style={styles.button} onPress={current.button.onPress}>
               <Text style={styles.buttonText}>{current.button.label}</Text>
             </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Bottom interactive content — rendered after tapAreas so it captures touches */}
+        {current.bottomContent && (
+          <View style={styles.bottomContent}>
+            {current.bottomContent}
           </View>
         )}
 
@@ -240,6 +251,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingBottom: 48,
     zIndex: 10,
+  },
+  bottomContent: {
+    position: 'absolute',
+    bottom: 40,
+    left: 16,
+    right: 16,
+    zIndex: 15,
   },
   button: {
     backgroundColor: '#000',

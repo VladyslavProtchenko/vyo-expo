@@ -1,4 +1,4 @@
-import References from '@/app/products/components/References';
+import References from '@/components/ui/References';
 import StoriesList from './StoriesList';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import ChartsBackground from '@/components/ChartsBackground';

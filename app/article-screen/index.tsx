@@ -1,7 +1,8 @@
 import ArticleVideoCard from '@/app/body-care-article/components/ArticleVideoCard';
 import ForestCard from '@/app/article-screen/components/ForestCard';
+import ArticleAuthor from '@/components/ui/ArticleAuthor';
+import ArticleKeyTakeaway from '@/components/ui/ArticleKeyTakeaway';
 import { text } from '@/constants/styles';
-import { AppColors } from '@/constants/theme';
 import { stressArticles } from '@/constants/stressArticles';
 import { forestSessions } from '@/constants/forestSessions';
 import { useLocalSearchParams, useRouter } from 'expo-router';
@@ -57,14 +58,7 @@ export default function ArticleScreen() {
 
         {/* Author */}
         {article.author ? (
-          <View style={styles.authorRow}>
-            <Image source={{ uri: article.author.image }} style={styles.authorAvatar} />
-            <View style={styles.authorInfo}>
-              <Text style={styles.label}>Author</Text>
-              <Text style={styles.authorName}>{article.author.name}</Text>
-              <Text style={styles.authorTitle}>{article.author.title}</Text>
-            </View>
-          </View>
+          <ArticleAuthor name={article.author.name} title={article.author.title} image={article.author.image} />
         ) : null}
 
         {/* Forest cards */}
@@ -84,12 +78,7 @@ export default function ArticleScreen() {
         {article.videoUrl ? <ArticleVideoCard videoId={article.videoUrl} /> : null}
 
         {/* Key takeaways */}
-        {article.keyTakeways ? (
-          <View style={styles.takeawaysBlock}>
-            <Text style={styles.takeawaysTitle}>Key takeaways</Text>
-            <Text style={text.text}>{article.keyTakeways}</Text>
-          </View>
-        ) : null}
+        {article.keyTakeways ? <ArticleKeyTakeaway text={article.keyTakeways} /> : null}
 
         {/* Cute therapy: video feed */}
         {article.tag === 'Cute therapy' && article.videos ? (
@@ -221,52 +210,6 @@ const styles = StyleSheet.create({
   title: {
     color: '#292929',
     marginBottom: 24,
-  },
-  authorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 24,
-  },
-  authorAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
-  authorInfo: {
-    gap: 4,
-    flex: 1,
-  },
-  label: {
-    fontFamily: 'Poppins',
-    fontSize: 12,
-    lineHeight: 12 * 1.2,
-    color: AppColors.gray,
-  },
-  authorName: {
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 12,
-    lineHeight: 12,
-    color: '#292929',
-  },
-  authorTitle: {
-    fontFamily: 'Poppins',
-    fontSize: 12,
-    lineHeight: 12 * 1.2,
-    color: '#262222',
-  },
-  takeawaysBlock: {
-    backgroundColor: '#D6F5E6',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 16,
-    gap: 8,
-  },
-  takeawaysTitle: {
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 16,
-    color: '#292929',
-    marginBottom: 4,
   },
   techBlock: {
     backgroundColor: '#FFF7E6',

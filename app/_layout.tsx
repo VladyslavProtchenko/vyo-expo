@@ -11,6 +11,8 @@ import 'react-native-reanimated';
 import Toast, { ErrorToast, ToastConfig } from 'react-native-toast-message';
 
 import '@/config/i18n';
+import StoriesModal from '@/app/(tabs)/components/StoriesModal';
+import useStoriesStore from '@/store/useStoriesStore';
 import * as Sentry from '@sentry/react-native';
 import { AppColors } from '@/constants/theme';
 import { supabase } from '@/config/supabase';
@@ -82,7 +84,13 @@ const protectedScreens = [
   'youtube-screen',
   'physiotherapy',
   'phase',
+  'nutrition-article',
 ] as const;
+
+function GlobalStoriesModal() {
+  const { stories, visible, close } = useStoriesStore();
+  return <StoriesModal stories={stories} visible={visible} onClose={close} />;
+}
 
 function RootLayout() {
   const colorScheme = useColorScheme();
@@ -98,6 +106,7 @@ function RootLayout() {
     'Poppins': require('@/assets/fonts/Poppins/Poppins-Regular.ttf'),
     'Poppins-Medium': require('@/assets/fonts/Poppins/Poppins-Medium.ttf'),
     'Poppins-SemiBold': require('@/assets/fonts/Poppins/Poppins-SemiBold.ttf'),
+    'Poppins-SemiBoldItalic': require('@/assets/fonts/Poppins/Poppins-SemiBoldItalic.ttf'),
     'Poppins-Bold': require('@/assets/fonts/Poppins/Poppins-Bold.ttf'),
   });
 
@@ -111,6 +120,7 @@ function RootLayout() {
             <SessionProvider>
               <RootNavigator fontsLoaded={fontsLoaded} fontError={fontError} />
             </SessionProvider>
+            <GlobalStoriesModal />
             <StatusBar style="auto" />
             <Toast config={toastConfig} position="top" topOffset={64} />
           </ThemeProvider>

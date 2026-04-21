@@ -1,6 +1,6 @@
 import { bodyCareArticles } from '@/constants/bodyCareArticles';
 import { text } from '@/constants/styles';
-import { AppColors } from '@/constants/theme';
+import ArticleAuthor from '@/components/ui/ArticleAuthor';
 import ArticleVideoCard from './components/ArticleVideoCard';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { X, ChevronDown, ChevronUp } from 'lucide-react-native';
@@ -36,14 +36,7 @@ export default function BodyCareArticle() {
         <Text style={[text.title28, styles.title]}>{article.title}</Text>
 
         {/* Author */}
-        <View style={styles.authorRow}>
-          <Image source={{ uri: article.author.image }} style={styles.authorAvatar} />
-          <View style={styles.authorInfo}>
-            <Text style={styles.label}>Author</Text>
-            <Text style={styles.authorName}>{article.author.name}</Text>
-            <Text style={styles.authorTitle}>{article.author.title}</Text>
-          </View>
-        </View>
+        <ArticleAuthor name={article.author.name} title={article.author.title} image={article.author.image} />
 
         {/* Video */}
         <ArticleVideoCard videoId={article.videoUrl} />
@@ -135,38 +128,6 @@ const styles = StyleSheet.create({
   title: {
     color: '#292929',
     marginBottom: 24,
-  },
-  authorRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 24,
-  },
-  authorAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  },
-  authorInfo: {
-    gap: 4,
-  },
-  label: {
-    fontFamily: 'Poppins',
-    fontSize: 12,
-    lineHeight: 12 * 1.2,
-    color: AppColors.gray,
-  },
-  authorName: {
-    fontFamily: 'Poppins-SemiBold',
-    fontSize: 12,
-    lineHeight: 12,
-    color: '#292929',
-  },
-  authorTitle: {
-    fontFamily: 'Poppins',
-    fontSize: 12,
-    lineHeight: 12 * 1.2,
-    color: '#262222',
   },
   videoCard: {
     width: '100%',
