@@ -4,8 +4,7 @@ import ButtonGradient from '@/components/ui/ButtonGradient';
 import Calendar from '@/components/ui/Calendar';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import { getEndoCluster } from '@/hooks/getEndo';
-import { getPCOS } from '@/hooks/getPCOS';
+import { computeFinalDiagnosis } from '@/hooks/computeFinalDiagnosis';
 import { useUpdateDiagnosis } from '@/hooks/useDiagnosisData';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
 import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
@@ -36,9 +35,9 @@ export default function Step11() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data } = useOnboardingData();
-  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
-  const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
-  const { mutate: updateDiagnosis, isPending: isUpdatingDiagnosis } = useUpdateDiagnosis();
+  const { mutateAsync: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const { mutateAsync: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
+  const { mutateAsync: updateDiagnosis, isPending: isUpdatingDiagnosis } = useUpdateDiagnosis();
   const loading = isUpdatingMedical || isUpdatingProfile || isUpdatingDiagnosis;
 
   const initialData = useRef({
@@ -63,7 +62,7 @@ export default function Step11() {
   }, [data]);
 
   const goBack = () => {
-    router.back();
+    router.navigate('/onboarding/step-10' as any);
   };
 
   const selectTag = (tag: string, isActive: boolean) => {
@@ -72,76 +71,46 @@ export default function Step11() {
       : setFormData(prev => ({ ...prev, otherSymptoms: [...prev.otherSymptoms, tag] }));
   };
 
-  const completeOnboarding = (diagnosisPayload: Parameters<typeof updateDiagnosis>[0]) => {
-    updateDiagnosis(diagnosisPayload, {
-      onSuccess: () => {
-        updateProfile(
-          { onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 11 },
-          { onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['onboarding'] }); router.push('/sync-data' as any); } }
-        );
-      },
-    });
-  };
-
-  const computeDiagnosis = () => {
-    const mergedData = {
-      profile: data?.profile ?? null,
-      medical: { ...data?.medical, other_symptoms: formData.otherSymptoms } as any,
-    };
-
-    if (!noSurgery) {
-      completeOnboarding({
-        diagnosis: 'endometriosis',
-        endo_type: getEndoCluster(mergedData),
-        is_endo_surgery: true,
-        is_endo_additional: false,
-      });
-    } else {
-      const pcosResult = getPCOS(data);
-      if (pcosResult > 0) {
-        const pcosType = (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible';
-        completeOnboarding({ diagnosis: 'pcos', pcos_type: pcosType });
-      } else {
-        completeOnboarding({
-          diagnosis: 'endometriosis',
-          endo_type: getEndoCluster(mergedData),
-          is_endo_surgery: false,
-          is_endo_additional: formData.otherSymptoms.length > 0,
-        });
-      }
-    }
-  };
-
-  const next = () => {
+  const next = async () => {
     const init = initialData.current;
     const hasChanges =
       formData.surgery !== init.surgery ||
       formData.surgeryDate !== init.surgeryDate ||
       JSON.stringify([...formData.otherSymptoms].sort()) !== JSON.stringify([...init.otherSymptoms].sort());
 
-    if (!hasChanges) {
-      computeDiagnosis();
-      return;
-    }
+    try {
+      if (hasChanges) {
+        await updateMedical({
+          surgery: !noSurgery ? formData.surgery || undefined : undefined,
+          surgery_date: !noSurgery ? formData.surgeryDate || undefined : undefined,
+          other_symptoms: noSurgery ? formData.otherSymptoms : [],
+        });
+      }
 
-    updateMedical(
-      {
-        surgery: !noSurgery ? formData.surgery || undefined : undefined,
-        surgery_date: !noSurgery ? formData.surgeryDate || undefined : undefined,
-        other_symptoms: noSurgery ? formData.otherSymptoms : [],
-      },
-      { onSuccess: computeDiagnosis }
-    );
+      const result = computeFinalDiagnosis(data, {
+        exitStep: 11,
+        surgery: formData.surgery,
+        otherSymptoms: formData.otherSymptoms,
+      });
+
+      if (result.action !== 'finalize') return;
+
+      await updateDiagnosis(result.payload);
+      await updateProfile({ onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 11 });
+      queryClient.invalidateQueries({ queryKey: ['onboarding'] });
+      router.push('/sync-data' as any);
+    } catch {
+      // Error handled by mutation onError (Toast + Sentry)
+    }
   };
 
   const isDisabled = loading || formData.surgery === '' || (!noSurgery && (formData.surgeryDate === null || formData.surgeryDate === ''));
 
-  const progressPercentage = 100;
+
 
   return (
     <View style={styles.container}>
       <Progress
-        percentage={progressPercentage}
         isSkip={true}
         goBack={goBack}
         currentStep={11}

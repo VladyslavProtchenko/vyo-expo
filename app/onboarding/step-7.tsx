@@ -5,8 +5,8 @@ import Number from '@/components/ui/Number';
 import Slider from '@/components/ui/Slider';
 import { typography } from '@/constants/typography';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
+import { computeFinalDiagnosis } from '@/hooks/computeFinalDiagnosis';
 import { useUpdateDiagnosis } from '@/hooks/useDiagnosisData';
-import { getPCOS } from '@/hooks/getPCOS';
 import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { useUpdateProfile } from '@/hooks/useUpdateProfile';
 import { PAIN_TYPES, PainType } from '@/types/diagnosis';
@@ -21,9 +21,9 @@ export default function Step7() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data } = useOnboardingData();
-  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
-  const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
-  const { mutate: updateDiagnosis } = useUpdateDiagnosis();
+  const { mutateAsync: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const { mutateAsync: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
+  const { mutateAsync: updateDiagnosis } = useUpdateDiagnosis();
   const initialData = useRef({
     isPain: null as boolean | null,
     painIntensity: 0,
@@ -33,11 +33,8 @@ export default function Step7() {
 
   useEffect(() => {
     if (data?.medical) {
-      const hasEndo = data.medical.diagnosed_conditions?.some(
-        c => c === 'Endometriosis' || c === 'Adenomyosis'
-      );
       const loaded = {
-        isPain: hasEndo ? true : data.medical.is_pain,
+        isPain: data.medical.is_pain ?? null,
         painIntensity: data.medical.pain_intensity || 0,
         painType: (data.medical.pain_type || []) as PainType[],
       };
@@ -47,70 +44,55 @@ export default function Step7() {
   }, [data]);
 
   const goBack = () => {
-    router.back();
+    router.navigate('/onboarding/step-6' as any);
   };
 
-  const next = () => {
+  const next = async () => {
     if (formData.isPain === null) return;
 
     const init = initialData.current;
 
-    if (formData.isPain === true) {
-      const hasChanges =
-        formData.isPain !== init.isPain ||
-        formData.painIntensity !== init.painIntensity ||
-        JSON.stringify([...formData.painType].sort()) !== JSON.stringify([...init.painType].sort());
+    try {
+      if (formData.isPain === true) {
+        const hasChanges =
+          formData.isPain !== init.isPain ||
+          formData.painIntensity !== init.painIntensity ||
+          JSON.stringify([...formData.painType].sort()) !== JSON.stringify([...init.painType].sort());
 
-      if (!hasChanges) {
+        if (hasChanges) {
+          await updateMedical({
+            is_pain: formData.isPain,
+            pain_type: formData.painType.length > 0 ? formData.painType : undefined,
+            pain_intensity: formData.painIntensity || undefined,
+          });
+        }
         router.push('/onboarding/step-8' as any);
-        return;
+      } else {
+        if (formData.isPain !== init.isPain) {
+          await updateMedical({ is_pain: formData.isPain });
+        }
+
+        const result = computeFinalDiagnosis(data, { exitStep: 7 });
+        if (result.action !== 'finalize') return;
+
+        await updateDiagnosis(result.payload);
+        await updateProfile({ onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 7 });
+        queryClient.invalidateQueries({ queryKey: ['onboarding'] });
+        router.push('/sync-data' as any);
       }
-
-      updateMedical(
-        {
-          is_pain: formData.isPain,
-          pain_type: formData.painType.length > 0 ? formData.painType : undefined,
-          pain_intensity: formData.painIntensity || undefined,
-        },
-        { onSuccess: () => router.push('/onboarding/step-8' as any) }
-      );
-    } else {
-      const hasChanges = formData.isPain !== init.isPain;
-
-      const finish = () => {
-        const pcosResult = getPCOS(data);
-        const diagnosisPayload = pcosResult > 0
-          ? { diagnosis: 'pcos' as const, pcos_type: (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible' }
-          : { diagnosis: 'normal' as const };
-
-        updateDiagnosis(diagnosisPayload, {
-          onSuccess: () => {
-            updateProfile(
-              { onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 7 },
-              { onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['onboarding'] }); router.push('/sync-data' as any); } }
-            );
-          },
-        });
-      };
-
-      if (!hasChanges) {
-        finish();
-        return;
-      }
-
-      updateMedical({ is_pain: formData.isPain }, { onSuccess: finish });
+    } catch {
+      // Error handled by mutation onError (Toast + Sentry)
     }
   };
 
   const title = formData.isPain ? t('onboarding.step7.next') : t('onboarding.step7.get_care_plan');
   const isDisabled = formData.isPain === null || (formData.isPain && (formData.painType.length === 0 || formData.painIntensity === 0)) || isUpdatingMedical || isUpdatingProfile;
-  const progressPercentage = 63.64; // Step 7 = 63.64% (7/11 * 100)
+
 
   return (
     <View style={styles.container}>
-      <Progress 
-        percentage={progressPercentage} 
-        isSkip={true} 
+      <Progress
+        isSkip={true}
         goBack={goBack}
         currentStep={7}
       />

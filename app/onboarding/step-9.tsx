@@ -32,7 +32,7 @@ export default function Step9() {
   }, [data]);
 
   const goBack = () => {
-    router.back();
+    router.navigate('/onboarding/step-8' as any);
   };
 
   const next = () => {
@@ -52,13 +52,12 @@ export default function Step9() {
     );
   };
 
-  const progressPercentage = 81.82; // Step 9 = 81.82% (9/11 * 100)
+
 
   return (
     <View style={styles.container}>
-      <Progress 
-        percentage={progressPercentage} 
-        isSkip={true} 
+      <Progress
+        isSkip={true}
         goBack={goBack}
         currentStep={9}
       />

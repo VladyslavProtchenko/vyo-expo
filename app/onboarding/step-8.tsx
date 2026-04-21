@@ -39,7 +39,7 @@ export default function Step8() {
   }, [data]);
 
   const goBack = () => {
-    router.back();
+    router.navigate('/onboarding/step-7' as any);
   };
 
   const selectPainPeriod = (period: PainPeriodType, isActive: boolean) => {
@@ -76,13 +76,12 @@ export default function Step8() {
     );
   };
 
-  const progressPercentage = 72.73; // Step 8 = 72.73% (8/11 * 100)
+
   const isFormInvalid = formData.painPeriod.length === 0 || formData.painLocation.length === 0 || formData.painDuration === '';
 
   return (
     <View style={styles.container}>
       <Progress
-        percentage={progressPercentage}
         isSkip={true}
         goBack={goBack}
         currentStep={8}

@@ -28,7 +28,7 @@ export default function Step4() {
   }, [data]);
 
   const goBack = () => {
-    router.back();
+    router.navigate('/onboarding/step-3' as any);
   };
 
   const next = () => {
@@ -50,13 +50,12 @@ export default function Step4() {
       : setTags([...tags, tag]);
   };
 
-  const progressPercentage = 36.36; // Step 4 = 36.36% (4/11 * 100)
+
 
   return (
     <View style={styles.container}>
-      <Progress 
-        percentage={progressPercentage} 
-        isSkip={true} 
+      <Progress
+        isSkip={true}
         goBack={goBack}
         currentStep={4}
       />

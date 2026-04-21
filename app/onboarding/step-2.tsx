@@ -57,7 +57,7 @@ export default function Step2() {
   };
 
   const goBack = () => {
-    router.back();
+    router.navigate('/onboarding/step-1' as any);
   };
 
   const next = () => {
@@ -86,13 +86,11 @@ export default function Step2() {
     );
   };
 
-  const progressPercentage = 18.18; // Step 2 = 18.18% (2/11 * 100)
   const isFormInvalid = !formData.weight || !formData.height || !formData.waist || !formData.hips;
 
   return (
     <View style={styles.container}>
       <Progress
-        percentage={progressPercentage}
         isSkip={true}
         goBack={goBack}
         currentStep={2}

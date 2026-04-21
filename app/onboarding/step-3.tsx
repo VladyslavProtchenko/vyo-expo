@@ -2,7 +2,6 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import { useUpdateDiagnosis } from '@/hooks/useDiagnosisData';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
 import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { DIAGNOSIS_LABELS, DiagnosisType } from '@/types/diagnosis';
@@ -15,7 +14,6 @@ export default function Step3() {
   const router = useRouter();
   const { data } = useOnboardingData();
   const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
-  const { mutate: updateDiagnosis } = useUpdateDiagnosis();
   const initialTags = useRef<DiagnosisType[]>([]);
   const [tags, setTags] = useState<DiagnosisType[]>([]);
 
@@ -27,7 +25,7 @@ export default function Step3() {
     }
   }, [data]);
 
-  const goBack = () => router.back();
+  const goBack = () => router.navigate('/onboarding/step-2' as any);
 
   const next = () => {
     if (tags.length === 0) return;
@@ -39,15 +37,9 @@ export default function Step3() {
       return;
     }
 
-    const isDiagnosed = tags.includes('Endometriosis') || tags.includes('Adenomyosis');
     updateMedical(
       { diagnosed_conditions: tags },
-      {
-        onSuccess: () => {
-          if (isDiagnosed) updateDiagnosis({ diagnosis: 'endometriosis' });
-          router.push('/onboarding/step-4' as any);
-        },
-      }
+      { onSuccess: () => router.push('/onboarding/step-4' as any) }
     );
   };
 
@@ -57,12 +49,11 @@ export default function Step3() {
       : setTags([...tags, tag]);
   };
 
-  const progressPercentage = 27.27; 
+
   return (
     <View style={styles.container}>
-      <Progress 
-        percentage={progressPercentage} 
-        isSkip={true} 
+      <Progress
+        isSkip={true}
         goBack={goBack}
         currentStep={3}
       />

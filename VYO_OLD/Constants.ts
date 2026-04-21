@@ -1,2 +1,0 @@
-export const BUCKET_URL = 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/';
-export const IMAGES_APP_URL = 'https://mtdxajnzoabnozlhzbyc.supabase.co/storage/v1/object/public/images/app/';

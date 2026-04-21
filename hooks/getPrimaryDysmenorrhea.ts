@@ -105,8 +105,8 @@ export const getPrimaryDysmenorrhea = (data: OnboardingData | null | undefined):
   if (painCaseMap[painCase]) add(...painCaseMap[painCase]);
 
   const medicineMap: Record<string, [number, number, number]> = {
-    'Weel relieve': [3, 0, 3],
     'Well relieve': [3, 0, 3],
+    'Weel relieve': [3, 0, 3],
     'Partially help': [1, 2, 1],
     "Don't help": [-1, 3, -2],
   };
@@ -115,6 +115,7 @@ export const getPrimaryDysmenorrhea = (data: OnboardingData | null | undefined):
   const painChangeMap: Record<string, [number, number, number]> = {
     'No': [2, 0, 2],
     'A little': [1, 1, 0],
+    'Noticeably': [0, 3, -1],
     'Nocitably': [0, 3, -1],
     'Strongly': [-1, 3, -2],
     'The pain is new': [-2, 3, -2],

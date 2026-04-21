@@ -142,13 +142,13 @@ export const PAIN_CASES: PainCaseType[] = [
 ];
 
 export type MedicineEffectType =
-  | 'Weel relieve'
+  | 'Well relieve'
   | 'Partially help'
   | "Don't help"
   | "Don't use them";
 
 export const MEDICINE_EFFECTS: MedicineEffectType[] = [
-  'Weel relieve',
+  'Well relieve',
   'Partially help',
   "Don't help",
   "Don't use them",
@@ -157,14 +157,14 @@ export const MEDICINE_EFFECTS: MedicineEffectType[] = [
 export type PainChangeType =
   | 'No'
   | 'A little'
-  | 'Nocitably'
+  | 'Noticeably'
   | 'Strongly'
   | 'The pain is new';
 
 export const PAIN_CHANGES: PainChangeType[] = [
   'No',
   'A little',
-  'Nocitably',
+  'Noticeably',
   'Strongly',
   'The pain is new',
 ];

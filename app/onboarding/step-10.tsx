@@ -3,9 +3,8 @@ import Progress from '@/components/Progress';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import Number from '@/components/ui/Number';
 import { typography } from '@/constants/typography';
-import { useGetDiagnosis, useUpdateDiagnosis } from '@/hooks/useDiagnosisData';
-import { getPCOS } from '@/hooks/getPCOS';
-import { getPrimaryDysmenorrhea } from '@/hooks/getPrimaryDysmenorrhea';
+import { computeFinalDiagnosis } from '@/hooks/computeFinalDiagnosis';
+import { useUpdateDiagnosis } from '@/hooks/useDiagnosisData';
 import { useOnboardingData } from '@/hooks/useOnboardingData';
 import { useUpdateMedicalData } from '@/hooks/useUpdateMedicalData';
 import { useUpdateProfile } from '@/hooks/useUpdateProfile';
@@ -19,10 +18,9 @@ export default function Step10() {
   const router = useRouter();
   const queryClient = useQueryClient();
   const { data } = useOnboardingData();
-  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
-  const { mutate: updateProfile } = useUpdateProfile();
-  const { mutate: updateDiagnosis } = useUpdateDiagnosis();
-  const { data: diagnosisData } = useGetDiagnosis();
+  const { mutateAsync: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const { mutateAsync: updateProfile } = useUpdateProfile();
+  const { mutateAsync: updateDiagnosis } = useUpdateDiagnosis();
   const initialData = useRef({ isPainChange: '' as PainChangeType | '' });
   const [formData, setFormData] = useState(initialData.current);
 
@@ -35,58 +33,43 @@ export default function Step10() {
   }, [data]);
 
   const goBack = () => {
-    router.back();
+    router.navigate('/onboarding/step-9' as any);
   };
 
-  const computeDiagnosis = () => {
-    const mergedData = {
-      profile: data?.profile ?? null,
-      medical: { ...data?.medical, is_pain_change: formData.isPainChange } as any,
-    };
-    const diagnosis = getPrimaryDysmenorrhea(mergedData);
-    const alreadyEndo = diagnosisData?.diagnosis === 'endometriosis';
-
-    if (alreadyEndo || diagnosis === 'endometriosis') {
-      router.push('/onboarding/step-11' as any);
-      return;
-    }
-
-    const pcosResult = getPCOS(data);
-    const diagnosisPayload = pcosResult > 0
-      ? { diagnosis: 'pcos' as const, pcos_type: (pcosResult === 1 ? 'high' : pcosResult === 2 ? 'middle' : 'possible') as 'high' | 'middle' | 'possible' }
-      : { diagnosis: diagnosis as Exclude<typeof diagnosis, 'pcos'> };
-
-    updateDiagnosis(diagnosisPayload, {
-      onSuccess: () => {
-        updateProfile(
-          { onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 10 },
-          { onSuccess: () => { queryClient.invalidateQueries({ queryKey: ['onboarding'] }); router.push('/sync-data' as any); } }
-        );
-      },
-    });
-  };
-
-  const next = () => {
+  const next = async () => {
     const hasChanges = formData.isPainChange !== initialData.current.isPainChange;
 
-    if (!hasChanges) {
-      computeDiagnosis();
-      return;
-    }
+    try {
+      if (hasChanges) {
+        await updateMedical({ is_pain_change: formData.isPainChange || undefined });
+      }
 
-    updateMedical(
-      { is_pain_change: formData.isPainChange || undefined },
-      { onSuccess: computeDiagnosis }
-    );
+      const mergedData = {
+        profile: data?.profile ?? null,
+        medical: data?.medical ? { ...data.medical, is_pain_change: formData.isPainChange } : null,
+      };
+      const result = computeFinalDiagnosis(mergedData, { exitStep: 10 });
+
+      if (result.action === 'continue_to_step_11') {
+        router.push('/onboarding/step-11' as any);
+        return;
+      }
+
+      await updateDiagnosis(result.payload);
+      await updateProfile({ onboarding_completed: true, is_quiz_skipped: false, last_completed_quiz_step: 10 });
+      queryClient.invalidateQueries({ queryKey: ['onboarding'] });
+      router.push('/sync-data' as any);
+    } catch {
+      // Error handled by mutation onError (Toast + Sentry)
+    }
   };
 
-  const progressPercentage = 90.91; // Step 10 = 90.91% (10/11 * 100)
+
 
   return (
     <View style={styles.container}>
-      <Progress 
-        percentage={progressPercentage} 
-        isSkip={true} 
+      <Progress
+        isSkip={true}
         goBack={goBack}
         currentStep={10}
       />

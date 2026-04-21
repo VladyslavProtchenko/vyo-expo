@@ -63,7 +63,7 @@ export default function References({ references = [], titleVariant = 'small' }: 
   }));
 
   return (
-    <View style={styles.referencesSection}>
+    <View>
       <TouchableOpacity style={styles.referencesHeader} onPress={toggleExpanded} activeOpacity={0.7}>
         <Text style={titleVariant === 'large' ? styles.referencesTitleLarge : styles.referencesTitleSmall}>References</Text>
         <Animated.View style={chevronAnimatedStyle}>
@@ -81,9 +81,7 @@ export default function References({ references = [], titleVariant = 'small' }: 
 }
 
 const styles = StyleSheet.create({
-  referencesSection: {
-    paddingBottom: 60,
-  },
+
   referencesHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

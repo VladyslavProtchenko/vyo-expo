@@ -20,8 +20,8 @@ export default function Step1() {
   const { t } = useTranslation();
   const router = useRouter();
   const { data, isLoading } = useOnboardingData();
-  const { mutate: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
-  const { mutate: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
+  const { mutateAsync: updateProfile, isPending: isUpdatingProfile } = useUpdateProfile();
+  const { mutateAsync: updateMedical, isPending: isUpdatingMedical } = useUpdateMedicalData();
   const initialized = useRef(false);
   const initialData = useRef({
     age: 18,
@@ -57,7 +57,7 @@ export default function Step1() {
     router.back();
   };
 
-  const next = () => {
+  const next = async () => {
     const init = initialData.current;
     const isFirstTime = !data?.medical;
     const profileChanged = isFirstTime || formData.age !== init.age;
@@ -67,34 +67,25 @@ export default function Step1() {
       formData.menstrDuration !== init.menstrDuration ||
       formData.cycle !== init.cycle;
 
-    const navigate = () => router.push('/onboarding/step-2' as any);
-
-    const saveMedical = (onDone: () => void) => {
-      if (!medicalChanged) { onDone(); return; }
-      updateMedical(
-        {
-          start_menstruation: formData.menstruationDate,
-          menstruation_duration: formData.menstrDuration,
-          cycle_duration: formData.cycle,
-        },
-        { onSuccess: onDone }
-      );
-    };
-
-    if (profileChanged) {
-      updateProfile({ age: formData.age }, { onSuccess: () => saveMedical(navigate) });
-    } else {
-      saveMedical(navigate);
+    try {
+      if (profileChanged) await updateProfile({ age: formData.age });
+      if (medicalChanged) await updateMedical({
+        start_menstruation: formData.menstruationDate,
+        menstruation_duration: formData.menstrDuration,
+        cycle_duration: formData.cycle,
+      });
+      router.push('/onboarding/step-2' as any);
+    } catch {
+      // Error handled by mutation onError (Toast + Sentry)
     }
   };
 
-  const progressPercentage = 9.09; // Step 1 = 9.09% (1/11 * 100)
   const isFormInvalid = !formData.menstruationDate || formData.age <= 0 || formData.menstrDuration <= 0 || formData.cycle <= 0;
 
   if (isLoading) {
     return (
       <View style={styles.container}>
-        <Progress percentage={progressPercentage} isSkip={false} goBack={goBack} showBack={false} />
+        <Progress currentStep={1} isSkip={false} goBack={goBack} showBack={false} />
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color="#000" />
         </View>
@@ -105,7 +96,7 @@ export default function Step1() {
   return (
     <View style={styles.container}>
       <Progress
-        percentage={progressPercentage}
+        currentStep={1}
         isSkip={false}
         goBack={goBack}
         showBack={false}

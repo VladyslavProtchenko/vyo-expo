@@ -2,22 +2,22 @@ import { FontAwesome6 } from '@expo/vector-icons';
 import { Pressable, StyleSheet, View } from "react-native";
 import SkipQuiz from "./SkipQuiz";
 
+const TOTAL_STEPS = 11;
+
 interface ProgressProps {
-  percentage: number; // 0-100
+  currentStep: number;
   isSkip: boolean;
   goBack: () => void;
   showBack?: boolean;
-  currentStep?: number;
 }
 
 export default function Progress({
-  percentage,
+  currentStep,
   isSkip,
   goBack,
   showBack = true,
-  currentStep = 1,
 }: ProgressProps) {
-  const clampedPercentage = Math.max(0, Math.min(100, percentage));
+  const clampedPercentage = Math.max(0, Math.min(100, (currentStep / TOTAL_STEPS) * 100));
 
   return (
     <View style={styles.container}>

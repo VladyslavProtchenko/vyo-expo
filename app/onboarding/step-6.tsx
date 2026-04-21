@@ -32,7 +32,7 @@ export default function Step6() {
   }, [data]);
 
   const goBack = () => {
-    router.back();
+    router.navigate('/onboarding/step-5' as any);
   };
 
   const selectRegularPeriod = (period: RegularPeriodType) => {
@@ -56,13 +56,12 @@ export default function Step6() {
     );
   };
 
-  const progressPercentage = 54.55; // Step 6 = 54.55% (6/11 * 100)
+
 
   return (
     <View style={styles.container}>
-      <Progress 
-        percentage={progressPercentage} 
-        isSkip={true} 
+      <Progress
+        isSkip={true}
         goBack={goBack}
         currentStep={6}
       />
