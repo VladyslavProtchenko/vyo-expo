@@ -136,8 +136,14 @@ const s3 = StyleSheet.create({
 
 // ─── Export ────────────────────────────────────────────────────────────────
 
-export const OVULATION_STORIES: Story[] = [
+export const createOvulationStories = (navigate?: () => void): Story[] => [
   { id: 1, render: () => <Slide1 /> },
   { id: 2, render: () => <Slide2 /> },
-  { id: 3, render: () => <Slide3 /> },
+  {
+    id: 3,
+    render: () => <Slide3 />,
+    bottomContent: navigate ? <ButtonGradient title="See stress management tips" onPress={navigate} /> : undefined,
+  },
 ];
+
+export const OVULATION_STORIES: Story[] = createOvulationStories();

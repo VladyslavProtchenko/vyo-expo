@@ -213,7 +213,7 @@ export const createLutealStoriesEndo = (navigate?: () => void): Story[] => [
   {
     id: 4,
     render: () => <Slide4 showButton={!navigate} />,
-    bottomContent: navigate ? <NutritionArticleCard onPress={navigate} /> : undefined,
+    bottomContent: navigate ? <ButtonGradient title="See products for today" onPress={navigate} /> : undefined,
   },
 ];
 

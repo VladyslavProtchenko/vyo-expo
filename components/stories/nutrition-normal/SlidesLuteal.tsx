@@ -167,7 +167,7 @@ export const createLutealStories = (navigate?: () => void): Story[] => [
   {
     id: 3,
     render: () => <Slide3 showButton={!navigate} />,
-    bottomContent: navigate ? <NutritionArticleCard onPress={navigate} /> : undefined,
+    bottomContent: navigate ? <ButtonGradient title="See products for today" onPress={navigate} /> : undefined,
   },
 ];
 

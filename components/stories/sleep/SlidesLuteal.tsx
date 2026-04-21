@@ -100,7 +100,13 @@ const s3 = StyleSheet.create({
 
 // ─── Export ────────────────────────────────────────────────────────────────
 
-export const LUTEAL_STORIES: Story[] = [
+export const createLutealStories = (navigate?: () => void): Story[] => [
   { id: 1, render: () => <Slide1 /> },
-  { id: 2, render: () => <Slide2 /> },
+  {
+    id: 2,
+    render: () => <Slide2 />,
+    bottomContent: navigate ? <ButtonGradient title="See stress management tips" onPress={navigate} /> : undefined,
+  },
 ];
+
+export const LUTEAL_STORIES: Story[] = createLutealStories();

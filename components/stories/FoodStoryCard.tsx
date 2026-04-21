@@ -1,11 +1,11 @@
 import { useNutritionStories } from '@/hooks/useNutritionStories';
 import useStoriesStore from '@/store/useStoriesStore';
+import { STORAGE_URL } from '@/config/supabase';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ImageBackground, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { STORAGE_URL } from '@/config/supabase';
 
 export default function FoodStoryCard() {
-  const stories = useNutritionStories('phase');
+  const { stories } = useNutritionStories();
   const open = useStoriesStore((s) => s.open);
 
   return (

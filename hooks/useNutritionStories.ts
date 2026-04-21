@@ -86,32 +86,39 @@ export function useNutritionStories(): NutritionStoriesResult {
 
   const articleId = `${phaseName}-${isEndo ? 'endo' : 'general'}`;
 
-  const navigate = useCallback(() => {
+  const navigateToArticle = useCallback(() => {
     close();
     router.push({ pathname: '/nutrition-article', params: { id: articleId } } as any);
   }, [articleId, close]);
 
+  const navigateToProducts = useCallback(() => {
+    close();
+    router.push('/products' as any);
+  }, [close]);
+
   const stories = useMemo<Story[]>(() => {
+    const nav = phaseName === 'menstrual' ? navigateToArticle : navigateToProducts;
+
     if (isEndo) {
       return (
         {
-          menstrual: createMenstrualStoriesEndo(navigate),
-          follicular: createFollicularStoriesEndo(navigate),
-          ovulation: createOvulationStoriesEndo(navigate),
-          luteal: createLutealStoriesEndo(navigate),
+          menstrual: createMenstrualStoriesEndo(nav),
+          follicular: createFollicularStoriesEndo(nav),
+          ovulation: createOvulationStoriesEndo(nav),
+          luteal: createLutealStoriesEndo(nav),
         }[phaseName] ?? []
       );
     }
 
     return (
       {
-        menstrual: createMenstrualStories(navigate),
-        follicular: createFollicularStories(navigate),
-        ovulation: createOvulationStories(navigate),
-        luteal: createLutealStories(navigate),
+        menstrual: createMenstrualStories(nav),
+        follicular: createFollicularStories(nav),
+        ovulation: createOvulationStories(nav),
+        luteal: createLutealStories(nav),
       }[phaseName] ?? []
     );
-  }, [phaseName, isEndo, navigate]);
+  }, [phaseName, isEndo, navigateToArticle, navigateToProducts]);
 
   return {
     stories,

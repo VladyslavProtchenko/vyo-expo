@@ -98,7 +98,13 @@ const s2 = StyleSheet.create({
 
 // ─── Export ────────────────────────────────────────────────────────────────
 
-export const OVULATION_STORIES: Story[] = [
+export const createOvulationStories = (navigate?: () => void): Story[] => [
   { id: 1, render: () => <Slide1 /> },
-  { id: 2, render: () => <Slide2 /> },
+  {
+    id: 2,
+    render: () => <Slide2 />,
+    bottomContent: navigate ? <ButtonGradient title="See exercises for today" onPress={navigate} /> : undefined,
+  },
 ];
+
+export const OVULATION_STORIES: Story[] = createOvulationStories();

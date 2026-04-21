@@ -119,7 +119,7 @@ export const createFollicularStoriesEndo = (navigate?: () => void): Story[] => [
   {
     id: 2,
     render: () => <Slide2 showButton={!navigate} />,
-    bottomContent: navigate ? <NutritionArticleCard onPress={navigate} /> : undefined,
+    bottomContent: navigate ? <ButtonGradient title="See products for today" onPress={navigate} /> : undefined,
   },
 ];
 

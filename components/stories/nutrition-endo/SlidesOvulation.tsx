@@ -201,7 +201,7 @@ export const createOvulationStoriesEndo = (navigate?: () => void): Story[] => [
   {
     id: 4,
     render: () => <Slide4 showButton={!navigate} hasCard={!!navigate} />,
-    bottomContent: navigate ? <NutritionArticleCard onPress={navigate} /> : undefined,
+    bottomContent: navigate ? <ButtonGradient title="See products for today" onPress={navigate} /> : undefined,
   },
 ];
 
