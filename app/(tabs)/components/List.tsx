@@ -1,16 +1,24 @@
-import { useGetDiagnosis } from '@/hooks/useDiagnosisData';
 import React from 'react';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, View } from 'react-native';
+import { Image } from 'expo-image';
 import HowToImplementCard from './care-plan/how-to-implement/HowToImplementCard';
-import WhatDoesItMeanCard from './WhatDoesItMeanCard';
+
+function NutrientsCard({ isGray }: { isGray?: boolean }) {
+  return (
+    <View style={[styles.nutrientsCard, { backgroundColor: isGray ? '#F5F5F5' : 'white' }]}>
+      <Image
+        source={require('@/assets/images/nutrients/nutrients-card.webp')}
+        style={styles.nutrientsImage}
+        contentFit="cover"
+      />
+    </View>
+  );
+}
 
 export default function CarePlanList({ isGray }: { isGray?: boolean }) {
-  const { data: diagnosisData } = useGetDiagnosis();
-  const hasNonNormalDiagnosis = diagnosisData?.diagnosis && diagnosisData.diagnosis !== 'normal';
-
   const items = [
-    ...(hasNonNormalDiagnosis ? [<WhatDoesItMeanCard key="what-mean" isGray={isGray} />] : []),
     <HowToImplementCard key="how-to" isGray={isGray} />,
+    <NutrientsCard key="nutrients" isGray={isGray} />,
   ];
 
   return (
@@ -28,5 +36,15 @@ export default function CarePlanList({ isGray }: { isGray?: boolean }) {
 const styles = StyleSheet.create({
   listContainer: {
     gap: 12,
+  },
+  nutrientsCard: {
+    width: 150,
+    height: 170,
+    borderRadius: 24,
+    overflow: 'hidden',
+  },
+  nutrientsImage: {
+    width: '100%',
+    height: '100%',
   },
 });

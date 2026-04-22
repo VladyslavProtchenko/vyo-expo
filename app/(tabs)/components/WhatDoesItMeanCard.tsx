@@ -1,6 +1,7 @@
 import { useGetDiagnosis } from '@/hooks/useDiagnosisData';
 import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 import StoriesModal, { Story } from './StoriesModal';
 import { STORAGE_URL } from '@/config/supabase'
 

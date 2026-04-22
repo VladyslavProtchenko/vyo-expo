@@ -1,12 +1,14 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import StoriesModal, { Story } from '../../StoriesModal';
+import useStoriesStore from '@/store/useStoriesStore';
+import { STORAGE_URL } from '@/config/supabase';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
+import { Story } from '../../StoriesModal';
 import Slide1 from './slides/Slide1';
 import Slide2 from './slides/Slide2';
 import Slide3 from './slides/Slide3';
 import Slide4 from './slides/Slide4';
 import Slide5 from './slides/Slide5';
-import { STORAGE_URL } from '@/config/supabase'
 
 const STORIES: Story[] = [
   { id: 1, render: () => <Slide1 /> },
@@ -17,30 +19,27 @@ const STORIES: Story[] = [
 ];
 
 export default function HowToImplementCard({ isGray }: { isGray?: boolean }) {
-  const [visible, setVisible] = useState(false);
+  const open = useStoriesStore((s) => s.open);
 
   return (
-    <>
-      <TouchableOpacity
-        style={[styles.card, { backgroundColor: isGray ? '#F5F5F5' : 'white' }]}
-        onPress={() => setVisible(true)}
-        activeOpacity={0.7}
-      >
-        <Image source={{ uri: `${STORAGE_URL}/content/care-plan/info-2.webp` }} style={styles.icon} />
-        <View style={styles.bottom}>
-          <Text style={styles.title}>How to implement?</Text>
-          <Text style={styles.description}>Step-by-step implementation of your plan</Text>
-        </View>
-      </TouchableOpacity>
-      <StoriesModal stories={STORIES} visible={visible} onClose={() => setVisible(false)} />
-    </>
+    <TouchableOpacity
+      style={[styles.card, { backgroundColor: isGray ? '#F5F5F5' : 'white' }]}
+      onPress={() => open(STORIES)}
+      activeOpacity={0.7}
+    >
+      <Image source={{ uri: `${STORAGE_URL}/content/care-plan/info-2.webp` }} style={styles.icon} />
+      <View style={styles.bottom}>
+        <Text style={styles.title}>How to implement?</Text>
+        <Text style={styles.description}>Step-by-step implementation of your plan</Text>
+      </View>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   card: {
     padding: 16,
-    borderRadius: 16,
+    borderRadius: 24,
     overflow: 'hidden',
     width: 150,
     height: 170,

@@ -1,7 +1,8 @@
 import { colors } from '@/constants/typography';
 import { CurrentPhaseInfo, PHASES } from '@/store/phase';
 import useUserStore from '@/store/useUserStore';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import Svg, { Circle } from 'react-native-svg';
 import DonutSegment from './DonutSegment';
 

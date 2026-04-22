@@ -1,5 +1,6 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image } from 'expo-image';
 import Svg, { Line } from 'react-native-svg';
 import { CurrentPhaseInfo } from '@/store/phase';
 import { STORAGE_URL } from '@/config/supabase'
@@ -39,7 +40,7 @@ export default function ChartsBackground() {
         <Image
           source={{ uri: `${STORAGE_URL}/content/phases/chart.webp` }}
           style={styles.chart}
-          resizeMode="cover"
+          contentFit="cover"
         />
       </View>
       <View style={styles.phasesRow}>

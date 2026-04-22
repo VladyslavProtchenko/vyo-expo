@@ -1,7 +1,8 @@
 import { bodyCareArticles } from '@/constants/bodyCareArticles';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 
 export default function Recommendations() {
   const router = useRouter();
@@ -18,7 +19,7 @@ export default function Recommendations() {
               onPress={() => router.push({ pathname: '/body-care-article', params: { id: item.id } } as any)}
               activeOpacity={0.9}
             >
-              <Image source={{ uri: item.image }} style={styles.image} resizeMode="cover" />
+              <Image source={{ uri: item.image }} style={styles.image} contentFit="cover" />
               <LinearGradient
                 colors={['transparent', 'rgba(0,0,0,0.7)']}
                 style={StyleSheet.absoluteFill}

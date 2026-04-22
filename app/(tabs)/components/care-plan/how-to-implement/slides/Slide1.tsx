@@ -1,4 +1,5 @@
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { STORAGE_URL } from '@/config/supabase'
 
 const { width } = Dimensions.get('screen');
@@ -9,7 +10,7 @@ export default function Slide1() {
       <Image
         source={{ uri: `${STORAGE_URL}/content/care-plan/how-1.webp` }}
         style={styles.image}
-        resizeMode="cover"
+        contentFit="cover"
       />
       <Text style={styles.title}>How does it work?</Text>
     </View>

@@ -2,7 +2,8 @@ import ButtonRounded from '@/components/ui/ButtonRounded';
 import { CurrentPhaseInfo } from '@/store/phase';
 import useUserStore from '@/store/useUserStore';
 import { useRouter } from 'expo-router';
-import { Image, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
+import { Image } from 'expo-image';
 import { STORAGE_URL } from '@/config/supabase'
 
 const phaseBackgroundColors = {
@@ -42,7 +43,7 @@ export default function SkipPoster({ style }: { style?: StyleProp<ViewStyle> }) 
           textStyle={styles.buttonText}
         />
       </View>
-      <Image source={{ uri: image }} style={styles.image} resizeMode="contain" />
+      <Image source={{ uri: image }} style={styles.image} contentFit="contain" />
     </View>
   );
 }

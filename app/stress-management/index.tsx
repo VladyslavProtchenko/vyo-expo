@@ -7,7 +7,8 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { MoveLeft } from 'lucide-react-native';
 import { useState } from 'react';
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 type Tag = 'All' | 'Breathing' | 'Forest bathing' | 'Cute therapy' | 'PMR' | 'Singing';
@@ -59,7 +60,7 @@ export default function StressManagement() {
               onPress={() => router.push({ pathname: '/article-screen', params: { id: item.id } } as any)}
               activeOpacity={0.9}
             >
-              <Image source={{ uri: item.image }} style={styles.cardImage} resizeMode="cover" />
+              <Image source={{ uri: item.image }} style={styles.cardImage} contentFit="cover" />
               <LinearGradient
                 colors={['transparent', 'rgba(0,0,0,0.65)']}
                 style={StyleSheet.absoluteFill}

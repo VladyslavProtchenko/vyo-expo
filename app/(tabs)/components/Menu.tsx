@@ -1,19 +1,19 @@
-import ButtonRounded from '@/components/ui/ButtonRounded';
-import VideoCard from '@/components/ui/VideoCard';
 import { typography } from '@/constants/typography';
 import { MaterialIcons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, { ReactNode, useEffect, useState } from 'react';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
+import ExerciseList from './ExerciseList';
 
 interface MenuItemProps {
   title: string;
   description: string;
   isExpanded: boolean;
   onPress: () => void;
+  extraContent?: ReactNode;
 }
 
-function MenuItem({ title, description, isExpanded, onPress }: MenuItemProps) {
+function MenuItem({ title, description, isExpanded, onPress, extraContent }: MenuItemProps) {
   const height = useSharedValue(0);
   const opacity = useSharedValue(0);
 
@@ -54,35 +54,10 @@ function MenuItem({ title, description, isExpanded, onPress }: MenuItemProps) {
       >
         <View style={styles.content}>
           <View style={styles.textContent}>
-            <Text style={[typography.p, { fontSize: 12, marginBottom: 16 }]}>{description}</Text>
-            <View style={styles.headerRow}>
-              <Text style={styles.sectionTitle}>Pelvic floor exercises</Text>
-              <ButtonRounded
-                className={{ width: 90, minHeight: 36, borderRadius: 36 }}
-                title="See all"
-                onPress={() => {}}
-              />
-            </View>
+            <Text style={styles.description}>{description}</Text>
           </View>
 
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.scrollContent}
-          >
-            {items.map((_, index) => (
-              <VideoCard
-                key={index}
-                videoUrl="https://www.w3schools.com/html/mov_bbb.mp4"
-                title="Pelvic floor exercises"
-                style={{
-                  width: 160,
-                  height: 100,
-                  marginRight: index < items.length - 1 ? 12 : 0,
-                }}
-              />
-            ))}
-          </ScrollView>
+          {extraContent}
         </View>
       </Animated.View>
     </View>
@@ -101,13 +76,14 @@ export default function CarePlanMenu() {
 
   return (
     <View style={styles.container}>
-      {items.map((item, index) => (
+      {ITEMS.map((item, index) => (
         <MenuItem
           key={index}
           title={item.title}
           description={item.description}
           isExpanded={expandedItems[index] || false}
           onPress={() => toggleItem(index)}
+          extraContent={item.extraContent}
         />
       ))}
     </View>
@@ -137,41 +113,33 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
   },
   textContent: {
-    padding: 16,
+    paddingHorizontal: 16,
     paddingLeft: 40,
   },
-  headerRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  sectionTitle: {
+  description: {
     fontFamily: 'Poppins',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  scrollContent: {
-    paddingLeft: 40,
-    paddingRight: 16,
-    paddingBottom: 16,
+    fontWeight: '400',
+    fontSize: 12,
+    lineHeight: 12 * 1.3,
+    color: '#404040',
   },
 });
 
-const items = [
+const ITEMS = [
   {
     title: '🥦 Nutrition & Supplements',
     description:
-      'Gentle exercises to strengthen your pelvic floor, improve stability, and reduce pain — easy to follow with guided videos.',
+      'Simple, evidence-based nutrition guidance tailored to your age, cycle phase, and symptoms you log. The focus isn\'t strict dieting, but understanding key nutritional priorities that support hormones, energy, and mood.\n\nSupplements may be suggested as supportive tools — not medical treatment.',
   },
   {
-    title: '🫶 Physiotherapy',
+    title: '💪 Body Care',
     description:
-      'Gentle exercises to strengthen your pelvic floor, improve stability, and reduce pain — easy to follow with guided videos.',
+      'Your movement plan is designed by a rehabilitation specialist and adapts to your cycle phase, daily symptoms, and overall condition.\n\nThe goal is the right type of movement at the right time — helping your body stay strong, balanced, and energized.',
+    extraContent: <ExerciseList />,
   },
   {
     title: '🧘 Stress Management',
     description:
-      'Gentle exercises to strengthen your pelvic floor, improve stability, and reduce pain — easy to follow with guided videos.',
+      'Short daily practices help regulate stress, support recovery, and improve mental wellbeing.\n\nRecommendations adjust to how you feel, helping you build sustainable habits that support both emotional and physical health.',
   },
-
 ];

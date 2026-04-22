@@ -2,7 +2,8 @@ import { Story } from '@/app/(tabs)/components/StoriesModal';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import NutritionArticleCard from '@/components/stories/NutritionArticleCard';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { STORAGE_URL } from '@/config/supabase'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -35,7 +36,7 @@ function Slide1() {
         <Text style={s1.body}>{t('nutrition_stories.luteal.slide1.para4')}</Text>
       </View>
 
-      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} contentFit="contain" />
     </View>
   );
 }
@@ -161,13 +162,17 @@ const s3 = StyleSheet.create({
 
 // ─── Export ────────────────────────────────────────────────────────────────
 
-export const createLutealStories = (navigate?: () => void): Story[] => [
+export const createLutealStories = (navigate?: () => void, navigateToArticle?: () => void): Story[] => [
   { id: 1, render: () => <Slide1 /> },
   { id: 2, render: () => <Slide2 /> },
   {
     id: 3,
-    render: () => <Slide3 showButton={!navigate} />,
-    bottomContent: navigate ? <ButtonGradient title="See products for today" onPress={navigate} /> : undefined,
+    render: () => <Slide3 showButton={!navigate && !navigateToArticle} />,
+    bottomContent: navigate
+      ? <ButtonGradient title="See products for today" onPress={navigate} />
+      : navigateToArticle
+        ? <NutritionArticleCard onPress={navigateToArticle} />
+        : undefined,
   },
 ];
 

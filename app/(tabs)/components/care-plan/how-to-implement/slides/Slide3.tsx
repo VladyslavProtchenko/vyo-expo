@@ -1,4 +1,5 @@
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { STORAGE_URL } from '@/config/supabase'
 
 export default function Slide3() {
@@ -6,9 +7,9 @@ export default function Slide3() {
     <View style={styles.container}>
       <View style={styles.row}>
         <View style={styles.imagesColumn}>
-          <Image source={{ uri: `${STORAGE_URL}/content/care-plan/how-3-1.webp` }} style={styles.photo} resizeMode="cover" />
-          <Image source={{ uri: `${STORAGE_URL}/content/care-plan/how-3-2.webp` }} style={styles.photo} resizeMode="cover" />
-          <Image source={{ uri: `${STORAGE_URL}/content/care-plan/how-3-3.webp` }} style={styles.photo} resizeMode="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/care-plan/how-3-1.webp` }} style={styles.photo} contentFit="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/care-plan/how-3-2.webp` }} style={styles.photo} contentFit="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/care-plan/how-3-3.webp` }} style={styles.photo} contentFit="cover" />
         </View>
         <View style={styles.textColumn}>
           <Text style={styles.title}>Daily list</Text>

@@ -4,7 +4,8 @@ import { useGetDiagnosis } from '@/hooks/useDiagnosisData';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import React from 'react';
-import { Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { STORAGE_URL } from '@/config/supabase'
 
 
@@ -61,7 +62,7 @@ export default function CarePlanPreview() {
             <Image
               source={{ uri: `${STORAGE_URL}/content/care-plan/care-plan-preview.webp` }}
               style={styles.bottomCoverImage}
-              resizeMode="cover"
+              contentFit="cover"
             />
           </View>
         </View>

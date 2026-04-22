@@ -16,7 +16,7 @@ export default function FocusCard({ showInfoButton = true }: Props) {
     (state) => state.productsInfo[phaseName as keyof typeof state.productsInfo].nutrients
   );
   const { open } = useStoriesStore();
-  const { stories } = useNutritionStories();
+  const { stories } = useNutritionStories(showInfoButton ? 'products' : 'phase');
 
   return (
     <View style={[styles.card, { backgroundColor: PHASES[phaseName].colorLight }]}>

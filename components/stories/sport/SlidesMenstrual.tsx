@@ -1,7 +1,8 @@
 import { Story } from '@/app/(tabs)/components/StoriesModal';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { STORAGE_URL } from '@/config/supabase'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -12,7 +13,7 @@ function Slide1() {
   const { t } = useTranslation();
   return (
     <View style={s1.container}>
-      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-2.webp` }} style={s1.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-2.webp` }} style={s1.figure} contentFit="contain" />
       <View style={s1.content}>
         <Text style={s1.title}>{t('exercise_stories.menstrual.slide1.title')}</Text>
 
@@ -60,7 +61,7 @@ function Slide2() {
                 {item.labelSide === 'left' && <Text style={[s2.label, s2.labelRight]}>{t(item.labelKey)}</Text>}
               </View>
               <View style={s2.col}>
-                <Image source={{ uri: item.image }} style={s2.photo} resizeMode="cover" />
+                <Image source={{ uri: item.image }} style={s2.photo} contentFit="cover" />
               </View>
               <View style={s2.col}>
                 {item.labelSide === 'right' && <Text style={[s2.label, s2.labelLeft]}>{t(item.labelKey)}</Text>}
@@ -92,7 +93,7 @@ function Slide3() {
   const { t } = useTranslation();
   return (
     <View style={s3.container}>
-      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-2.webp` }} style={s3.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-2.webp` }} style={s3.figure} contentFit="contain" />
       <View style={s3.content}>
         <Text style={s3.title}>{t('exercise_stories.menstrual.slide3.title')}</Text>
 

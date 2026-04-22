@@ -77,7 +77,11 @@ type NutritionStoriesResult = {
   articleCardData: ArticleCardData;
 };
 
-export function useNutritionStories(): NutritionStoriesResult {
+/**
+ * @param source - 'phase' shows buttons on last slide (+ article card for menstrual),
+ *                 'products' shows only article card, no buttons
+ */
+export function useNutritionStories(source: 'phase' | 'products' = 'phase'): NutritionStoriesResult {
   const { phaseName } = CurrentPhaseInfo();
   const diagnosis = useUserStore((s) => s.diagnosis);
   const isEndo = diagnosis !== null && diagnosis !== 'normal';
@@ -97,28 +101,43 @@ export function useNutritionStories(): NutritionStoriesResult {
   }, [close]);
 
   const stories = useMemo<Story[]>(() => {
+    if (source === 'products') {
+      // From products page: article card only, no navigation buttons
+      if (isEndo) {
+        return {
+          menstrual: createMenstrualStoriesEndo(navigateToArticle),
+          follicular: createFollicularStoriesEndo(undefined, navigateToArticle),
+          ovulation: createOvulationStoriesEndo(undefined, navigateToArticle),
+          luteal: createLutealStoriesEndo(undefined, navigateToArticle),
+        }[phaseName] ?? [];
+      }
+      return {
+        menstrual: createMenstrualStories(navigateToArticle),
+        follicular: createFollicularStories(undefined, navigateToArticle),
+        ovulation: createOvulationStories(undefined, navigateToArticle),
+        luteal: createLutealStories(undefined, navigateToArticle),
+      }[phaseName] ?? [];
+    }
+
+    // From phase page: buttons + article card for menstrual
     const nav = phaseName === 'menstrual' ? navigateToArticle : navigateToProducts;
 
     if (isEndo) {
-      return (
-        {
-          menstrual: createMenstrualStoriesEndo(nav),
-          follicular: createFollicularStoriesEndo(nav),
-          ovulation: createOvulationStoriesEndo(nav),
-          luteal: createLutealStoriesEndo(nav),
-        }[phaseName] ?? []
-      );
+      return {
+        menstrual: createMenstrualStoriesEndo(nav),
+        follicular: createFollicularStoriesEndo(nav),
+        ovulation: createOvulationStoriesEndo(nav),
+        luteal: createLutealStoriesEndo(nav),
+      }[phaseName] ?? [];
     }
 
-    return (
-      {
-        menstrual: createMenstrualStories(nav),
-        follicular: createFollicularStories(nav),
-        ovulation: createOvulationStories(nav),
-        luteal: createLutealStories(nav),
-      }[phaseName] ?? []
-    );
-  }, [phaseName, isEndo, navigateToArticle, navigateToProducts]);
+    return {
+      menstrual: createMenstrualStories(nav),
+      follicular: createFollicularStories(nav),
+      ovulation: createOvulationStories(nav),
+      luteal: createLutealStories(nav),
+    }[phaseName] ?? [];
+  }, [phaseName, isEndo, source, navigateToArticle, navigateToProducts]);
 
   return {
     stories,

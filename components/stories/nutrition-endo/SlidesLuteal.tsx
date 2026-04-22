@@ -2,7 +2,8 @@ import { Story } from '@/app/(tabs)/components/StoriesModal';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import NutritionArticleCard from '@/components/stories/NutritionArticleCard';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { STORAGE_URL } from '@/config/supabase'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -35,7 +36,7 @@ function Slide1() {
         <Text style={s1.body}>{t('nutrition_stories_endo.luteal.slide1.para4')}</Text>
       </View>
 
-      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} contentFit="contain" />
     </View>
   );
 }
@@ -170,7 +171,7 @@ function Slide4({ showButton = false }: { showButton?: boolean }) {
         <Text style={s4.title}>{t('nutrition_stories_endo.luteal.slide4.title')}</Text>
 
         <View style={s4.row}>
-          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-1.webp` }} style={s4.photo} resizeMode="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-1.webp` }} style={s4.photo} contentFit="cover" />
           <View style={s4.tip}>
             <Text style={s4.emoji}>🌿</Text>
             <Text style={s4.tipText}>{t('nutrition_stories_endo.luteal.slide4.tip1')}</Text>
@@ -182,7 +183,7 @@ function Slide4({ showButton = false }: { showButton?: boolean }) {
             <Text style={s4.emoji}>🌿</Text>
             <Text style={s4.tipText}>{t('nutrition_stories_endo.luteal.slide4.tip2')}</Text>
           </View>
-          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-3.webp` }} style={s4.photo} resizeMode="cover" />
+          <Image source={{ uri: `${STORAGE_URL}/content/phases/food-3.webp` }} style={s4.photo} contentFit="cover" />
         </View>
       </View>
 
@@ -206,14 +207,18 @@ const s4 = StyleSheet.create({
 
 // ─── Export ────────────────────────────────────────────────────────────────
 
-export const createLutealStoriesEndo = (navigate?: () => void): Story[] => [
+export const createLutealStoriesEndo = (navigate?: () => void, navigateToArticle?: () => void): Story[] => [
   { id: 1, render: () => <Slide1 /> },
   { id: 2, render: () => <Slide2 /> },
   { id: 3, render: () => <Slide3 /> },
   {
     id: 4,
-    render: () => <Slide4 showButton={!navigate} />,
-    bottomContent: navigate ? <ButtonGradient title="See products for today" onPress={navigate} /> : undefined,
+    render: () => <Slide4 showButton={!navigate && !navigateToArticle} />,
+    bottomContent: navigate
+      ? <ButtonGradient title="See products for today" onPress={navigate} />
+      : navigateToArticle
+        ? <NutritionArticleCard onPress={navigateToArticle} />
+        : undefined,
   },
 ];
 

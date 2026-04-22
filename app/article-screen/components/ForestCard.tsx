@@ -1,7 +1,8 @@
 import { ForestSession } from '@/constants/forestSessions';
 import PlayIcon from '@/assets/images/icons/PlayIcon';
 import { useRouter } from 'expo-router';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Image } from 'expo-image';
 
 
 type Props = {

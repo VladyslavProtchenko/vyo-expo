@@ -1,7 +1,8 @@
 import { Story } from '@/app/(tabs)/components/StoriesModal';
 import ButtonGradient from '@/components/ui/ButtonGradient';
 import { useTranslation } from 'react-i18next';
-import { Dimensions, Image, ImageSourcePropType, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { Image } from 'expo-image';
 import { STORAGE_URL } from '@/config/supabase'
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
@@ -31,7 +32,7 @@ function Slide1() {
         </Text>
       </View>
 
-      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} resizeMode="contain" />
+      <Image source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }} style={s1.figure} contentFit="contain" />
     </View>
   );
 }
@@ -64,7 +65,7 @@ function Slide2() {
       <Image
         source={{ uri: `${STORAGE_URL}/content/phases/figure-1.webp` }}
         style={[s2.figure, { transform: [{ rotate: '-60deg' }] }]}
-        resizeMode="contain"
+        contentFit="contain"
       />
     </View>
   );
@@ -105,7 +106,7 @@ function Slide3() {
                 {item.labelSide === 'left' && <Text style={[s3.label, s3.labelRight]}>{t(item.labelKey)}</Text>}
               </View>
               <View style={s3.col}>
-                <Image source={{ uri: item.image }} style={s3.photo} resizeMode="cover" />
+                <Image source={{ uri: item.image }} style={s3.photo} contentFit="cover" />
               </View>
               <View style={s3.col}>
                 {item.labelSide === 'right' && <Text style={[s3.label, s3.labelLeft]}>{t(item.labelKey)}</Text>}
