@@ -37,9 +37,24 @@ export const useUpdateMedicalData = () => {
         throw new Error('Not authenticated');
       }
 
+      const userId = session.user.id;
+
+      // Ensure profile exists before inserting medical_data (FK constraint)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('id', userId)
+        .single();
+
+      if (!profile) {
+        await supabase
+          .from('profiles')
+          .upsert({ id: userId, email: session.user.email ?? '' }, { onConflict: 'id' });
+      }
+
       const { error } = await supabase
         .from('medical_data')
-        .upsert({ user_id: session.user.id, ...data }, { onConflict: 'user_id' });
+        .upsert({ user_id: userId, ...data }, { onConflict: 'user_id' });
 
       if (error) throw error;
 

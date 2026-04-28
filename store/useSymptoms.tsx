@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 
@@ -18,7 +17,7 @@ const useSymptomsStore = create<IInfoStore>()(
         }),
         {
             name: 'symptoms',
-            storage: createJSONStorage(() => AsyncStorage),
+            storage: createJSONStorage(() => localStorage),
             partialize: (state) => ({
                 name: state.name,
             }),

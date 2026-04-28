@@ -94,11 +94,10 @@ function GlobalStoriesModal() {
 
 function RootLayout() {
   const colorScheme = useColorScheme();
-  const [storageReady, setStorageReady] = useState(false);
-  // return <SyncData />
-  useEffect(() => {
-    checkStorageVersion().finally(() => setStorageReady(true));
-  }, []);
+  const [storageReady] = useState(() => {
+    checkStorageVersion();
+    return true;
+  });
 
   const [fontsLoaded, fontError] = useFonts({
     'ArchivoBlack-Regular': require('@/assets/fonts/ArchivoBlack-Regular.ttf'),

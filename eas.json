@@ -17,6 +17,7 @@
     "production": {
       "autoIncrement": true,
       "env": {
+        "EXPO_PUBLIC_SENTRY_DSN": "https://a11f8def685d2272f45d64b594a1ceed@o4509292741853184.ingest.de.sentry.io/4509292742901840",
         "SENTRY_ORG": "vladyslav-protchenko-c0",
         "SENTRY_PROJECT": "vyo_health",
         "SENTRY_ALLOW_FAILURE": "true"

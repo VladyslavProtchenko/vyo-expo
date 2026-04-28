@@ -70,24 +70,28 @@ export default function EmailRegistration() {
     const onSubmit = async (data: RegistrationFormData) => {
         const result = await signUp(data.email, data.password, data.name);
 
-        if (result.success) {
-            await new Promise(resolve => setTimeout(resolve, 500));
+        if (result.success && result.data?.session?.user) {
+            const userId = result.data.session.user.id;
+            const consentTimestamp = new Date().toISOString();
 
-            const { data: { session } } = await supabase.auth.getSession();
-
-            if (session?.user) {
-                const consentTimestamp = new Date().toISOString();
-                await supabase
-                    .from('profiles')
-                    .update({
-                        terms_accepted_at: consentTimestamp,
-                        privacy_accepted_at: consentTimestamp,
-                        consent_version: '2026-03-06',
-                    })
-                    .eq('id', session.user.id);
-            }
+            await supabase
+                .from('profiles')
+                .upsert({
+                    id: userId,
+                    email: data.email,
+                    name: data.name,
+                    terms_accepted_at: consentTimestamp,
+                    privacy_accepted_at: consentTimestamp,
+                    consent_version: '2026-03-06',
+                }, { onConflict: 'id' });
 
             router.replace('/onboarding/step-1' as any);
+        } else if (result.success && !result.data?.session) {
+            Toast.show({
+                type: 'error',
+                text1: 'Registration issue',
+                text2: 'Session not created. Please try signing in.',
+            });
         } else {
             const message = result.error || 'Please try again.';
             const isEmailTaken = message.toLowerCase().includes('already') || message.toLowerCase().includes('registered');

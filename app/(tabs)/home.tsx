@@ -10,7 +10,6 @@ import { useGlobalAnnouncement } from '@/hooks/useGlobalAnnouncement';
 import { useLoadUserData } from '@/hooks/useLoadUserData';
 import useStates from '@/store/useStates';
 import useUserStore from '@/store/useUserStore';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import dayjs from 'dayjs';
 import { useEffect } from 'react';
 import { ScrollView, StyleSheet } from 'react-native';
@@ -40,16 +39,13 @@ export default function HomePage() {
   }, [loadUserData]);
 
   useEffect(() => {
-    const checkCycle = async () => {
-      const currentKey = getCurrentCycleStart(startMenstruation, cycleDuration);
-      if (!currentKey) return;
-      const lastKey = await AsyncStorage.getItem(CYCLE_KEY);
-      if (lastKey !== currentKey) {
-        setIsDayCardOpen(true);
-        await AsyncStorage.setItem(CYCLE_KEY, currentKey);
-      }
-    };
-    checkCycle();
+    const currentKey = getCurrentCycleStart(startMenstruation, cycleDuration);
+    if (!currentKey) return;
+    const lastKey = localStorage.getItem(CYCLE_KEY);
+    if (lastKey !== currentKey) {
+      setIsDayCardOpen(true);
+      localStorage.setItem(CYCLE_KEY, currentKey);
+    }
   }, [startMenstruation, cycleDuration]);
 
   const handleDismissAnnouncement = () => {
